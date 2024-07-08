@@ -1,6 +1,6 @@
 <template>
     <nav id="main-nav">
-        <HomeCard to="/lectures/new">
+        <HomeCard to="/" @click="showNewLectureDialog = true">
             <template #label>New lecture</template>
             <template #icon>
                 <IconPlus />
@@ -18,16 +18,16 @@
                 <IconSchool />
             </template>
         </HomeCard>
+        <HomeCard to="/reports">
+            <template #label>Reports</template>
+            <template #icon>
+                <IconReport />
+            </template>
+        </HomeCard>
     </nav>
-</template>
 
-<style>
-#app {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
-</style>
+    <NewLectureDialog v-model="showNewLectureDialog" />
+</template>
 
 <style scoped>
 #main-nav {
@@ -35,11 +35,17 @@
     gap: 1rem;
     justify-content: center;
     align-items: center;
-    flex-grow: 1;
+    position: absolute;
+    width: 100%;
+    height: 80%;
 }
 </style>
 
 <script lang="ts" setup>
 import HomeCard from "@/components/HomeCard.vue";
-import { IconPlus, IconSchool, IconUsers } from "@tabler/icons-vue";
+import { IconPlus, IconReport, IconSchool, IconUsers } from "@tabler/icons-vue";
+import NewLectureDialog from "@/components/NewLectureDialog.vue";
+import { ref } from "vue";
+
+const showNewLectureDialog = ref(false)
 </script>

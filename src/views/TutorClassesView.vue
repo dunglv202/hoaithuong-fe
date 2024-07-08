@@ -56,6 +56,12 @@
     </el-dialog>
 </template>
 
+<style scoped>
+.toolbar {
+    margin-bottom: 1rem;
+}
+</style>
+
 <script lang="ts" setup>
 import BackButton from '@/components/BackButton.vue';
 import LoadingComponent from '@/components/LoadingComponent.vue'

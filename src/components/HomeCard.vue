@@ -1,5 +1,5 @@
 <template>
-    <RouterLink class="link" :to="to">
+    <RouterLink class="ctn" @click="$emit('click')" :to="to">
         <el-card class="card" style="max-width: 480px">
             <div class="wrapper">
                 <el-icon>
@@ -22,16 +22,22 @@
 
 .card,
 .label {
-    color: inherit
+    color: inherit;
+    box-shadow: none;
 }
 
-.link {
+.ctn {
     padding: 0;
     color: initial;
 }
 
-.link:hover {
-    color: var(--vt-c-green);
+.ctn:hover,
+.ctn:first-child {
+    color: var(--el-color-primary);
+}
+
+.ctn:hover .card {
+    border-color: var(--el-color-primary-light-5);
 }
 </style>
 
@@ -41,4 +47,8 @@ import { RouterLink } from 'vue-router';
 const { to } = defineProps<{
     to: string;
 }>();
+
+defineEmits<{
+    (e: 'click'): void
+}>()
 </script>

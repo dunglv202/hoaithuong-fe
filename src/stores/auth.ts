@@ -24,6 +24,10 @@ const useAuthStore = defineStore('auth', {
           }
         }, 1000)
       })
+    },
+
+    async signOut() {
+      this.user = null
     }
   }
 })

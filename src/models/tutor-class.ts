@@ -10,3 +10,9 @@ export interface TutorClass {
   active: boolean
   notes?: string
 }
+
+export interface TutorClassByStudent {
+  id: number
+  code: string
+  student: string
+}

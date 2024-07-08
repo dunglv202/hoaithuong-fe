@@ -11,10 +11,10 @@
 
     <el-dialog v-model="addStudentDialog" title="New student" width="500">
         <el-form :model="addStudentForm">
-            <el-form-item label="Name" label-width="140px">
+            <el-form-item label="Name" label-width="100px">
                 <el-input v-model="addStudentForm.name" autocomplete="off" />
             </el-form-item>
-            <el-form-item label="Notes" label-width="140px">
+            <el-form-item label="Notes" label-width="100px">
                 <el-input v-model="addStudentForm.notes" :rows="2" type="textarea" autocomplete="off"
                     :autosize="{ minRows: 2, maxRows: 4 }" />
             </el-form-item>
@@ -29,6 +29,12 @@
         </template>
     </el-dialog>
 </template>
+
+<style scoped>
+.toolbar {
+    margin-bottom: 1rem;
+}
+</style>
 
 <script lang="ts" setup>
 import type { Student } from '@/models/student';
