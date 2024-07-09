@@ -6,12 +6,12 @@
                 <span>
                     Welcome back,
                     <strong class="name">
-                        {{ authStore.user?.displayName || authStore.user?.username || 'Anonymous' }}
+                        {{ authStore.user?.displayName || 'Anonymous' }}
                     </strong>
                 </span>
                 <el-dropdown trigger="click">
                     <div class="dropdown-trigger">
-                        <el-avatar :size="40" src="https://empty" @error="() => true">
+                        <el-avatar :size="40" :src="authStore.user?.avatar" @error="() => true">
                             <el-icon>
                                 <UserFilled />
                             </el-icon>
