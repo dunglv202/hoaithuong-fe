@@ -3,3 +3,8 @@ export interface Student {
   name: string
   notes?: string
 }
+
+export interface NewStudent {
+  name: string
+  notes?: string
+}

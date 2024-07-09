@@ -18,8 +18,9 @@
 
 <script lang="ts" setup>
 import { IconChevronLeft } from '@tabler/icons-vue'
+import { useRouter } from 'vue-router';
 
 const goBack = () => {
-    window.history.back()
+    useRouter().back()
 }
 </script>
