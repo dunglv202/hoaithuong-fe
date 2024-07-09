@@ -6,8 +6,16 @@ export interface TutorClass {
     name: string
   }
   level: string
+  totalLecture: number
   learned: number
-  active: boolean
+  notes?: string
+}
+
+export interface NewTutorClass {
+  code: string
+  studentId?: number
+  levelCode?: number
+  totalLecture: number
   notes?: string
 }
 

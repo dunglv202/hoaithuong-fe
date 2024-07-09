@@ -20,7 +20,13 @@
 import { IconChevronLeft } from '@tabler/icons-vue'
 import { useRouter } from 'vue-router';
 
+const router = useRouter();
+
 const goBack = () => {
-    useRouter().back()
+    if (router.options.history.state.back) {
+        router.back();
+    } else {
+        router.push('..');
+    }
 }
 </script>

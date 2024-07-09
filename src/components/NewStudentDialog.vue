@@ -22,7 +22,7 @@
 
 <script lang="ts" setup>
 import { addStudent } from '@/services/student-service';
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 
 const visible = defineModel({ default: true })
 const emit = defineEmits<{
@@ -33,10 +33,16 @@ const addStudentForm = reactive({
     name: '',
     notes: '',
 })
+const submitting = ref(false)
 
 const handleAddStudent = async () => {
-    await addStudent(addStudentForm)
-    visible.value = false
-    emit('save')
+    submitting.value = true
+    try {
+        await addStudent(addStudentForm)
+        visible.value = false
+        emit('save')
+    } finally {
+        submitting.value = false
+    }
 }
 </script>

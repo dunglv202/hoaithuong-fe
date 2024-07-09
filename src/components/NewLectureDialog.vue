@@ -34,9 +34,9 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref } from 'vue';
-import LoadingComponent from './LoadingComponent.vue';
+import LoadingComponent from '@/components/LoadingComponent.vue';
 import type { TutorClassByStudent } from '@/models/tutor-class';
+import { reactive, ref } from 'vue';
 
 const visible = defineModel({ default: true })
 const fetchingClasses = ref(false)
