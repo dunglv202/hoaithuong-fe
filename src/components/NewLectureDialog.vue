@@ -2,10 +2,10 @@
     <el-dialog v-model="visible" title="New lecture" width="500">
         <el-form :model="addLectureForm">
             <el-form-item label="Student" label-width="100px">
-                <el-select v-model="addLectureForm.tutorClass" filterable remote reserve-keyword
+                <el-select v-model="addLectureForm.classId" filterable remote reserve-keyword
                     placeholder="Enter student's name" :remote-method="searchClass" :loading="fetchingClasses">
-                    <el-option v-for="item in tutorClasses" :key="item.id" :label="`${item.code} - ${item.student}`"
-                        :value="item.id" />
+                    <el-option v-for="item in tutorClasses" :key="item.id"
+                        :label="`${item.code} - ${item.student.name}`" :value="item.id" />
                     <template #loading>
                         <LoadingComponent />
                     </template>
@@ -25,7 +25,7 @@
         <template #footer>
             <div class="dialog-footer">
                 <el-button @click="visible = false">Cancel</el-button>
-                <el-button type="primary" @click="visible = false">
+                <el-button type="primary" @click="addLecture" :loading="submitting">
                     Confirm
                 </el-button>
             </div>
@@ -35,48 +35,51 @@
 
 <script lang="ts" setup>
 import LoadingComponent from '@/components/LoadingComponent.vue';
-import type { TutorClassByStudent } from '@/models/tutor-class';
+import type { TutorClass } from '@/models/tutor-class';
+import { addNewLecture } from '@/services/lecture-service';
+import { fetchTutorClasses } from '@/services/tutor-class-service';
 import { reactive, ref } from 'vue';
 
 const visible = defineModel({ default: true })
+const emit = defineEmits<{
+    (e: 'save'): void
+}>();
+
 const fetchingClasses = ref(false)
 const addLectureForm = reactive({
-    tutorClass: '',
+    classId: undefined,
     duration: [new Date(), new Date()],
     topic: '',
     notes: '',
 })
-const tutorClasses = ref<TutorClassByStudent[]>([]);
+const tutorClasses = ref<TutorClass[]>([])
+const submitting = ref(false)
 
 const searchClass = async (keyword: string) => {
-    fetchingClasses.value = true;
+    fetchingClasses.value = true
     try {
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        tutorClasses.value = [
-            {
-                id: 1,
-                code: 'MATH101',
-                student: 'John Doe',
-            },
-            {
-                id: 2,
-                code: 'MATH102',
-                student: 'Jane Doe',
-            },
-            {
-                id: 3,
-                code: 'MATH103',
-                student: 'Alice',
-            },
-            {
-                id: 4,
-                code: 'MATH104',
-                student: 'Bob',
-            },
-        ].filter((item) => item.student.toLowerCase().includes(keyword.toLowerCase()));
+        tutorClasses.value = await fetchTutorClasses(keyword)
+        console.log(tutorClasses.value)
     } finally {
-        fetchingClasses.value = false;
+        fetchingClasses.value = false
+    }
+}
+
+const addLecture = async () => {
+    submitting.value = true
+    try {
+        await addNewLecture({
+            classId: addLectureForm.classId || -1,
+            startTime: addLectureForm.duration[0],
+            endTime: addLectureForm.duration[0],
+            topic: addLectureForm.topic,
+            notes: addLectureForm.notes,
+        })
+        console.log('Lecture added')
+        visible.value = false
+        emit('save')
+    } finally {
+        submitting.value = false
     }
 }
 </script>

@@ -18,9 +18,3 @@ export interface NewTutorClass {
   totalLecture: number
   notes?: string
 }
-
-export interface TutorClassByStudent {
-  id: number
-  code: string
-  student: string
-}

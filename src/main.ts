@@ -6,6 +6,7 @@ import App from './App.vue'
 import ElementPlus from 'element-plus'
 import router from './routers'
 import { createPinia } from 'pinia'
+import axios from 'axios'
 
 const app = createApp(App)
 const pinia = createPinia()
