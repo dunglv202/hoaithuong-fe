@@ -3,7 +3,7 @@
         <BackButton />
         <div class="align-right">
             <el-date-picker v-model="reportMonth" type="month" placeholder="Pick a month" />
-            <el-button type="primary">
+            <el-button type="primary" @click="downloadReport" :loading="exporting">
                 Export
                 <el-icon :size="18" style="margin-left: 7px; margin-right: -3px;">
                     <IconDownload />
@@ -28,12 +28,21 @@
 
 <script lang="ts" setup>
 import BackButton from '@/components/BackButton.vue';
+import { exportXlsx } from '@/services/report-service';
 import { IconDownload } from '@tabler/icons-vue';
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 
-const reportMonth = ref(new Date());
+const reportMonth = ref(new Date())
+const exporting = ref(false)
 
-watch(reportMonth, (newValue) => {
-    // console.log(newValue.getFullYear(), newValue.getMonth() + 1);
-})
+const downloadReport = async () => {
+    const year = reportMonth.value.getUTCFullYear()
+    const month = reportMonth.value.getUTCMonth() + 1
+    exporting.value = true
+    try {
+        await exportXlsx({ year, month })
+    } finally {
+        exporting.value = false
+    }
+}
 </script>
