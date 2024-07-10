@@ -22,6 +22,12 @@
             <el-form-item label="Total lecture" label-width="110px" prop="totalLecture">
                 <el-input v-model="form.totalLecture" type="number" autocomplete="off" />
             </el-form-item>
+            <el-form-item label="New class?" label-width="110px">
+                <el-switch v-model="isNewClass" />
+            </el-form-item>
+            <el-form-item v-if="!isNewClass" label="Learned" label-width="110px" prop="learned">
+                <el-input v-model="form.learned" type="number" autocomplete="off" />
+            </el-form-item>
             <el-form-item label="Notes" label-width="110px" prop="notes">
                 <el-input v-model="form.notes" type="textarea" :autosize="{ minRows: 3, maxRows: 6 }" />
             </el-form-item>
@@ -58,6 +64,7 @@ const form = reactive<NewTutorClass>({
     studentId: undefined,
     levelCode: undefined,
     totalLecture: 20,
+    learned: undefined,
     notes: undefined
 })
 const formRef = ref<FormInstance>()
@@ -71,6 +78,7 @@ const students = ref<Student[]>([])
 const levels = ref<Level[]>([])
 const fetchingStudents = ref(false)
 const submitting = ref(false)
+const isNewClass = ref(true)
 
 const loadLevels = async () => {
     levels.value = await fetchLevels()

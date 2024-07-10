@@ -29,7 +29,7 @@ const students = ref<Student[]>([])
 const addStudentDialog = ref(false)
 
 const reloadStudents = async () => {
-    students.value = await fetchStudents();
+    students.value = await fetchStudents("");
 }
 
 onMounted(async () => {
