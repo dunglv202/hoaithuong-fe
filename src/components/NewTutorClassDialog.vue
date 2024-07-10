@@ -1,12 +1,12 @@
 <template>
     <el-dialog v-model="visible" title="New class" width="500">
-        <el-form :model="addClassForm">
-            <el-form-item label="Code" label-width="100px">
-                <el-input v-model="addClassForm.code" autocomplete="off" />
+        <el-form :model="form" :rules="formRules" ref="formRef">
+            <el-form-item label="Code" label-width="110px" prop="code">
+                <el-input v-model="form.code" autocomplete="off" />
             </el-form-item>
-            <el-form-item label="Student" label-width="100px">
-                <el-select v-model="addClassForm.studentId" filterable remote reserve-keyword
-                    placeholder="Enter student's name" :remote-method="searchStudent" :loading="fetchingStudents">
+            <el-form-item label="Student" label-width="110px" prop="studentId">
+                <el-select v-model="form.studentId" filterable remote reserve-keyword placeholder="Enter student's name"
+                    :remote-method="searchStudent" :loading="fetchingStudents">
                     <el-option v-for="student in students" :key="student.id" :label="student.name"
                         :value="student.id" />
                     <template #loading>
@@ -14,16 +14,16 @@
                     </template>
                 </el-select>
             </el-form-item>
-            <el-form-item label="Level" label-width="100px">
-                <el-select v-model="addClassForm.levelCode">
+            <el-form-item label="Level" label-width="110px" prop="levelCode">
+                <el-select v-model="form.levelCode">
                     <el-option v-for="level in levels" :key="level.code" :label="level.label" :value="level.code" />
                 </el-select>
             </el-form-item>
-            <el-form-item label="Total lecture" label-width="100px">
-                <el-input v-model="addClassForm.totalLecture" type="number" autocomplete="off" />
+            <el-form-item label="Total lecture" label-width="110px" prop="totalLecture">
+                <el-input v-model="form.totalLecture" type="number" autocomplete="off" />
             </el-form-item>
-            <el-form-item label="Notes" label-width="100px">
-                <el-input v-model="addClassForm.notes" type="textarea" :autosize="{ minRows: 3, maxRows: 6 }" />
+            <el-form-item label="Notes" label-width="110px" prop="notes">
+                <el-input v-model="form.notes" type="textarea" :autosize="{ minRows: 3, maxRows: 6 }" />
             </el-form-item>
         </el-form>
         <template #footer>
@@ -41,10 +41,11 @@
 import LoadingComponent from '@/components/LoadingComponent.vue';
 import type { Level } from '@/models/level';
 import type { Student } from '@/models/student';
-import { type NewTutorClass } from '@/models/tutor-class';
+import type { NewTutorClass } from '@/models/tutor-class';
 import { fetchLevels } from '@/services/level-service';
 import { fetchStudents } from '@/services/student-service';
 import { addTutorClass } from '@/services/tutor-class-service';
+import type { FormInstance, FormRules } from 'element-plus';
 import { onMounted, reactive, ref } from 'vue';
 
 const visible = defineModel({ default: true })
@@ -52,12 +53,19 @@ const emit = defineEmits<{
     (e: 'save'): void
 }>();
 
-const addClassForm = reactive<NewTutorClass>({
+const form = reactive<NewTutorClass>({
     code: '',
     studentId: undefined,
     levelCode: undefined,
     totalLecture: 20,
     notes: undefined
+})
+const formRef = ref<FormInstance>()
+const formRules = reactive<FormRules<typeof form>>({
+    code: [{ required: true, message: 'Code is required', trigger: 'change' }],
+    studentId: [{ required: true, message: 'Student is required', trigger: 'change' }],
+    levelCode: [{ required: true, message: 'Level is required', trigger: 'change' }],
+    totalLecture: [{ required: true, message: 'Total lecture is required', trigger: 'change' }],
 })
 const students = ref<Student[]>([])
 const levels = ref<Level[]>([])
@@ -80,7 +88,8 @@ const searchStudent = async (query: string) => {
 const addClass = async () => {
     submitting.value = true
     try {
-        await addTutorClass(addClassForm)
+        await formRef.value?.validate()
+        await addTutorClass(form)
         visible.value = false
         emit('save')
     } finally {
