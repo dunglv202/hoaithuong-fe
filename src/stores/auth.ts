@@ -4,6 +4,7 @@ import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 
 const useAuthStore = defineStore('auth', () => {
+  const isInitialized = ref(false)
   const user = ref<User | null>(null)
   const isSignedIn = computed(() => !!user.value)
 
@@ -16,8 +17,6 @@ const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  fetchUserInfo()
-
   const signIn = async (username: string, password: string) => {
     await axios.post('/api/auth/signin', { username, password })
     await fetchUserInfo()
@@ -29,11 +28,20 @@ const useAuthStore = defineStore('auth', () => {
     user.value = null
   }
 
+  const initialize = async () => {
+    if (isInitialized.value) return
+    await fetchUserInfo()
+    isInitialized.value = true
+  }
+
+  initialize()
+
   return {
     user,
     isSignedIn,
     signIn,
-    signOut
+    signOut,
+    initialize
   }
 })
 
