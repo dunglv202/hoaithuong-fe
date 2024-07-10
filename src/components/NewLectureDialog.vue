@@ -13,7 +13,7 @@
             </el-form-item>
             <el-form-item label="Duration" label-width="110px" prop="duration">
                 <el-date-picker v-model="form.duration" type="datetimerange" range-separator="To"
-                    start-placeholder="Start" end-placeholder="End" format="YYYY/MM/DD HH:mm" />
+                    start-placeholder="Start" end-placeholder="End" format="DD/MM/YYYY HH:mm" />
             </el-form-item>
             <el-form-item label="Topic" label-width="110px" prop="topic">
                 <el-input v-model="form.topic" autocomplete="off" />
