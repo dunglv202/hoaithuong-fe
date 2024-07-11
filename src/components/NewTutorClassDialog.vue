@@ -14,10 +14,8 @@
                     </template>
                 </el-select>
             </el-form-item>
-            <el-form-item label="Level" label-width="110px" prop="levelCode">
-                <el-select v-model="form.levelCode">
-                    <el-option v-for="level in levels" :key="level.code" :label="level.label" :value="level.code" />
-                </el-select>
+            <el-form-item label="Level" label-width="110px" prop="level">
+                <el-input v-model="form.level" autocomplete="off" />
             </el-form-item>
             <el-form-item label="Total lecture" label-width="110px" prop="totalLecture">
                 <el-input v-model="form.totalLecture" type="number" autocomplete="off" />
@@ -45,14 +43,12 @@
 
 <script lang="ts" setup>
 import LoadingComponent from '@/components/LoadingComponent.vue';
-import type { Level } from '@/models/level';
 import type { Student } from '@/models/student';
 import type { NewTutorClass } from '@/models/tutor-class';
-import { fetchLevels } from '@/services/level-service';
 import { fetchStudents } from '@/services/student-service';
 import { addTutorClass } from '@/services/tutor-class-service';
 import type { FormInstance, FormRules } from 'element-plus';
-import { onMounted, reactive, ref } from 'vue';
+import { reactive, ref } from 'vue';
 
 const visible = defineModel({ default: true })
 const emit = defineEmits<{
@@ -62,7 +58,7 @@ const emit = defineEmits<{
 const form = reactive<NewTutorClass>({
     code: '',
     studentId: undefined,
-    levelCode: undefined,
+    level: undefined,
     totalLecture: 20,
     learned: undefined,
     notes: undefined
@@ -71,18 +67,13 @@ const formRef = ref<FormInstance>()
 const formRules = reactive<FormRules<typeof form>>({
     code: [{ required: true, message: 'Code is required', trigger: 'change' }],
     studentId: [{ required: true, message: 'Student is required', trigger: 'change' }],
-    levelCode: [{ required: true, message: 'Level is required', trigger: 'change' }],
+    level: [{ required: true, message: 'Level is required', trigger: 'change' }],
     totalLecture: [{ required: true, message: 'Total lecture is required', trigger: 'change' }],
 })
 const students = ref<Student[]>([])
-const levels = ref<Level[]>([])
 const fetchingStudents = ref(false)
 const submitting = ref(false)
 const isNewClass = ref(true)
-
-const loadLevels = async () => {
-    levels.value = await fetchLevels()
-}
 
 const searchStudent = async (query: string) => {
     fetchingStudents.value = true
@@ -104,8 +95,4 @@ const addClass = async () => {
         submitting.value = false
     }
 }
-
-onMounted(() => {
-    loadLevels()
-})
 </script>

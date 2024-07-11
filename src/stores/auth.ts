@@ -34,8 +34,6 @@ const useAuthStore = defineStore('auth', () => {
     isInitialized.value = true
   }
 
-  initialize()
-
   return {
     user,
     isSignedIn,

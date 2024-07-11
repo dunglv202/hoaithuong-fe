@@ -14,7 +14,7 @@ export interface TutorClass {
 export interface NewTutorClass {
   code: string
   studentId?: number
-  levelCode?: number
+  level?: string
   totalLecture: number
   learned?: number
   notes?: string
