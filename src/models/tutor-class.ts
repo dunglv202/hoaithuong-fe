@@ -9,6 +9,7 @@ export interface TutorClass {
   totalLecture: number
   learned: number
   notes?: string
+  active: boolean
 }
 
 export interface NewTutorClass {

@@ -21,8 +21,8 @@
         </el-table-column>
         <el-table-column prop="active" label="Status" :align="'center'">
             <template #default="scope">
-                <el-tag :type="scope.row.learned < scope.row.totalLecture ? 'success' : 'error'">
-                    {{ scope.row.learned < scope.row.totalLecture ? 'Active' : 'Ended' }} </el-tag>
+                <el-tag :type="scope.row.active ? 'success' : 'error'">
+                    {{ scope.row.active ? 'Active' : 'Ended' }} </el-tag>
             </template>
         </el-table-column>
         <el-table-column prop="notes" label="Notes"></el-table-column>
