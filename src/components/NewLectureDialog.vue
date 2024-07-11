@@ -98,6 +98,7 @@ const addLecture = async () => {
       notes: form.notes
     })
     visible.value = false
+    formRef.value?.resetFields()
     emit('save')
   } finally {
     submitting.value = false
