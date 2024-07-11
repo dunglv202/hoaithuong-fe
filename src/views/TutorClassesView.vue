@@ -49,7 +49,7 @@ const addClassDialog = ref(false)
 const classes = ref<TutorClass[]>([])
 
 const loadClasses = async () => {
-    classes.value = await fetchTutorClasses()
+    classes.value = await fetchTutorClasses('')
 }
 
 onMounted(() => {
