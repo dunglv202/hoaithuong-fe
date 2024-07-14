@@ -7,6 +7,7 @@ import ElementPlus, { ElNotification } from 'element-plus'
 import router from './routers'
 import { createPinia } from 'pinia'
 import axios, { AxiosError } from 'axios'
+import type { FetchOptions } from './models/config'
 
 const app = createApp(App)
 const pinia = createPinia()
@@ -14,7 +15,7 @@ const pinia = createPinia()
 axios.interceptors.response.use(
   (resp) => resp,
   (error) => {
-    if (error instanceof AxiosError) {
+    if (error instanceof AxiosError && !(error.config?.fetchOptions as FetchOptions)?.selfHandle) {
       ElNotification({
         type: 'error',
         title: 'Something went wrong',

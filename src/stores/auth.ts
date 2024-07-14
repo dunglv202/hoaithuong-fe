@@ -1,3 +1,4 @@
+import type { FetchOptions } from '@/models/config'
 import type { User } from '@/models/user'
 import axios from 'axios'
 import { defineStore } from 'pinia'
@@ -10,7 +11,11 @@ const useAuthStore = defineStore('auth', () => {
 
   const fetchUserInfo = async () => {
     try {
-      const userInfo: User = (await axios.get('/api/me')).data
+      const userInfo: User = (
+        await axios.get('/api/me', {
+          fetchOptions: { selfHandle: true } as FetchOptions
+        })
+      ).data
       user.value = userInfo
     } catch (error) {
       user.value = null

@@ -3,7 +3,13 @@
     <div class="logo">
       <img src="@/assets/logo.svg" alt="Logo" height="64" />
     </div>
-    <el-form class="signin-form" label-position="top" label-width="auto" :model="formLogin" @keyup.enter="handleSignIn">
+    <el-form
+      class="signin-form"
+      label-position="top"
+      label-width="auto"
+      :model="formLogin"
+      @keyup.enter="handleSignIn"
+    >
       <el-form-item label="Username">
         <el-input v-model="formLogin.username" />
       </el-form-item>
@@ -41,7 +47,6 @@
 
 <script lang="ts" setup>
 import useAuthStore from '@/stores/auth'
-import { ElNotification } from 'element-plus'
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -59,13 +64,6 @@ const handleSignIn = async () => {
     submitting.value = true
     await authStore.signIn(formLogin.username, formLogin.password)
     router.push('/')
-  } catch (e) {
-    ElNotification({
-      title: 'Error',
-      message: (e as Error).message,
-      type: 'error',
-      position: 'bottom-right'
-    })
   } finally {
     submitting.value = false
   }
