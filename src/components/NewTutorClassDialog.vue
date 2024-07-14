@@ -40,6 +40,27 @@
       <el-form-item label="Notes" label-width="110px" prop="notes">
         <el-input v-model="form.notes" type="textarea" :autosize="{ minRows: 3, maxRows: 6 }" />
       </el-form-item>
+      <el-form-item label-width="110px">
+        <div class="show-more" @click="showMoreDetails = !showMoreDetails">More details</div>
+      </el-form-item>
+      <div v-if="showMoreDetails">
+        <el-form-item label="Duration" label-width="110px" prop="durationInMinute">
+          <el-input
+            v-model="form.durationInMinute"
+            placeholder="70"
+            type="number"
+            autocomplete="off"
+          />
+        </el-form-item>
+        <el-form-item label="Pay for lecture" label-width="110px" prop="payForLecture">
+          <el-input
+            v-model="form.payForLecture"
+            placeholder="80"
+            type="number"
+            autocomplete="off"
+          />
+        </el-form-item>
+      </div>
     </el-form>
     <template #footer>
       <div class="dialog-footer">
@@ -49,6 +70,15 @@
     </template>
   </el-dialog>
 </template>
+
+<style scoped>
+.show-more {
+  color: #409eff;
+  cursor: pointer;
+  margin-top: -15px;
+  margin-bottom: -15px;
+}
+</style>
 
 <script lang="ts" setup>
 import LoadingComponent from '@/components/LoadingComponent.vue'
@@ -64,25 +94,30 @@ const emit = defineEmits<{
   (e: 'save'): void
 }>()
 
-const form = reactive<NewTutorClass>({
+const form = reactive({
   code: '',
   studentId: undefined,
-  level: undefined,
+  level: '',
   totalLecture: 20,
   learned: undefined,
-  notes: undefined
+  notes: undefined,
+  durationInMinute: undefined,
+  payForLecture: undefined
 })
 const formRef = ref<FormInstance>()
 const formRules = reactive<FormRules<typeof form>>({
   code: [{ required: true, message: 'Code is required', trigger: 'change' }],
   studentId: [{ required: true, message: 'Student is required', trigger: 'change' }],
   level: [{ required: true, message: 'Level is required', trigger: 'change' }],
-  totalLecture: [{ required: true, message: 'Total lecture is required', trigger: 'change' }]
+  totalLecture: [{ required: true, message: 'Total lecture is required', trigger: 'change' }],
+  durationInMinute: [{ min: 0, message: 'Invalid duration', trigger: 'change' }],
+  payForLecture: [{ min: 0, message: 'Invalid pay amount', trigger: 'change' }]
 })
 const students = ref<Student[]>([])
 const fetchingStudents = ref(false)
 const submitting = ref(false)
 const isNewClass = ref(true)
+const showMoreDetails = ref(false)
 
 const searchStudent = async (query: string) => {
   fetchingStudents.value = true
@@ -97,7 +132,7 @@ const addClass = async () => {
   submitting.value = true
   try {
     await formRef.value?.validate()
-    await addTutorClass(form)
+    await addTutorClass({ ...form, studentId: form.studentId! })
     visible.value = false
     formRef.value?.resetFields()
     emit('save')

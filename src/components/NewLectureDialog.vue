@@ -22,15 +22,8 @@
           </template>
         </el-select>
       </el-form-item>
-      <el-form-item label="Duration" label-width="110px" prop="duration">
-        <el-date-picker
-          v-model="form.duration"
-          type="datetimerange"
-          range-separator="To"
-          start-placeholder="Start"
-          end-placeholder="End"
-          format="DD/MM/YYYY HH:mm"
-        />
+      <el-form-item label="Start time" label-width="110px" prop="startTime">
+        <el-date-picker v-model="form.startTime" type="datetime" format="DD/MM/YYYY HH:mm" />
       </el-form-item>
       <el-form-item label="Topic" label-width="110px" prop="topic">
         <el-input v-model="form.topic" autocomplete="off" />
@@ -50,6 +43,7 @@
 
 <script lang="ts" setup>
 import LoadingComponent from '@/components/LoadingComponent.vue'
+import type { NewLecture } from '@/models/lecture'
 import type { TutorClass } from '@/models/tutor-class'
 import { addNewLecture } from '@/services/lecture-service'
 import { fetchTutorClasses } from '@/services/tutor-class-service'
@@ -64,13 +58,13 @@ const emit = defineEmits<{
 const fetchingClasses = ref(false)
 const form = reactive({
   classId: undefined,
-  duration: [new Date(), new Date()],
+  startTime: new Date(),
   topic: '',
   notes: ''
 })
-const formRules = reactive<FormRules<typeof form>>({
+const formRules = reactive<FormRules<NewLecture>>({
   classId: [{ required: true, message: 'Class is required', trigger: 'change' }],
-  duration: [{ required: true, message: 'Duration is required', trigger: 'change' }],
+  startTime: [{ required: true, message: 'Start time is required', trigger: 'change' }],
   topic: [{ required: true, message: 'Topic is required', trigger: 'change' }]
 })
 const formRef = ref<FormInstance>()
@@ -92,8 +86,7 @@ const addLecture = async () => {
     await formRef.value?.validate()
     await addNewLecture({
       classId: form.classId || -1,
-      startTime: form.duration[0],
-      endTime: form.duration[1],
+      startTime: form.startTime,
       topic: form.topic,
       notes: form.notes
     })
