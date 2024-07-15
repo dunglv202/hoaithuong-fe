@@ -24,6 +24,12 @@
                 <IconReport />
             </template>
         </HomeCard>
+        <HomeCard to="/schedule">
+            <template #label>Schedule</template>
+            <template #icon>
+                <IconCalendarClock />
+            </template>
+        </HomeCard>
     </nav>
 
     <NewLectureDialog v-model="showNewLectureDialog" />
@@ -43,7 +49,7 @@
 
 <script lang="ts" setup>
 import HomeCard from "@/components/HomeCard.vue";
-import { IconPlus, IconReport, IconSchool, IconUsers } from "@tabler/icons-vue";
+import { IconCalendarClock, IconPlus, IconReport, IconSchool, IconUsers } from "@tabler/icons-vue";
 import NewLectureDialog from "@/components/NewLectureDialog.vue";
 import { ref } from "vue";
 

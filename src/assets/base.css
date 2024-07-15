@@ -35,6 +35,19 @@
   --color-text: var(--vt-c-text-light-1);
 
   --section-gap: 160px;
+
+  /* == fullcalendar == */
+  --fc-event-bg-color: var(--el-color-primary);
+  --fc-event-border-color: transparent;
+  --fc-today-bg-color: #68b1ff18;
+  --fc-border-color: var(--el-border-color-light);
+  --fc-highlight-color: #007dff1f;
+  --fc-button-bg-color: var(--el-color-primary);
+  --fc-button-border-color: var(--el-color-primary);
+  --fc-button-hover-bg-color: var(--el-color-primary-light-3);
+  --fc-button-hover-border-color: var(--el-color-primary-light-3);
+  --fc-button-active-bg-color: var(--el-color-primary-light-5);
+  --fc-button-active-border-color: var(--el-color-primary-light-5);
 }
 
 *,

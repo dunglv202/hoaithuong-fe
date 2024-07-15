@@ -5,6 +5,7 @@ import StudentsView from '@/views/StudentsView.vue'
 import TutorClassesView from '@/views/TutorClassesView.vue'
 import UserLayout from '@/layouts/UserLayout.vue'
 import ReportsView from '@/views/ReportsView.vue'
+import ScheduleView from '@/views/ScheduleView.vue'
 import useAuthStore from '@/stores/auth'
 
 const routes: RouteRecordRaw[] = [
@@ -27,6 +28,10 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'reports',
         component: ReportsView
+      },
+      {
+        path: 'schedule',
+        component: ScheduleView
       }
     ]
   },
