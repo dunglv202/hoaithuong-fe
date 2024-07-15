@@ -29,8 +29,14 @@ const useAuthStore = defineStore('auth', () => {
   }
 
   const signOut = async () => {
-    await axios.post('/api/auth/signout')
-    user.value = null
+    try {
+      await axios.post('/api/auth/signout', null, {
+        fetchOptions: { selfHandle: true } as FetchOptions
+      })
+      user.value = null
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const initialize = async () => {

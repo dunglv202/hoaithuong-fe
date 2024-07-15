@@ -1,3 +1,5 @@
+import type { Weekday } from './common'
+
 export interface TutorClass {
   id: number
   code: string
@@ -12,13 +14,19 @@ export interface TutorClass {
   active: boolean
 }
 
+export interface Timeslot {
+  weekday: Weekday
+  startTime: string
+}
+
 export interface NewTutorClass {
   code: string
-  studentId: number
+  studentId?: number
   level: string
   totalLecture: number
   learned?: number
   notes?: string
+  schedule: Timeslot[]
   durationInMinute?: number
   payForLecture?: number
 }
