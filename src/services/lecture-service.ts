@@ -8,6 +8,5 @@ export const addNewLecture = async (newLecture: NewLecture) => {
 
 export const getLectures = async (range: ReportRange) => {
   const lectures = await axios.get<Lecture[]>('/api/lectures', { params: range })
-  lectures.data.sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime())
   return lectures.data
 }
