@@ -19,7 +19,7 @@
     </el-table-column>
     <el-table-column prop="active" label="Status" :align="'center'">
       <template #default="scope">
-        <el-tag :type="scope.row.active ? 'success' : 'error'">
+        <el-tag :type="scope.row.active ? 'success' : 'danger'">
           {{ scope.row.active ? 'Active' : 'Ended' }}
         </el-tag>
       </template>

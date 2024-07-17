@@ -5,21 +5,9 @@
         <el-input v-model="form.code" autocomplete="off" />
       </el-form-item>
       <el-form-item label="Student" label-width="110px" prop="studentId">
-        <el-select
-          v-model="form.studentId"
-          filterable
-          remote
-          reserve-keyword
-          placeholder="Enter student's name"
-          :remote-method="searchStudent"
-          :loading="fetchingStudents"
-        >
-          <el-option
-            v-for="student in students"
-            :key="student.id"
-            :label="student.name"
-            :value="student.id"
-          />
+        <el-select v-model="form.studentId" filterable remote reserve-keyword placeholder="Enter student's name"
+          :remote-method="searchStudent" :loading="fetchingStudents">
+          <el-option v-for="student in students" :key="student.id" :label="student.name" :value="student.id" />
           <template #loading>
             <LoadingComponent />
           </template>
@@ -42,26 +30,16 @@
       </el-form-item>
       <el-form-item label="Schedule" label-width="110px" prop="schedules">
         <div class="schedule">
-          <div class="timeslot" v-for="(_, index) in form.schedule" :key="index">
-            <el-select filterable v-model="form.schedule[index].weekday">
-              <el-option
-                v-for="item in weekdays"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
+          <div class="timeslot" v-for="(_, index) in form.timeSlots" :key="index">
+            <el-select filterable v-model="form.timeSlots[index].weekday">
+              <el-option v-for="item in weekdays" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
-            <el-select filterable v-model="form.schedule[index].startTime">
-              <el-option
-                v-for="item in times"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
+            <el-select filterable v-model="form.timeSlots[index].startTime">
+              <el-option v-for="item in times" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
           </div>
           <div>
-            <el-button type="primary" size="medium" @click="addNewTimeSlot">Add</el-button>
+            <el-button type="primary" size="default" @click="addNewTimeSlot">Add</el-button>
           </div>
         </div>
       </el-form-item>
@@ -76,20 +54,10 @@
       </el-form-item>
       <div v-if="showMoreDetails">
         <el-form-item label="Duration" label-width="110px" prop="durationInMinute">
-          <el-input
-            v-model="form.durationInMinute"
-            placeholder="70"
-            type="number"
-            autocomplete="off"
-          />
+          <el-input v-model="form.durationInMinute" placeholder="70" type="number" autocomplete="off" />
         </el-form-item>
         <el-form-item label="Pay for lecture" label-width="110px" prop="payForLecture">
-          <el-input
-            v-model="form.payForLecture"
-            placeholder="80,000"
-            type="number"
-            autocomplete="off"
-          />
+          <el-input v-model="form.payForLecture" placeholder="80,000" type="number" autocomplete="off" />
         </el-form-item>
       </div>
     </el-form>
@@ -149,7 +117,7 @@ const form = reactive<NewTutorClass>({
   totalLecture: 20,
   learned: undefined,
   notes: undefined,
-  schedule: [],
+  timeSlots: [],
   durationInMinute: undefined,
   payForLecture: undefined
 })
@@ -178,7 +146,7 @@ const searchStudent = async (query: string) => {
 }
 
 const addNewTimeSlot = () => {
-  form.schedule.push({
+  form.timeSlots.push({
     weekday: weekdays[0].value,
     startTime: times[0].value
   })

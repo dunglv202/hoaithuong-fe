@@ -19,7 +19,16 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'students',
-        component: StudentsView
+        children: [
+          {
+            path: '',
+            component: StudentsView
+          },
+          {
+            path: ':id',
+            component: HomeView
+          }
+        ]
       },
       {
         path: 'classes',

@@ -26,7 +26,7 @@ export interface NewTutorClass {
   totalLecture: number
   learned?: number
   notes?: string
-  schedule: Timeslot[]
+  timeSlots: Timeslot[]
   durationInMinute?: number
   payForLecture?: number
 }
