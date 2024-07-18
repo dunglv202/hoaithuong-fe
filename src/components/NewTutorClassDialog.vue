@@ -37,6 +37,11 @@
             <el-select filterable v-model="form.timeSlots[index].startTime">
               <el-option v-for="item in times" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
+            <el-button>
+              <el-icon @click="form.timeSlots.splice(index, 1)">
+                <IconTrash />
+              </el-icon>
+            </el-button>
           </div>
           <div>
             <el-button type="primary" size="default" @click="addNewTimeSlot">Add</el-button>
@@ -101,7 +106,7 @@ import { times, weekdays } from '@/models/common'
 import type { NewTutorClass } from '@/models/tutor-class'
 import { fetchStudents } from '@/services/student-service'
 import { addTutorClass } from '@/services/tutor-class-service'
-import { IconChevronDown, IconChevronUp } from '@tabler/icons-vue'
+import { IconChevronDown, IconChevronUp, IconTrash } from '@tabler/icons-vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { reactive, ref } from 'vue'
 
