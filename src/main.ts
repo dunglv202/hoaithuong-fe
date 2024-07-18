@@ -16,7 +16,6 @@ axios.interceptors.response.use(
   (resp) => resp,
   (error) => {
     if (error instanceof AxiosError && !(error.config?.fetchOptions as FetchOptions)?.selfHandle) {
-      console.log(error.config?.fetchOptions)
       ElNotification({
         type: 'error',
         title: 'Something went wrong',

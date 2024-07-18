@@ -2,12 +2,31 @@
   <div class="toolbar">
     <BackButton />
   </div>
-  <FullCalendar :options="calendarOptions"> </FullCalendar>
+  <FullCalendar :options="calendarOptions"></FullCalendar>
+  <LectureDialog v-if="showLectureDialog" v-model="showLectureDialog" :startTime="selectedStartTime"
+    :schedule="selectedSchedule" @save="fetchSchedule" />
 </template>
 
 <style scoped>
 .toolbar {
   margin-bottom: 1rem;
+}
+</style>
+<style>
+.fc-warn {
+  background-color: #ffc550;
+}
+
+.fc-completed {
+  background-color: #89cd44;
+}
+
+.fc-warn:hover {
+  background-color: #ffd174;
+}
+
+.fc-completed:hover {
+  background-color: #9bda5c;
 }
 </style>
 
@@ -16,13 +35,15 @@ import BackButton from '@/components/BackButton.vue'
 import FullCalendar from '@fullcalendar/vue3'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
-import { onMounted, reactive } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import type { CalendarOptions } from '@fullcalendar/core'
 import { getSchedule } from '@/services/schedule-service'
+import LectureDialog from '@/components/LectureDialog.vue'
+import type { Schedule } from '@/models/schedule'
 
-const now = new Date()
-now.setMinutes(now.getMinutes() - 300)
-
+const showLectureDialog = ref(false)
+const selectedStartTime = ref<Date>()
+const selectedSchedule = ref<Schedule>()
 const calendarOptions = reactive<CalendarOptions>({
   selectable: true,
   plugins: [interactionPlugin, timeGridPlugin],
@@ -32,8 +53,15 @@ const calendarOptions = reactive<CalendarOptions>({
   allDaySlot: false,
   height: 'auto',
   events: [],
-  select: (arg: any) => {
-    console.log(arg)
+  select: (arg) => {
+    selectedStartTime.value = arg.start
+    selectedSchedule.value = undefined
+    showLectureDialog.value = true
+  },
+  eventClick: (arg) => {
+    selectedSchedule.value = arg.event.extendedProps.schedule
+    selectedStartTime.value = undefined
+    showLectureDialog.value = true
   }
 })
 
@@ -42,10 +70,15 @@ const fetchSchedule = async () => {
     from: new Date(2024, 1, 1),
     to: new Date(2024, 12, 31)
   })
+  const now = new Date();
   calendarOptions.events = schedule.map((s) => ({
     title: `${s.tutorClass.code} - ${s.tutorClass.student.name}`,
     start: s.startTime,
     end: s.endTime,
+    extendedProps: {
+      schedule: s
+    },
+    className: !s.lecture && now > new Date(s.startTime) ? 'fc-warn' : (s.lecture ? 'fc-completed' : '')
   }))
 }
 

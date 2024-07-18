@@ -2,9 +2,10 @@ import type { Student } from './student'
 
 export interface NewLecture {
   classId: number
-  startTime: Date
+  startTime?: Date
   topic: string
   notes?: string
+  scheduleId?: number
 }
 
 export interface Lecture {
@@ -16,4 +17,5 @@ export interface Lecture {
   topic: string
   lectureNo: number
   totalLecture: number
+  notes: string
 }

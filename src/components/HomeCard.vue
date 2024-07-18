@@ -31,8 +31,7 @@
   color: initial;
 }
 
-.ctn:hover,
-.ctn:first-child {
+.ctn:hover {
   color: var(--el-color-primary);
 }
 

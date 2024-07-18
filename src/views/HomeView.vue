@@ -1,9 +1,9 @@
 <template>
     <nav id="main-nav">
-        <HomeCard to="/" @click="showNewLectureDialog = true">
-            <template #label>New lecture</template>
+        <HomeCard to="/schedule">
+            <template #label>Schedule</template>
             <template #icon>
-                <IconPlus />
+                <IconCalendarClock />
             </template>
         </HomeCard>
         <HomeCard to="/students">
@@ -24,15 +24,7 @@
                 <IconReport />
             </template>
         </HomeCard>
-        <HomeCard to="/schedule">
-            <template #label>Schedule</template>
-            <template #icon>
-                <IconCalendarClock />
-            </template>
-        </HomeCard>
     </nav>
-
-    <NewLectureDialog v-model="showNewLectureDialog" />
 </template>
 
 <style scoped>
@@ -49,9 +41,5 @@
 
 <script lang="ts" setup>
 import HomeCard from "@/components/HomeCard.vue";
-import { IconCalendarClock, IconPlus, IconReport, IconSchool, IconUsers } from "@tabler/icons-vue";
-import NewLectureDialog from "@/components/NewLectureDialog.vue";
-import { ref } from "vue";
-
-const showNewLectureDialog = ref(false)
+import { IconCalendarClock, IconReport, IconSchool, IconUsers } from "@tabler/icons-vue";
 </script>
