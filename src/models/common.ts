@@ -3,16 +3,23 @@ export interface Option<V> {
   value: V
 }
 
-export type Weekday = 'MON' | 'TUE' | 'WED' | 'THU' | 'FRI' | 'SAT' | 'SUN'
+export type Weekday =
+  | 'MONDAY'
+  | 'TUESDAY'
+  | 'WEDNESDAY'
+  | 'THURSDAY'
+  | 'FRIDAY'
+  | 'SATTURDAY'
+  | 'SUNDAY'
 
 export const weekdays: Option<Weekday>[] = [
-  { label: 'Monday', value: 'MON' },
-  { label: 'Tuesday', value: 'TUE' },
-  { label: 'Wednesday', value: 'WED' },
-  { label: 'Thursday', value: 'THU' },
-  { label: 'Friday', value: 'FRI' },
-  { label: 'Saturday', value: 'SAT' },
-  { label: 'Sunday', value: 'SUN' }
+  { label: 'Monday', value: 'MONDAY' },
+  { label: 'Tuesday', value: 'TUESDAY' },
+  { label: 'Wednesday', value: 'WEDNESDAY' },
+  { label: 'Thursday', value: 'THURSDAY' },
+  { label: 'Friday', value: 'FRIDAY' },
+  { label: 'Saturday', value: 'SATTURDAY' },
+  { label: 'Sunday', value: 'SUNDAY' }
 ]
 
 export const times: Option<string>[] = []
@@ -25,4 +32,9 @@ for (let hour = 8; hour <= 22; hour++) {
       value: `${h}:${m}`
     })
   }
+}
+
+export interface Range<T> {
+  from: T
+  to: T
 }

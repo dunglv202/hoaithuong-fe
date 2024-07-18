@@ -16,8 +16,9 @@ import BackButton from '@/components/BackButton.vue'
 import FullCalendar from '@fullcalendar/vue3'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
-import { reactive } from 'vue'
+import { onMounted, reactive } from 'vue'
 import type { CalendarOptions } from '@fullcalendar/core'
+import { getSchedule } from '@/services/schedule-service'
 
 const now = new Date()
 now.setMinutes(now.getMinutes() - 300)
@@ -30,15 +31,23 @@ const calendarOptions = reactive<CalendarOptions>({
   slotMaxTime: '23:00',
   allDaySlot: false,
   height: 'auto',
-  events: [
-    {
-      start: new Date(2024, 6, 15, 10, 0, 0),
-      end: new Date(2024, 6, 15, 11, 10, 0),
-      title: 'Dạy học sinh'
-    }
-  ],
+  events: [],
   select: (arg: any) => {
     console.log(arg)
   }
 })
+
+const fetchSchedule = async () => {
+  const schedule = await getSchedule({
+    from: new Date(2024, 1, 1),
+    to: new Date(2024, 12, 31)
+  })
+  calendarOptions.events = schedule.map((s) => ({
+    title: `${s.tutorClass.code} - ${s.tutorClass.student.name}`,
+    start: s.startTime,
+    end: s.endTime,
+  }))
+}
+
+onMounted(() => fetchSchedule())
 </script>
