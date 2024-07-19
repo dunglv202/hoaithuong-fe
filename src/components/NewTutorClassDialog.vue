@@ -40,9 +40,8 @@
             <el-select filterable v-model="form.timeSlots[index].startTime">
               <el-option v-for="item in times" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
-            <!-- TODO: fix bug remove time slot -->
-            <el-button>
-              <el-icon @click="form.timeSlots.splice(index, 1)">
+            <el-button @click="form.timeSlots.splice(index, 1)">
+              <el-icon>
                 <IconTrash />
               </el-icon>
             </el-button>
