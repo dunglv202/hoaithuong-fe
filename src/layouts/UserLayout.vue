@@ -3,6 +3,26 @@
         <div class="header">
             <img src="@/assets/logo.svg" alt="logo" height="48" />
             <div class="menu">
+                <el-dropdown trigger="click" :hide-on-click="false">
+                    <div class="dropdown-trigger">
+                        <el-badge :value="totalUnread" :max="10" :show-zero="false">
+                            <el-icon :size="19">
+                                <IconBellRinging />
+                            </el-icon>
+                        </el-badge>
+                    </div>
+                    <template #dropdown>
+                        <div class="noti-menu">
+                            <el-empty v-if="!notifications.length" description="Nothing here" :image-size="80" />
+                        </div>
+                        <el-dropdown-menu class="noti-menu">
+                            <el-dropdown-item class="noti" :class="noti.read ? 'read' : undefined"
+                                v-for="noti in notifications" :key="noti.id" @click="readNoti(noti)">
+                                {{ noti.content }}
+                            </el-dropdown-item>
+                        </el-dropdown-menu>
+                    </template>
+                </el-dropdown>
                 <span>
                     Welcome back,
                     <strong class="name">
@@ -47,6 +67,10 @@ main {
     position: relative;
     padding: 2rem 0;
 }
+
+.noti:not(.read) {
+    font-weight: bold;
+}
 </style>
 
 <style scoped>
@@ -60,7 +84,7 @@ main {
 .menu {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 1.25rem;
 }
 
 .name {
@@ -77,19 +101,43 @@ main {
 .dropdown-trigger:hover {
     color: var(--el-color-primary);
 }
+
+.noti-menu {
+    width: 300px;
+}
 </style>
 
 <script lang="ts" setup>
-import { UserFilled } from '@element-plus/icons-vue'
+import type { Notification } from "@/models/notification";
+import { getNotifications } from "@/services/noti-service";
 import useAuthStore from "@/stores/auth";
-import { IconCaretDownFilled } from "@tabler/icons-vue";
+import { UserFilled } from '@element-plus/icons-vue';
+import { IconBellRinging, IconCaretDownFilled } from "@tabler/icons-vue";
+import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter()
 const authStore = useAuthStore()
 
+const totalUnread = ref(0)
+const notifications = ref<Notification[]>([])
+
+const fetchNotifications = async () => {
+    const fetchResult = await getNotifications();
+    notifications.value = fetchResult.notifications
+    totalUnread.value = fetchResult.totalUnread
+}
+
+const readNoti = async (noti: Notification) => {
+    noti.read = true
+}
+
 const signOut = async () => {
     await authStore.signOut()
     router.push('/signin')
 }
+
+onMounted(() => {
+    fetchNotifications()
+})
 </script>
