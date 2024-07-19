@@ -11,3 +11,7 @@ export const getSchedule = async (range: Range<Date>) => {
   })
   return resp.data
 }
+
+export const deleteSchedule = async (id: number) => {
+  await axios.delete(`/api/schedule/${id}`)
+}

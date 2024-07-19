@@ -25,6 +25,9 @@
       <el-form-item v-if="!isNewClass" label="Learned" label-width="110px" prop="learned">
         <el-input v-model="form.learned" type="number" autocomplete="off" />
       </el-form-item>
+      <el-form-item label="Start Date" label-width="110px" prop="startDate">
+        <el-date-picker v-model="form.startDate" type="date" format="DD/MM/YYYY" :disabled-date="isPastDate" />
+      </el-form-item>
       <el-form-item label="Notes" label-width="110px" prop="notes">
         <el-input v-model="form.notes" type="textarea" :autosize="{ minRows: 3, maxRows: 6 }" />
       </el-form-item>
@@ -37,6 +40,7 @@
             <el-select filterable v-model="form.timeSlots[index].startTime">
               <el-option v-for="item in times" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
+            <!-- TODO: fix bug remove time slot -->
             <el-button>
               <el-icon @click="form.timeSlots.splice(index, 1)">
                 <IconTrash />
@@ -124,7 +128,8 @@ const form = reactive<NewTutorClass>({
   notes: undefined,
   timeSlots: [],
   durationInMinute: undefined,
-  payForLecture: undefined
+  payForLecture: undefined,
+  startDate: new Date()
 })
 const formRef = ref<FormInstance>()
 const formRules = reactive<FormRules<typeof form>>({
@@ -168,5 +173,10 @@ const addClass = async () => {
   } finally {
     submitting.value = false
   }
+}
+
+const isPastDate = (time: Date) => {
+  const now = new Date()
+  return time < new Date(now.getFullYear(), now.getMonth(), now.getDate())
 }
 </script>

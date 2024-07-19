@@ -17,16 +17,8 @@
   background-color: #ffc550;
 }
 
-.fc-completed {
-  background-color: #89cd44;
-}
-
 .fc-warn:hover {
   background-color: #ffd174;
-}
-
-.fc-completed:hover {
-  background-color: #9bda5c;
 }
 </style>
 
@@ -78,7 +70,7 @@ const fetchSchedule = async () => {
     extendedProps: {
       schedule: s
     },
-    className: !s.lecture && now > new Date(s.startTime) ? 'fc-warn' : (s.lecture ? 'fc-completed' : '')
+    className: !s.lecture && now > new Date(s.startTime) ? 'fc-warn' : undefined
   }))
 }
 

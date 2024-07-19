@@ -23,6 +23,7 @@
     </el-form>
     <template #footer>
       <div class="dialog-footer">
+        <el-button v-if="!!schedule" type="danger" @click="removeFromSchedule" plain>Remove</el-button>
         <el-button @click="visible = false">Cancel</el-button>
         <el-button type="primary" @click="addLecture" :loading="submitting"> Confirm </el-button>
       </div>
@@ -35,6 +36,7 @@ import LoadingComponent from '@/components/LoadingComponent.vue'
 import type { Schedule } from '@/models/schedule'
 import type { TutorClass } from '@/models/tutor-class'
 import { addNewLecture } from '@/services/lecture-service'
+import { deleteSchedule } from '@/services/schedule-service'
 import { fetchTutorClasses } from '@/services/tutor-class-service'
 import type { FormInstance, FormRules } from 'element-plus'
 import { onMounted, reactive, ref } from 'vue'
@@ -98,6 +100,12 @@ const addLecture = async () => {
   } finally {
     submitting.value = false
   }
+}
+
+const removeFromSchedule = async () => {
+  await deleteSchedule(props.schedule!.id)
+  emit('save')
+  visible.value = false
 }
 
 onMounted(() => {

@@ -29,4 +29,5 @@ export interface NewTutorClass {
   timeSlots: Timeslot[]
   durationInMinute?: number
   payForLecture?: number
+  startDate: Date
 }
