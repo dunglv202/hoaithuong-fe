@@ -9,7 +9,7 @@ export type Weekday =
   | 'WEDNESDAY'
   | 'THURSDAY'
   | 'FRIDAY'
-  | 'SATTURDAY'
+  | 'SATURDAY'
   | 'SUNDAY'
 
 export const weekdays: Option<Weekday>[] = [
@@ -18,7 +18,7 @@ export const weekdays: Option<Weekday>[] = [
   { label: 'Wednesday', value: 'WEDNESDAY' },
   { label: 'Thursday', value: 'THURSDAY' },
   { label: 'Friday', value: 'FRIDAY' },
-  { label: 'Saturday', value: 'SATTURDAY' },
+  { label: 'Saturday', value: 'SATURDAY' },
   { label: 'Sunday', value: 'SUNDAY' }
 ]
 
