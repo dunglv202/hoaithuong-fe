@@ -38,3 +38,8 @@ export interface Range<T> {
   from: T
   to: T
 }
+
+export interface ApiError {
+  code?: string
+  message?: string
+}
