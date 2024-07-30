@@ -6,25 +6,44 @@ import App from './App.vue'
 import ElementPlus, { ElNotification } from 'element-plus'
 import router from './routers'
 import { createPinia } from 'pinia'
-import axios, { AxiosError } from 'axios'
+import axios, { AxiosError, type AxiosRequestConfig } from 'axios'
 import type { FetchOptions } from './models/config'
+import type { ApiError } from './models/common'
 
 const app = createApp(App)
 const pinia = createPinia()
 
+const isAccessTokenExpired = (err: AxiosError) => {
+  return (
+    err.response?.status === 401 && (err.response.data as ApiError).code === 'EXPIRED_ACCESS_TOKEN'
+  )
+}
+
 axios.interceptors.response.use(
   (resp) => resp,
-  (error) => {
-    if (error instanceof AxiosError && !(error.config?.fetchOptions as FetchOptions)?.selfHandle) {
+  async (err) => {
+    if (!(err instanceof AxiosError)) return Promise.reject(err)
+
+    if (isAccessTokenExpired(err)) {
+      try {
+        // refresh token
+        await axios.post('/api/auth/refresh')
+        return axios(err.config as AxiosRequestConfig)
+      } catch (err) {
+        return Promise.reject(err)
+      }
+    }
+
+    if (!(err.config?.fetchOptions as FetchOptions)?.selfHandle) {
       ElNotification({
         type: 'error',
         title: 'Something went wrong',
-        message: error.response?.data.error,
+        message: err.response?.data.error,
         position: 'bottom-right'
       })
     }
 
-    return Promise.reject(error)
+    return Promise.reject(err)
   }
 )
 
