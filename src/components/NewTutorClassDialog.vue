@@ -1,6 +1,6 @@
 <template>
-  <el-dialog v-model="visible" title="New class" width="700">
-    <el-form :model="form" :rules="formRules" ref="formRef">
+  <el-dialog v-model="visible" title="New class" width="700" @closed="resetForm">
+    <el-form :model="form" :rules="formRules" ref="formRef" v-loading="loading">
       <el-form-item label="Code" label-width="110px" prop="code">
         <el-input v-model="form.code" autocomplete="off" />
       </el-form-item>
@@ -149,6 +149,7 @@ const submitting = ref(false)
 const isNewClass = ref(true)
 const showMoreDetails = ref(false)
 const editting = computed(() => !!props.id)
+const loading = ref(false)
 
 const searchStudent = async (query: string) => {
   fetchingStudents.value = true
@@ -188,11 +189,22 @@ const isPastDate = (time: Date) => {
   return time < new Date(now.getFullYear(), now.getMonth(), now.getDate())
 }
 
+const resetForm = () => {
+  students.value = []
+  form.value.timeSlots = []
+  formRef.value?.resetFields()
+}
+
 watch(() => props.id, async (id) => {
   if (id) {
-    const detail = await getDetailClass(id)
-    students.value = [detail.student]
-    form.value = { ...detail, startDate: new Date(), studentId: detail.student.id }
+    try {
+      loading.value = true
+      const detail = await getDetailClass(id)
+      students.value = [detail.student]
+      form.value = { ...detail, startDate: new Date(), studentId: detail.student.id }
+    } finally {
+      loading.value = false
+    }
   }
 })
 </script>

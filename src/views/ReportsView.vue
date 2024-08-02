@@ -3,7 +3,7 @@
     <BackButton />
     <div class="align-right">
       <el-date-picker v-model="reportMonth" type="month" placeholder="Pick a month" />
-      <el-button type="primary" @click="downloadReport" :loading="exporting" :icon="IconCloudDownload">
+      <el-button type="primary" @click="downloadReport" v-loading="exporting" :icon="IconCloudDownload">
         Export
       </el-button>
     </div>
@@ -15,7 +15,7 @@
     </el-card>
   </div>
 
-  <el-table :data="lectures" style="width: 100%">
+  <el-table :data="lectures" style="width: 100%" v-loading="loading">
     <el-table-column type="index" label="#" width="50" />
     <el-table-column prop="classCode" label="Code" width="125" />
     <el-table-column prop="date" label="Date" width="125">
@@ -105,6 +105,7 @@ const students = computed(() => {
   return Array.from(distinct)
 })
 const report = ref<Report>({ totalEarned: 0 })
+const loading = ref(false)
 
 const filterStudent = (value: string, row: Lecture) => row.classCode === value
 
@@ -118,8 +119,13 @@ const downloadReport = async () => {
 }
 
 const refreshReport = async () => {
-  lectures.value = await getLectures(range.value)
-  report.value = await getReport(range.value)
+  try {
+    loading.value = true
+    lectures.value = await getLectures(range.value)
+    report.value = await getReport(range.value)
+  } finally {
+    loading.value = false
+  }
 }
 
 onMounted(refreshReport)
