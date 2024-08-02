@@ -3,11 +3,8 @@
     <BackButton />
     <div class="align-right">
       <el-date-picker v-model="reportMonth" type="month" placeholder="Pick a month" />
-      <el-button type="primary" @click="downloadReport" :loading="exporting">
+      <el-button type="primary" @click="downloadReport" :loading="exporting" :icon="IconCloudDownload">
         Export
-        <el-icon :size="18" style="margin-left: 7px; margin-right: -3px">
-          <IconDownload />
-        </el-icon>
       </el-button>
     </div>
   </div>
@@ -41,13 +38,7 @@
         }}
       </template>
     </el-table-column>
-    <el-table-column
-      prop="student"
-      label="Student"
-      width="300"
-      :filters="students"
-      :filter-method="filterStudent"
-    >
+    <el-table-column prop="student" label="Student" width="300" :filters="students" :filter-method="filterStudent">
       <template #default="scope">
         <RouterLink :to="'/students/' + scope.row.student.id">
           {{ scope.row.student.name }}
@@ -95,7 +86,7 @@ import type { Lecture } from '@/models/lecture'
 import type { Report, ReportRange } from '@/models/report'
 import { getLectures } from '@/services/lecture-service'
 import { exportXlsx, getReport } from '@/services/report-service'
-import { IconDownload } from '@tabler/icons-vue'
+import { IconCloudDownload } from '@tabler/icons-vue'
 import { computed, onMounted, ref, watch } from 'vue'
 
 const reportMonth = ref(new Date())

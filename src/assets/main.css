@@ -40,3 +40,11 @@ strong {
 .fc .fc-timegrid-slot {
   height: 2rem;
 }
+
+/* == el-input == */
+.el-input-number {
+  width: 100% !important;
+}
+.el-input-number .el-input__inner {
+  text-align: left !important;
+}

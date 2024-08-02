@@ -6,7 +6,7 @@
       </el-form-item>
       <el-form-item label="Student" label-width="110px" prop="studentId">
         <el-select v-model="form.studentId" filterable remote reserve-keyword placeholder="Enter student's name"
-          :remote-method="searchStudent" :loading="fetchingStudents">
+          :remote-method="searchStudent" :loading="fetchingStudents" :disabled="editting">
           <el-option v-for="student in students" :key="student.id" :label="student.name" :value="student.id" />
           <template #loading>
             <LoadingComponent />
@@ -17,13 +17,14 @@
         <el-input v-model="form.level" autocomplete="off" />
       </el-form-item>
       <el-form-item label="Total lecture" label-width="110px" prop="totalLecture">
-        <el-input v-model="form.totalLecture" type="number" autocomplete="off" />
+        <el-input-number v-model="form.totalLecture" autocomplete="off" :min="1" :disabled="editting"
+          :controls="false" />
       </el-form-item>
-      <el-form-item label="New class?" label-width="110px">
+      <el-form-item v-if="!editting" label="New class?" label-width="110px">
         <el-switch v-model="isNewClass" />
       </el-form-item>
-      <el-form-item v-if="!isNewClass" label="Learned" label-width="110px" prop="learned">
-        <el-input v-model="form.learned" type="number" autocomplete="off" />
+      <el-form-item v-if="editting || !isNewClass" label="Learned" label-width="110px" prop="learned">
+        <el-input-number v-model="form.learned" autocomplete="off" :min="0" :disabled="editting" :controls="false" />
       </el-form-item>
       <el-form-item label="Start Date" label-width="110px" prop="startDate">
         <el-date-picker v-model="form.startDate" type="date" format="DD/MM/YYYY" :disabled-date="isPastDate" />
@@ -62,17 +63,19 @@
       </el-form-item>
       <div v-if="showMoreDetails">
         <el-form-item label="Duration" label-width="110px" prop="durationInMinute">
-          <el-input v-model="form.durationInMinute" placeholder="70" type="number" autocomplete="off" />
+          <el-input-number v-model="form.durationInMinute" placeholder="70" autocomplete="off" :min="1"
+            :disabled="editting" :controls="false" />
         </el-form-item>
         <el-form-item label="Pay for lecture" label-width="110px" prop="payForLecture">
-          <el-input v-model="form.payForLecture" placeholder="80,000" type="number" autocomplete="off" />
+          <el-input-number v-model="form.payForLecture" placeholder="80,000" autocomplete="off" :min="0"
+            :controls="false" />
         </el-form-item>
       </div>
     </el-form>
     <template #footer>
       <div class="dialog-footer">
         <el-button @click="visible = false">Cancel</el-button>
-        <el-button type="primary" @click="addClass" :loading="submitting"> Confirm </el-button>
+        <el-button type="primary" @click="submit" :loading="submitting"> Confirm </el-button>
       </div>
     </template>
   </el-dialog>
@@ -104,21 +107,24 @@
 
 <script lang="ts" setup>
 import LoadingComponent from '@/components/LoadingComponent.vue'
-import type { Student } from '@/models/student'
 import { times, weekdays } from '@/models/common'
-import type { NewTutorClass } from '@/models/tutor-class'
+import type { Student } from '@/models/student'
+import { type NewTutorClass } from '@/models/tutor-class'
 import { fetchStudents } from '@/services/student-service'
-import { addTutorClass } from '@/services/tutor-class-service'
+import { addTutorClass, getDetailClass, updateTutorClass } from '@/services/tutor-class-service'
 import { IconChevronDown, IconChevronUp, IconTrash } from '@tabler/icons-vue'
 import type { FormInstance, FormRules } from 'element-plus'
-import { reactive, ref } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 
 const visible = defineModel({ default: true })
 const emit = defineEmits<{
   (e: 'save'): void
 }>()
+const props = defineProps<{
+  id?: number
+}>()
 
-const form = reactive<NewTutorClass>({
+const form = ref<NewTutorClass>({
   code: '',
   studentId: undefined,
   level: '',
@@ -135,15 +141,14 @@ const formRules = reactive<FormRules<typeof form>>({
   code: [{ required: true, message: 'Code is required', trigger: 'change' }],
   studentId: [{ required: true, message: 'Student is required', trigger: 'change' }],
   level: [{ required: true, message: 'Level is required', trigger: 'change' }],
-  totalLecture: [{ required: true, message: 'Total lecture is required', trigger: 'change' }],
-  durationInMinute: [{ min: 0, message: 'Invalid duration', trigger: 'change' }],
-  payForLecture: [{ min: 0, message: 'Invalid pay amount', trigger: 'change' }]
+  totalLecture: [{ required: true, message: 'Total lecture is required', trigger: 'change' }]
 })
 const students = ref<Student[]>([])
 const fetchingStudents = ref(false)
 const submitting = ref(false)
 const isNewClass = ref(true)
 const showMoreDetails = ref(false)
+const editting = computed(() => !!props.id)
 
 const searchStudent = async (query: string) => {
   fetchingStudents.value = true
@@ -155,17 +160,21 @@ const searchStudent = async (query: string) => {
 }
 
 const addNewTimeSlot = () => {
-  form.timeSlots.push({
+  form.value.timeSlots.push({
     weekday: weekdays[0].value,
     startTime: times[0].value
   })
 }
 
-const addClass = async () => {
+const submit = async () => {
   submitting.value = true
   try {
     await formRef.value?.validate()
-    await addTutorClass({ ...form, studentId: form.studentId! })
+    if (editting.value) {
+      await updateTutorClass(props.id!, form.value)
+    } else {
+      await addTutorClass({ ...form.value, studentId: form.value.studentId! })
+    }
     visible.value = false
     formRef.value?.resetFields()
     emit('save')
@@ -178,4 +187,12 @@ const isPastDate = (time: Date) => {
   const now = new Date()
   return time < new Date(now.getFullYear(), now.getMonth(), now.getDate())
 }
+
+watch(() => props.id, async (id) => {
+  if (id) {
+    const detail = await getDetailClass(id)
+    students.value = [detail.student]
+    form.value = { ...detail, startDate: new Date(), studentId: detail.student.id }
+  }
+})
 </script>

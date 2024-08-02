@@ -40,6 +40,7 @@ const calendarOptions = reactive<CalendarOptions>({
   selectable: true,
   plugins: [interactionPlugin, timeGridPlugin],
   initialView: 'timeGridWeek',
+  firstDay: 1,
   slotMinTime: '08:00',
   slotMaxTime: '23:00',
   allDaySlot: false,

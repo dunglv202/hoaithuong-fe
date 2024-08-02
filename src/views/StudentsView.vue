@@ -1,7 +1,7 @@
 <template>
     <div class="toolbar">
         <BackButton />
-        <el-button type="primary" @click="addStudentDialog = true">Add</el-button>
+        <el-button type="primary" @click="addStudentDialog = true" :icon="IconNews">Add</el-button>
     </div>
     <el-table :data="students" style="width: 100%">
         <el-table-column type="index" label="#" width="50" />
@@ -23,6 +23,7 @@ import BackButton from '@/components/BackButton.vue';
 import NewStudentDialog from '@/components/NewStudentDialog.vue';
 import type { Student } from '@/models/student';
 import { fetchStudents } from '@/services/student-service';
+import { IconNews } from '@tabler/icons-vue';
 import { onMounted, ref } from 'vue';
 
 const students = ref<Student[]>([])

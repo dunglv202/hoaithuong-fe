@@ -23,7 +23,7 @@
     </el-form>
     <template #footer>
       <div class="dialog-footer">
-        <el-button v-if="!!schedule" type="danger" @click="removeFromSchedule" plain>Remove</el-button>
+        <el-button v-if="!!schedule" @click="removeFromSchedule" :icon="IconTrash" />
         <el-button @click="visible = false">Cancel</el-button>
         <el-button type="primary" @click="addLecture" :loading="submitting"> Confirm </el-button>
       </div>
@@ -38,6 +38,7 @@ import type { TutorClass } from '@/models/tutor-class'
 import { addNewLecture } from '@/services/lecture-service'
 import { deleteSchedule } from '@/services/schedule-service'
 import { fetchTutorClasses } from '@/services/tutor-class-service'
+import { IconTrash } from '@tabler/icons-vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { onMounted, reactive, ref } from 'vue'
 

@@ -1,4 +1,9 @@
-import type { NewTutorClass, TutorClass } from '@/models/tutor-class'
+import {
+  type DetailClass,
+  type NewTutorClass,
+  type TutorClass,
+  type UpdatedClass
+} from '@/models/tutor-class'
 import axios from 'axios'
 
 interface TutorClassCriteria {
@@ -13,4 +18,12 @@ export const addTutorClass = async (tutorClass: NewTutorClass) => {
 export const fetchTutorClasses = async (criteria?: TutorClassCriteria) => {
   const configs = criteria ? { params: criteria } : undefined
   return (await axios.get('/api/tutor_classes', configs)).data as TutorClass[]
+}
+
+export const getDetailClass = async (id: number) => {
+  return (await axios.get<DetailClass>(`/api/tutor_classes/${id}`)).data
+}
+
+export const updateTutorClass = async (id: number, tutorClass: UpdatedClass) => {
+  await axios.put(`/api/tutor_classes/${id}`, { ...tutorClass, id })
 }
