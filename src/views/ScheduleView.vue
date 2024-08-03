@@ -3,8 +3,13 @@
     <BackButton />
   </div>
   <FullCalendar :options="calendarOptions"></FullCalendar>
-  <LectureDialog v-if="showLectureDialog" v-model="showLectureDialog" :startTime="selectedStartTime"
-    :schedule="selectedSchedule" @save="fetchSchedule" />
+  <LectureDialog
+    v-if="showLectureDialog"
+    v-model="showLectureDialog"
+    :startTime="selectedStartTime"
+    :schedule="selectedSchedule"
+    @save="fetchSchedule"
+  />
 </template>
 
 <style scoped>
@@ -19,6 +24,14 @@
 
 .fc-warn:hover {
   background-color: #ffd174;
+}
+
+.fc-upcoming {
+  background-color: #617589;
+}
+
+.fc-upcoming:hover {
+  background-color: #7088a2;
 }
 </style>
 
@@ -58,12 +71,23 @@ const calendarOptions = reactive<CalendarOptions>({
   }
 })
 
+const getEventColorClass = (schedule: Schedule) => {
+  const now = new Date()
+  if (!schedule.lecture && now > new Date(schedule.startTime)) {
+    return 'fc-warn'
+  } else if (!schedule.lecture && now < new Date(schedule.startTime)) {
+    return 'fc-upcoming'
+  } else {
+    return ''
+  }
+}
+
 const fetchSchedule = async () => {
   const schedule = await getSchedule({
     from: new Date(2024, 1, 1),
     to: new Date(2024, 12, 31)
   })
-  const now = new Date();
+
   calendarOptions.events = schedule.map((s) => ({
     title: `${s.tutorClass.code} - ${s.tutorClass.student.name}`,
     start: s.startTime,
@@ -71,7 +95,7 @@ const fetchSchedule = async () => {
     extendedProps: {
       schedule: s
     },
-    className: !s.lecture && now > new Date(s.startTime) ? 'fc-warn' : undefined
+    className: getEventColorClass(s)
   }))
 }
 
