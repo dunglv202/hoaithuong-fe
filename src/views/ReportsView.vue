@@ -1,13 +1,18 @@
 <template>
-  <div class="toolbar">
+  <AppToolbar>
     <BackButton />
     <div class="align-right">
       <el-date-picker v-model="reportMonth" type="month" placeholder="Pick a month" />
-      <el-button type="primary" @click="downloadReport" v-loading="exporting" :icon="IconCloudDownload">
+      <el-button
+        type="primary"
+        @click="downloadReport"
+        v-loading="exporting"
+        :icon="IconCloudDownload"
+      >
         Export
       </el-button>
     </div>
-  </div>
+  </AppToolbar>
 
   <div class="report">
     <el-card class="card">
@@ -38,7 +43,13 @@
         }}
       </template>
     </el-table-column>
-    <el-table-column prop="student" label="Student" width="300" :filters="students" :filter-method="filterStudent">
+    <el-table-column
+      prop="student"
+      label="Student"
+      width="300"
+      :filters="students"
+      :filter-method="filterStudent"
+    >
       <template #default="scope">
         <RouterLink :to="'/students/' + scope.row.student.id">
           {{ scope.row.student.name }}
@@ -81,6 +92,7 @@
 </style>
 
 <script lang="ts" setup>
+import AppToolbar from '@/components/AppToolbar.vue'
 import BackButton from '@/components/BackButton.vue'
 import type { Lecture } from '@/models/lecture'
 import type { Report, ReportRange } from '@/models/report'

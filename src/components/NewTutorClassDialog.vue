@@ -5,9 +5,22 @@
         <el-input v-model="form.code" autocomplete="off" />
       </el-form-item>
       <el-form-item label="Student" label-width="110px" prop="studentId">
-        <el-select v-model="form.studentId" filterable remote reserve-keyword placeholder="Enter student's name"
-          :remote-method="searchStudent" :loading="fetchingStudents" :disabled="editting">
-          <el-option v-for="student in students" :key="student.id" :label="student.name" :value="student.id" />
+        <el-select
+          v-model="form.studentId"
+          filterable
+          remote
+          reserve-keyword
+          placeholder="Enter student's name"
+          :remote-method="searchStudent"
+          :loading="fetchingStudents"
+          :disabled="editting"
+        >
+          <el-option
+            v-for="student in students"
+            :key="student.id"
+            :label="student.name"
+            :value="student.id"
+          />
           <template #loading>
             <LoadingComponent />
           </template>
@@ -17,17 +30,38 @@
         <el-input v-model="form.level" autocomplete="off" />
       </el-form-item>
       <el-form-item label="Total lecture" label-width="110px" prop="totalLecture">
-        <el-input-number v-model="form.totalLecture" autocomplete="off" :min="1" :disabled="editting"
-          :controls="false" />
+        <el-input-number
+          v-model="form.totalLecture"
+          autocomplete="off"
+          :min="1"
+          :disabled="editting"
+          :controls="false"
+        />
       </el-form-item>
       <el-form-item v-if="!editting" label="New class?" label-width="110px">
         <el-switch v-model="isNewClass" />
       </el-form-item>
-      <el-form-item v-if="editting || !isNewClass" label="Learned" label-width="110px" prop="learned">
-        <el-input-number v-model="form.learned" autocomplete="off" :min="0" :disabled="editting" :controls="false" />
+      <el-form-item
+        v-if="editting || !isNewClass"
+        label="Learned"
+        label-width="110px"
+        prop="learned"
+      >
+        <el-input-number
+          v-model="form.learned"
+          autocomplete="off"
+          :min="0"
+          :disabled="editting"
+          :controls="false"
+        />
       </el-form-item>
       <el-form-item label="Start Date" label-width="110px" prop="startDate">
-        <el-date-picker v-model="form.startDate" type="date" format="DD/MM/YYYY" :disabled-date="isPastDate" />
+        <el-date-picker
+          v-model="form.startDate"
+          type="date"
+          format="DD/MM/YYYY"
+          :disabled-date="isPastDate"
+        />
       </el-form-item>
       <el-form-item label="Notes" label-width="110px" prop="notes">
         <el-input v-model="form.notes" type="textarea" :autosize="{ minRows: 3, maxRows: 6 }" />
@@ -36,10 +70,20 @@
         <div class="schedule">
           <div class="timeslot" v-for="(_, index) in form.timeSlots" :key="index">
             <el-select filterable v-model="form.timeSlots[index].weekday">
-              <el-option v-for="item in weekdays" :key="item.value" :label="item.label" :value="item.value" />
+              <el-option
+                v-for="item in weekdays"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
             </el-select>
             <el-select filterable v-model="form.timeSlots[index].startTime">
-              <el-option v-for="item in times" :key="item.value" :label="item.label" :value="item.value" />
+              <el-option
+                v-for="item in times"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
             </el-select>
             <el-button @click="form.timeSlots.splice(index, 1)">
               <el-icon>
@@ -63,12 +107,23 @@
       </el-form-item>
       <div v-if="showMoreDetails">
         <el-form-item label="Duration" label-width="110px" prop="durationInMinute">
-          <el-input-number v-model="form.durationInMinute" placeholder="70" autocomplete="off" :min="1"
-            :disabled="editting" :controls="false" />
+          <el-input-number
+            v-model="form.durationInMinute"
+            placeholder="70"
+            autocomplete="off"
+            :min="1"
+            :disabled="editting"
+            :controls="false"
+          />
         </el-form-item>
         <el-form-item label="Pay for lecture" label-width="110px" prop="payForLecture">
-          <el-input-number v-model="form.payForLecture" placeholder="80,000" autocomplete="off" :min="0"
-            :controls="false" />
+          <el-input-number
+            v-model="form.payForLecture"
+            placeholder="80,000"
+            autocomplete="off"
+            :min="0"
+            :controls="false"
+          />
         </el-form-item>
       </div>
     </el-form>
@@ -122,6 +177,7 @@ const emit = defineEmits<{
 }>()
 const props = defineProps<{
   id?: number
+  clone?: boolean
 }>()
 
 const form = ref<NewTutorClass>({
@@ -148,7 +204,7 @@ const fetchingStudents = ref(false)
 const submitting = ref(false)
 const isNewClass = ref(true)
 const showMoreDetails = ref(false)
-const editting = computed(() => !!props.id)
+const editting = computed(() => !!props.id && !props.clone)
 const loading = ref(false)
 
 const searchStudent = async (query: string) => {
@@ -195,16 +251,33 @@ const resetForm = () => {
   formRef.value?.resetFields()
 }
 
-watch(() => props.id, async (id) => {
-  if (id) {
-    try {
-      loading.value = true
-      const detail = await getDetailClass(id)
-      students.value = [detail.student]
-      form.value = { ...detail, startDate: new Date(), studentId: detail.student.id }
-    } finally {
-      loading.value = false
+watch(
+  () => props.id,
+  async (id) => {
+    if (id) {
+      try {
+        loading.value = true
+        const detail = await getDetailClass(id)
+        students.value = [detail.student]
+        form.value = {
+          ...detail,
+          startDate: new Date(),
+          studentId: detail.student.id,
+          learned: props.clone ? 0 : detail.learned
+        }
+      } finally {
+        loading.value = false
+      }
     }
   }
-})
+)
+
+watch(
+  () => props.clone,
+  (clone) => {
+    if (clone) {
+      form.value.learned = 0
+    }
+  }
+)
 </script>
