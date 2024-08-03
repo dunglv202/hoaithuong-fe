@@ -8,7 +8,7 @@
     v-model="showLectureDialog"
     :startTime="selectedStartTime"
     :schedule="selectedSchedule"
-    @save="fetchSchedule"
+    @save="fetchSchedule(fetchedRange)"
   />
 </template>
 
@@ -37,18 +37,24 @@
 
 <script lang="ts" setup>
 import BackButton from '@/components/BackButton.vue'
-import FullCalendar from '@fullcalendar/vue3'
-import timeGridPlugin from '@fullcalendar/timegrid'
-import interactionPlugin from '@fullcalendar/interaction'
-import { onMounted, reactive, ref } from 'vue'
-import type { CalendarOptions } from '@fullcalendar/core'
-import { getSchedule } from '@/services/schedule-service'
 import LectureDialog from '@/components/LectureDialog.vue'
+import { type Range } from '@/models/common'
 import type { Schedule } from '@/models/schedule'
+import { getSchedule } from '@/services/schedule-service'
+import type { CalendarOptions } from '@fullcalendar/core'
+import interactionPlugin from '@fullcalendar/interaction'
+import timeGridPlugin from '@fullcalendar/timegrid'
+import FullCalendar from '@fullcalendar/vue3'
+import moment from 'moment'
+import { onMounted, reactive, ref } from 'vue'
 
 const showLectureDialog = ref(false)
 const selectedStartTime = ref<Date>()
 const selectedSchedule = ref<Schedule>()
+const fetchedRange = reactive<Range<Date>>({
+  from: moment().subtract(21, 'days').startOf('week').toDate(),
+  to: moment().add(21, 'days').endOf('week').toDate()
+})
 const calendarOptions = reactive<CalendarOptions>({
   selectable: true,
   plugins: [interactionPlugin, timeGridPlugin],
@@ -68,6 +74,14 @@ const calendarOptions = reactive<CalendarOptions>({
     selectedSchedule.value = arg.event.extendedProps.schedule
     selectedStartTime.value = undefined
     showLectureDialog.value = true
+  },
+  datesSet: (info) => {
+    // current week not in fetched range => re-fetch
+    if (info.start < fetchedRange.from || info.end > fetchedRange.to) {
+      fetchedRange.from = moment(info.start).subtract(21, 'days').startOf('week').toDate()
+      fetchedRange.to = moment(info.end).add(21, 'days').endOf('week').toDate()
+      fetchSchedule(fetchedRange)
+    }
   }
 })
 
@@ -82,11 +96,8 @@ const getEventColorClass = (schedule: Schedule) => {
   }
 }
 
-const fetchSchedule = async () => {
-  const schedule = await getSchedule({
-    from: new Date(2024, 1, 1),
-    to: new Date(2024, 12, 31)
-  })
+const fetchSchedule = async (range: Range<Date>) => {
+  const schedule = await getSchedule(range)
 
   calendarOptions.events = schedule.map((s) => ({
     title: `${s.tutorClass.code} - ${s.tutorClass.student.name}`,
@@ -99,5 +110,5 @@ const fetchSchedule = async () => {
   }))
 }
 
-onMounted(() => fetchSchedule())
+onMounted(() => fetchSchedule(fetchedRange))
 </script>

@@ -1,17 +1,25 @@
 import './assets/main.css'
 
+import axios, { AxiosError, type AxiosRequestConfig } from 'axios'
+import ElementPlus, { ElNotification } from 'element-plus'
 import 'element-plus/dist/index.css'
+import moment from 'moment'
+import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 import App from './App.vue'
-import ElementPlus, { ElNotification } from 'element-plus'
-import router from './routers'
-import { createPinia } from 'pinia'
-import axios, { AxiosError, type AxiosRequestConfig } from 'axios'
-import type { FetchOptions } from './models/config'
 import type { ApiError } from './models/common'
+import type { FetchOptions } from './models/config'
+import router from './routers'
 
 const app = createApp(App)
 const pinia = createPinia()
+
+moment.locale('en', {
+  week: {
+    dow: 1,
+    doy: 4
+  }
+})
 
 const isAccessTokenExpired = (err: AxiosError) => {
   return (
