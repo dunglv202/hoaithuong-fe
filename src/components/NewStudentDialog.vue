@@ -17,7 +17,14 @@
     <template #footer>
       <div class="dialog-footer">
         <el-button @click="visible = false">Cancel</el-button>
-        <el-button type="primary" @click="handleAddStudent"> Confirm </el-button>
+        <el-button
+          type="primary"
+          @click="handleAddStudent"
+          :loading="submitting"
+          :icon="IconSquareRoundedCheck"
+        >
+          Confirm
+        </el-button>
       </div>
     </template>
   </el-dialog>
@@ -26,6 +33,7 @@
 <script lang="ts" setup>
 import type { NewStudent } from '@/models/student'
 import { addStudent } from '@/services/student-service'
+import { IconSquareRoundedCheck } from '@tabler/icons-vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { reactive, ref } from 'vue'
 

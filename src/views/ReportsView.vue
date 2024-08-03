@@ -15,9 +15,7 @@
   </AppToolbar>
 
   <div class="report">
-    <el-card class="card">
-      <span class="figure"> Total: {{ new Intl.NumberFormat().format(report.totalEarned) }} </span>
-    </el-card>
+    <span class="figure"> Total: {{ new Intl.NumberFormat().format(report.totalEarned) }} </span>
   </div>
 
   <el-table :data="lectures" style="width: 100%" v-loading="loading">
@@ -79,10 +77,6 @@
   display: flex;
   margin-bottom: 1rem;
   margin-top: 1rem;
-}
-
-.card {
-  box-shadow: none;
 }
 
 .report .figure {

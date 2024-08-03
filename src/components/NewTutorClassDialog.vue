@@ -1,5 +1,10 @@
 <template>
-  <el-dialog v-model="visible" title="New class" width="700" @closed="resetForm">
+  <el-dialog
+    v-model="visible"
+    :title="editting ? 'Edit class' : 'New class'"
+    width="700"
+    @closed="resetForm"
+  >
     <el-form :model="form" :rules="formRules" ref="formRef" v-loading="loading">
       <el-form-item label="Code" label-width="110px" prop="code">
         <el-input v-model="form.code" autocomplete="off" />
@@ -130,7 +135,14 @@
     <template #footer>
       <div class="dialog-footer">
         <el-button @click="visible = false">Cancel</el-button>
-        <el-button type="primary" @click="submit" :loading="submitting"> Confirm </el-button>
+        <el-button
+          type="primary"
+          @click="submit"
+          :loading="submitting"
+          :icon="IconSquareRoundedCheck"
+        >
+          Confirm
+        </el-button>
       </div>
     </template>
   </el-dialog>
@@ -167,7 +179,12 @@ import type { Student } from '@/models/student'
 import { type NewTutorClass } from '@/models/tutor-class'
 import { fetchStudents } from '@/services/student-service'
 import { addTutorClass, getDetailClass, updateTutorClass } from '@/services/tutor-class-service'
-import { IconChevronDown, IconChevronUp, IconTrash } from '@tabler/icons-vue'
+import {
+  IconChevronDown,
+  IconChevronUp,
+  IconSquareRoundedCheck,
+  IconTrash
+} from '@tabler/icons-vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { computed, reactive, ref, watch } from 'vue'
 

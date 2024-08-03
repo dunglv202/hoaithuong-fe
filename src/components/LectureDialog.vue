@@ -1,18 +1,35 @@
 <template>
-  <el-dialog v-model="visible" title="New lecture" width="500">
+  <el-dialog v-model="visible" title="Lecture info" width="500">
     <el-form :model="form" :rules="formRules" ref="formRef">
       <el-form-item label="Student" label-width="110px" prop="classId">
-        <el-select v-model="form.classId" filterable remote reserve-keyword placeholder="Enter student's name"
-          :remote-method="searchClass" :loading="fetchingClasses" :disabled="!!schedule">
-          <el-option v-for="item in tutorClasses" :key="item.id" :label="`${item.code} - ${item.student.name}`"
-            :value="item.id" />
+        <el-select
+          v-model="form.classId"
+          filterable
+          remote
+          reserve-keyword
+          placeholder="Enter student's name"
+          :remote-method="searchClass"
+          :loading="fetchingClasses"
+          :disabled="!!schedule"
+        >
+          <el-option
+            v-for="item in tutorClasses"
+            :key="item.id"
+            :label="`${item.code} - ${item.student.name}`"
+            :value="item.id"
+          />
           <template #loading>
             <LoadingComponent />
           </template>
         </el-select>
       </el-form-item>
       <el-form-item label="Start time" label-width="110px" prop="startTime">
-        <el-date-picker v-model="form.startTime" type="datetime" format="DD/MM/YYYY HH:mm" :disabled="!!schedule" />
+        <el-date-picker
+          v-model="form.startTime"
+          type="datetime"
+          format="DD/MM/YYYY HH:mm"
+          :disabled="!!schedule"
+        />
       </el-form-item>
       <el-form-item label="Topic" label-width="110px" prop="topic">
         <el-input v-model="form.topic" autocomplete="off" />
@@ -25,7 +42,14 @@
       <div class="dialog-footer">
         <el-button v-if="!!schedule" @click="removeFromSchedule" :icon="IconTrash" />
         <el-button @click="visible = false">Cancel</el-button>
-        <el-button type="primary" @click="addLecture" :loading="submitting"> Confirm </el-button>
+        <el-button
+          type="primary"
+          @click="addLecture"
+          :loading="submitting"
+          :icon="IconSquareRoundedCheck"
+        >
+          Confirm
+        </el-button>
       </div>
     </template>
   </el-dialog>
@@ -38,7 +62,7 @@ import type { TutorClass } from '@/models/tutor-class'
 import { addNewLecture } from '@/services/lecture-service'
 import { deleteSchedule } from '@/services/schedule-service'
 import { fetchTutorClasses } from '@/services/tutor-class-service'
-import { IconTrash } from '@tabler/icons-vue'
+import { IconSquareRoundedCheck, IconTrash } from '@tabler/icons-vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { onMounted, reactive, ref } from 'vue'
 
@@ -51,7 +75,7 @@ interface NewLectureForm {
 
 const visible = defineModel({ default: true })
 const props = defineProps<{
-  schedule?: Schedule,
+  schedule?: Schedule
   startTime?: Date
 }>()
 const emit = defineEmits<{
