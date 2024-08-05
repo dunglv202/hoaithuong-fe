@@ -82,9 +82,14 @@
                 :value="item.value"
               />
             </el-select>
-            <el-select filterable v-model="form.timeSlots[index].startTime">
+            <el-select
+              filterable
+              allow-create
+              v-model="form.timeSlots[index].startTime"
+              :filter-method="timeSlotFilter"
+            >
               <el-option
-                v-for="item in times"
+                v-for="item in timeOptions"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -223,6 +228,7 @@ const isNewClass = ref(true)
 const showMoreDetails = ref(false)
 const editting = computed(() => !!props.id && !props.clone)
 const loading = ref(false)
+const timeOptions = ref(times)
 
 const searchStudent = async (query: string) => {
   fetchingStudents.value = true
@@ -266,6 +272,13 @@ const resetForm = () => {
   students.value = []
   form.value.timeSlots = []
   formRef.value?.resetFields()
+}
+
+const timeSlotFilter = (query?: string) => {
+  if (!query) return
+  timeOptions.value = times.filter((time) =>
+    time.label.replaceAll(':', '').startsWith(query.trim())
+  )
 }
 
 watch(
