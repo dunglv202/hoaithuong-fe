@@ -50,6 +50,6 @@ export interface Page<T> {
 }
 
 export interface Pagination {
-  page: number
+  page?: number
   size?: number
 }

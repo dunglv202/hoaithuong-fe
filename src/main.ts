@@ -14,7 +14,7 @@ import router from './routers'
 const app = createApp(App)
 const pinia = createPinia()
 
-moment.locale('en', {
+moment.updateLocale('en', {
   week: {
     dow: 1,
     doy: 4
