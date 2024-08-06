@@ -9,6 +9,12 @@
     <el-table-column prop="name" label="Name" width="500" />
     <el-table-column prop="notes" label="Notes" />
   </el-table>
+  <AppPagination
+    v-show="!loading"
+    :totalPages="totalPages"
+    :currentPage="currentPage"
+    @pageChange="(page) => (currentPage = page)"
+  />
 
   <NewStudentDialog v-model="addStudentDialog" @save="loadStudents()" />
 </template>
@@ -21,33 +27,40 @@
 
 <script lang="ts" setup>
 import AddButton from '@/components/AddButton.vue'
+import AppPagination from '@/components/AppPagination.vue'
 import AppToolbar from '@/components/AppToolbar.vue'
 import BackButton from '@/components/BackButton.vue'
 import NewStudentDialog from '@/components/NewStudentDialog.vue'
 import type { Student } from '@/models/student'
 import { fetchStudents } from '@/services/student-service'
-import { onMounted, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 
 const students = ref<Student[]>([])
 const addStudentDialog = ref(false)
 const search = ref('')
-const loading = ref(false)
+const loading = ref(true)
+const totalPages = ref(0)
+const currentPage = ref(1)
 
 const loadStudents = async (keyword?: string) => {
   try {
     loading.value = true
-    students.value = await fetchStudents(keyword)
+    const fetchResult = await fetchStudents(keyword, { page: currentPage.value })
+    students.value = fetchResult.content
+    totalPages.value = fetchResult.totalPages
   } finally {
     loading.value = false
   }
 }
 
-watch(search, (val, _, onCleanup) => {
-  const timer = setTimeout(() => loadStudents(val), 300)
-  onCleanup(() => clearTimeout(timer))
-})
+watch(
+  search,
+  (val, _, onCleanup) => {
+    const timer = setTimeout(() => loadStudents(val), 300)
+    onCleanup(() => clearTimeout(timer))
+  },
+  { immediate: true }
+)
 
-onMounted(async () => {
-  loadStudents()
-})
+watch(currentPage, () => loadStudents(search.value))
 </script>

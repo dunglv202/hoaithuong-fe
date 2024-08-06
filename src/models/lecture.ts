@@ -4,6 +4,7 @@ export interface NewLecture {
   classId: number
   startTime?: Date
   topic: string
+  comment?: string
   notes?: string
   scheduleId?: number
 }
@@ -17,5 +18,13 @@ export interface Lecture {
   topic: string
   lectureNo: number
   totalLecture: number
-  notes: string
+  comment?: string
+  notes?: string
+}
+
+export interface UpdatedLecture {
+  id: number
+  topic: string
+  comment?: string
+  notes?: string
 }

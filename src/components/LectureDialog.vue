@@ -34,8 +34,16 @@
       <el-form-item label="Topic" label-width="110px" prop="topic">
         <el-input v-model="form.topic" autocomplete="off" />
       </el-form-item>
+      <el-form-item label="Comment" label-width="110px" prop="comment">
+        <el-input v-model="form.comment" type="textarea" :autosize="{ minRows: 2, maxRows: 4 }" />
+      </el-form-item>
       <el-form-item label="Notes" label-width="110px" prop="notes">
-        <el-input v-model="form.notes" type="textarea" :autosize="{ minRows: 3, maxRows: 6 }" />
+        <el-input
+          v-model="form.notes"
+          type="textarea"
+          :autosize="{ minRows: 3, maxRows: 6 }"
+          resize="none"
+        />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -44,7 +52,7 @@
         <el-button @click="visible = false">Cancel</el-button>
         <el-button
           type="primary"
-          @click="addLecture"
+          @click="submit"
           :loading="submitting"
           :icon="IconSquareRoundedCheck"
         >
@@ -59,7 +67,7 @@
 import LoadingComponent from '@/components/LoadingComponent.vue'
 import type { Schedule } from '@/models/schedule'
 import type { TutorClass } from '@/models/tutor-class'
-import { addNewLecture } from '@/services/lecture-service'
+import { addNewLecture, updateLecture } from '@/services/lecture-service'
 import { deleteSchedule } from '@/services/schedule-service'
 import { fetchTutorClasses } from '@/services/tutor-class-service'
 import { IconSquareRoundedCheck, IconTrash } from '@tabler/icons-vue'
@@ -70,6 +78,7 @@ interface NewLectureForm {
   classId?: number
   startTime?: Date
   topic: string
+  comment?: string
   notes?: string
 }
 
@@ -87,6 +96,7 @@ const form = reactive<NewLectureForm>({
   classId: undefined,
   startTime: props.schedule ? new Date(props.schedule.startTime) : props.startTime || new Date(),
   topic: '',
+  comment: '',
   notes: ''
 })
 const formRules = reactive<FormRules<NewLectureForm>>({
@@ -101,24 +111,35 @@ const submitting = ref(false)
 const searchClass = async (keyword: string) => {
   fetchingClasses.value = true
   try {
-    tutorClasses.value = await fetchTutorClasses({ active: true, keyword: keyword || undefined })
+    tutorClasses.value = (
+      await fetchTutorClasses({ active: true, keyword: keyword || undefined })
+    ).content
   } finally {
     fetchingClasses.value = false
   }
 }
 
-const addLecture = async () => {
+const submit = async () => {
   submitting.value = true
   try {
     await formRef.value?.validate()
-    console.log(props.schedule)
-    await addNewLecture({
-      classId: form.classId || -1,
-      startTime: !props.schedule ? form.startTime : undefined,
-      topic: form.topic,
-      notes: form.notes,
-      scheduleId: props.schedule?.id
-    })
+    if (!props.schedule?.lecture) {
+      await addNewLecture({
+        classId: form.classId!,
+        startTime: !props.schedule ? form.startTime : undefined,
+        topic: form.topic,
+        comment: form.comment,
+        notes: form.notes,
+        scheduleId: props.schedule?.id
+      })
+    } else {
+      await updateLecture({
+        id: props.schedule.lecture.id,
+        topic: form.topic,
+        comment: form.comment,
+        notes: form.notes
+      })
+    }
     visible.value = false
     formRef.value?.resetFields()
     emit('save')
@@ -139,6 +160,7 @@ onMounted(() => {
 
     if (props.schedule.lecture) {
       form.topic = props.schedule.lecture.topic
+      form.comment = props.schedule.lecture.comment
       form.notes = props.schedule.lecture.notes
     }
   }

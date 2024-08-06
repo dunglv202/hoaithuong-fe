@@ -37,11 +37,16 @@
       </template>
     </el-table-column>
   </el-table>
-
-  <NewTutorClassDialog
+  <AppPagination
+    v-show="!loading"
+    :totalPages="totalPages"
+    :currentPage="currentPage"
+    @pageChange="(page) => (currentPage = page)"
+  />
+  <TutorClassDialog
     v-model="addClassDialog"
     :id="selectedClassId"
-    @save="loadClasses"
+    @save="selectedClassId ? loadClasses(search) : loadClasses()"
     :clone="clone"
   />
 </template>
@@ -54,26 +59,31 @@
 
 <script lang="ts" setup>
 import AddButton from '@/components/AddButton.vue'
+import AppPagination from '@/components/AppPagination.vue'
 import AppToolbar from '@/components/AppToolbar.vue'
 import BackButton from '@/components/BackButton.vue'
-import NewTutorClassDialog from '@/components/NewTutorClassDialog.vue'
+import TutorClassDialog from '@/components/TutorClassDialog.vue'
 import { type TutorClass } from '@/models/tutor-class'
 import { fetchTutorClasses } from '@/services/tutor-class-service'
 import { IconCopy, IconPencilMinus } from '@tabler/icons-vue'
-import { onMounted, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 
 const addClassDialog = ref(false)
 const selectedClassId = ref<number>()
 const clone = ref(false)
 const classes = ref<TutorClass[]>([])
-const loading = ref(false)
+const loading = ref(true)
 const search = ref('')
+const currentPage = ref(1)
+const totalPages = ref(0)
 
 const loadClasses = async (keyword?: string) => {
   try {
     loading.value = true
-    classes.value = await fetchTutorClasses({ keyword: keyword })
+    const fetchResult = await fetchTutorClasses({ keyword: keyword }, { page: currentPage.value })
+    classes.value = fetchResult.content
+    totalPages.value = fetchResult.totalPages
   } finally {
     loading.value = false
   }
@@ -103,12 +113,16 @@ watch(addClassDialog, (show) => {
   }
 })
 
-watch(search, (value, _, onCleanup) => {
-  const searchTimer = setTimeout(() => loadClasses(value), 400)
-  onCleanup(() => clearTimeout(searchTimer))
-})
+watch(
+  search,
+  (value, _, onCleanup) => {
+    const searchTimer = setTimeout(() => loadClasses(value), 400)
+    onCleanup(() => clearTimeout(searchTimer))
+  },
+  { immediate: true }
+)
 
-onMounted(() => {
-  loadClasses()
+watch(currentPage, () => {
+  loadClasses(search.value)
 })
 </script>

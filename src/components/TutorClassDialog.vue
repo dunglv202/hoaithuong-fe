@@ -233,7 +233,7 @@ const timeOptions = ref(times)
 const searchStudent = async (query: string) => {
   fetchingStudents.value = true
   try {
-    students.value = await fetchStudents(query)
+    students.value = (await fetchStudents(query)).content
   } finally {
     fetchingStudents.value = false
   }
@@ -295,6 +295,7 @@ watch(
           studentId: detail.student.id,
           learned: props.clone ? 0 : detail.learned
         }
+        console.log(form.value.timeSlots)
       } finally {
         loading.value = false
       }

@@ -111,7 +111,7 @@ const students = computed(() => {
   return Array.from(distinct)
 })
 const report = ref<Report>({ totalEarned: 0 })
-const loading = ref(false)
+const loading = ref(true)
 
 const filterStudent = (value: string, row: Lecture) => row.classCode === value
 

@@ -1,3 +1,4 @@
+import { type Page, type Pagination } from '@/models/common'
 import {
   type DetailClass,
   type NewTutorClass,
@@ -15,9 +16,9 @@ export const addTutorClass = async (tutorClass: NewTutorClass) => {
   await axios.post('/api/tutor_classes', tutorClass)
 }
 
-export const fetchTutorClasses = async (criteria?: TutorClassCriteria) => {
-  const configs = criteria ? { params: criteria } : undefined
-  return (await axios.get('/api/tutor_classes', configs)).data as TutorClass[]
+export const fetchTutorClasses = async (criteria?: TutorClassCriteria, pagination?: Pagination) => {
+  const configs = criteria ? { params: { ...criteria, ...pagination } } : undefined
+  return (await axios.get<Page<TutorClass>>('/api/tutor_classes', configs)).data
 }
 
 export const getDetailClass = async (id: number) => {

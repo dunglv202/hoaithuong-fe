@@ -43,3 +43,13 @@ export interface ApiError {
   code?: string
   message?: string
 }
+
+export interface Page<T> {
+  totalPages: number
+  content: T[]
+}
+
+export interface Pagination {
+  page: number
+  size?: number
+}
