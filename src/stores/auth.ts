@@ -25,7 +25,6 @@ const useAuthStore = defineStore('auth', () => {
   const signIn = async (username: string, password: string) => {
     await axios.post('/api/auth/signin', { username, password })
     await fetchUserInfo()
-    return user.value
   }
 
   const signOut = async () => {
