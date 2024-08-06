@@ -2,6 +2,7 @@
   <AppToolbar>
     <BackButton />
     <AddButton @click="addStudentDialog = true" />
+    <el-input v-model="search" style="width: 200px" placeholder="Search..." />
   </AppToolbar>
   <el-table :data="students" style="width: 100%" v-loading="loading">
     <el-table-column type="index" label="#" width="50" />
@@ -9,7 +10,7 @@
     <el-table-column prop="notes" label="Notes" />
   </el-table>
 
-  <NewStudentDialog v-model="addStudentDialog" @save="reloadStudents" />
+  <NewStudentDialog v-model="addStudentDialog" @save="loadStudents()" />
 </template>
 
 <style scoped>
@@ -25,22 +26,28 @@ import BackButton from '@/components/BackButton.vue'
 import NewStudentDialog from '@/components/NewStudentDialog.vue'
 import type { Student } from '@/models/student'
 import { fetchStudents } from '@/services/student-service'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 
 const students = ref<Student[]>([])
 const addStudentDialog = ref(false)
+const search = ref('')
 const loading = ref(false)
 
-const reloadStudents = async () => {
+const loadStudents = async (keyword?: string) => {
   try {
     loading.value = true
-    students.value = await fetchStudents('')
+    students.value = await fetchStudents(keyword)
   } finally {
     loading.value = false
   }
 }
 
+watch(search, (val, _, onCleanup) => {
+  const timer = setTimeout(() => loadStudents(val), 300)
+  onCleanup(() => clearTimeout(timer))
+})
+
 onMounted(async () => {
-  reloadStudents()
+  loadStudents()
 })
 </script>

@@ -5,7 +5,7 @@ export const addStudent = async (student: NewStudent) => {
   await axios.post('/api/students', student)
 }
 
-export const fetchStudents = async (keyword: string) => {
+export const fetchStudents = async (keyword?: string) => {
   return (
     await axios.get('/api/students', {
       params: { keyword }
