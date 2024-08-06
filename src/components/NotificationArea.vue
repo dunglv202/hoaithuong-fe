@@ -2,7 +2,7 @@
   <div class="noti-menu">
     <el-empty v-if="!notifications.length" description="Nothing here" :image-size="80" />
   </div>
-  <el-dropdown-menu class="noti-menu">
+  <el-dropdown-menu class="noti-menu" v-if="notifications.length">
     <div class="align-right">
       <el-button class="btn__mark-all-read" link @click="readAll"> Mark all as read </el-button>
     </div>
