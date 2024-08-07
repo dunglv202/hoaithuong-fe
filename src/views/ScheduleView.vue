@@ -60,11 +60,14 @@ const calendarOptions = reactive<CalendarOptions>({
   plugins: [interactionPlugin, timeGridPlugin],
   initialView: 'timeGridWeek',
   firstDay: 1,
-  slotMinTime: '08:00',
-  slotMaxTime: '23:00',
+  slotMinTime: '09:00',
+  slotMaxTime: '22:00',
   allDaySlot: false,
   height: 'auto',
   events: [],
+  dayHeaderFormat: (arg) => {
+    return moment(arg.date).format('ddd DD/MM')
+  },
   select: (arg) => {
     selectedStartTime.value = arg.start
     selectedSchedule.value = undefined
@@ -87,7 +90,7 @@ const calendarOptions = reactive<CalendarOptions>({
 
 const getEventColorClass = (schedule: Schedule) => {
   const now = new Date()
-  if (!schedule.lecture && now > new Date(schedule.startTime)) {
+  if (!schedule.lecture && now > new Date(schedule.endTime)) {
     return 'fc-warn'
   } else if (!schedule.lecture && now < new Date(schedule.startTime)) {
     return 'fc-upcoming'

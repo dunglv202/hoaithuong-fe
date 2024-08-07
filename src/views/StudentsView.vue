@@ -33,7 +33,7 @@ import BackButton from '@/components/BackButton.vue'
 import NewStudentDialog from '@/components/NewStudentDialog.vue'
 import type { Student } from '@/models/student'
 import { fetchStudents } from '@/services/student-service'
-import { ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 
 const students = ref<Student[]>([])
 const addStudentDialog = ref(false)
@@ -53,14 +53,12 @@ const loadStudents = async (keyword?: string) => {
   }
 }
 
-watch(
-  search,
-  (val, _, onCleanup) => {
-    const timer = setTimeout(() => loadStudents(val), 300)
-    onCleanup(() => clearTimeout(timer))
-  },
-  { immediate: true }
-)
+watch(search, (val, _, onCleanup) => {
+  const timer = setTimeout(() => loadStudents(val), 300)
+  onCleanup(() => clearTimeout(timer))
+})
 
 watch(currentPage, () => loadStudents(search.value))
+
+onMounted(() => loadStudents())
 </script>

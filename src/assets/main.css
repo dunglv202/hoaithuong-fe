@@ -31,6 +31,9 @@ strong {
 .fc-col-header-cell-cushion {
   color: var(--el-color-primary);
 }
+.fc-col-header-cell-cushion:hover {
+  background: transparent;
+}
 .fc .fc-button:focus,
 .fc .fc-button:active,
 .fc .fc-button-primary:focus,

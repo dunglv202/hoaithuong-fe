@@ -66,7 +66,7 @@ import TutorClassDialog from '@/components/TutorClassDialog.vue'
 import { type TutorClass } from '@/models/tutor-class'
 import { fetchTutorClasses } from '@/services/tutor-class-service'
 import { IconCopy, IconPencilMinus } from '@tabler/icons-vue'
-import { ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 
 const addClassDialog = ref(false)
@@ -113,16 +113,16 @@ watch(addClassDialog, (show) => {
   }
 })
 
-watch(
-  search,
-  (value, _, onCleanup) => {
-    const searchTimer = setTimeout(() => loadClasses(value), 400)
-    onCleanup(() => clearTimeout(searchTimer))
-  },
-  { immediate: true }
-)
+watch(search, (value, _, onCleanup) => {
+  const searchTimer = setTimeout(() => loadClasses(value), 400)
+  onCleanup(() => clearTimeout(searchTimer))
+})
 
 watch(currentPage, () => {
   loadClasses(search.value)
+})
+
+onMounted(() => {
+  loadClasses()
 })
 </script>
