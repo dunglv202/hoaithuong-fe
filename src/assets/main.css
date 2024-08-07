@@ -51,3 +51,6 @@ strong {
 .el-input-number .el-input__inner {
   text-align: left !important;
 }
+.el-dropdown__popper {
+  --el-dropdown-menu-box-shadow: none !important;
+}

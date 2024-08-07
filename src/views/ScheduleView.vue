@@ -90,7 +90,7 @@ const calendarOptions = reactive<CalendarOptions>({
 
 const getEventColorClass = (schedule: Schedule) => {
   const now = new Date()
-  if (!schedule.lecture && now > new Date(schedule.endTime)) {
+  if (!schedule.lecture && now > new Date(schedule.startTime)) {
     return 'fc-warn'
   } else if (!schedule.lecture && now < new Date(schedule.startTime)) {
     return 'fc-upcoming'
