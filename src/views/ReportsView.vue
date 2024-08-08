@@ -3,7 +3,11 @@
     <BackButton />
     <div class="align-right">
       <el-date-picker v-model="reportMonth" type="month" placeholder="Pick a month" />
+      <el-button class="btn" @click="reportPhaseDialog = true" :icon="IconMessage">
+        Report
+      </el-button>
       <el-button
+        class="btn"
         type="primary"
         @click="downloadReport"
         v-loading="exporting"
@@ -71,6 +75,8 @@
       <template #default="scope"> {{ scope.row.lectureNo }}/{{ scope.row.totalLecture }} </template>
     </el-table-column>
   </el-table>
+
+  <ReportPhasesDialog v-model="reportPhaseDialog" :lectures="report?.lectures || []" />
 </template>
 
 <style>
@@ -92,13 +98,16 @@
   display: flex;
   justify-content: space-between;
 }
+.toolbar .btn {
+  margin-left: 0;
+}
 .align-right {
   display: flex;
   gap: 1rem;
 }
 .report__figures {
   margin-bottom: 2rem;
-  margin-top: 1.5rem;
+  margin-top: 2.5rem;
   --el-box-shadow-light: 0 2px 10px -2px rgba(0, 0, 0, 0.1);
 }
 .report__figures .card {
@@ -118,11 +127,12 @@
 <script lang="ts" setup>
 import AppToolbar from '@/components/AppToolbar.vue'
 import BackButton from '@/components/BackButton.vue'
+import ReportPhasesDialog from '@/components/ReportPhasesDialog.vue'
 import type { Lecture } from '@/models/lecture'
 import type { Report, ReportRange } from '@/models/report'
 import type { Student } from '@/models/student'
 import { exportXlsx, getReport } from '@/services/report-service'
-import { IconCloudDownload } from '@tabler/icons-vue'
+import { IconCloudDownload, IconMessage } from '@tabler/icons-vue'
 import { ElCard, ElCol, ElRow, type TableInstance } from 'element-plus'
 import moment from 'moment'
 import { computed, onMounted, ref, watch } from 'vue'
@@ -145,6 +155,7 @@ const students = computed(() => {
 const loading = ref(true)
 const studentFilter = ref<number[]>([])
 const tableRef = ref<TableInstance>()
+const reportPhaseDialog = ref(false)
 
 const filterStudent = (value: number, row: Lecture) => row.student.id === value
 

@@ -103,8 +103,7 @@ const client = new Client({
       })
       totalUnread.value++
     })
-  },
-  debug: (str) => console.log(str)
+  }
 })
 const updateTimeDiffInterval = setInterval(() => {
   notifications.value = [...notifications.value]

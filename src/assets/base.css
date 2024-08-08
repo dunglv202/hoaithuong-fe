@@ -40,7 +40,7 @@
   --fc-event-bg-color: var(--el-color-primary);
   --fc-event-border-color: transparent;
   --fc-today-bg-color: #68b1ff18;
-  --fc-border-color: var(--el-border-color-light);
+  --fc-border-color: var(--el-border-color);
   --fc-highlight-color: #007dff1f;
   --fc-button-bg-color: var(--el-color-primary);
   --fc-button-border-color: var(--el-color-primary);
@@ -80,4 +80,9 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+:root {
+  --el-border-color: #e0e5f0 !important;
+  --el-border-color-hover: #d3dce6 !important;
 }

@@ -4,7 +4,7 @@
       <img src="@/assets/logo.svg" alt="logo" height="48" />
       <div class="menu">
         <el-dropdown trigger="click" :hide-on-click="false">
-          <div class="dropdown-trigger">
+          <div class="dropdown-trigger hoverable">
             <el-badge :value="totalUnread" :max="9" :show-zero="false">
               <el-icon :size="19">
                 <IconBellRinging />
@@ -16,13 +16,13 @@
           </template>
         </el-dropdown>
         <span>
-          Welcome back,
+          Hi,
           <strong class="name">
             {{ authStore.user?.displayName || 'Anonymous' }}
           </strong>
         </span>
         <el-dropdown trigger="click">
-          <div class="dropdown-trigger">
+          <div class="dropdown-trigger hoverable">
             <el-avatar :size="40" :src="authStore.user?.avatar" @error="() => true">
               <el-icon>
                 <UserFilled />
@@ -84,10 +84,6 @@ main {
   display: flex;
   align-items: center;
   gap: 3px;
-}
-
-.dropdown-trigger:hover {
-  color: var(--el-color-primary);
 }
 </style>
 

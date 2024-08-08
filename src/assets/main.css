@@ -53,3 +53,21 @@ strong {
 .el-dropdown__popper {
   --el-dropdown-menu-box-shadow: none !important;
 }
+.el-overlay {
+  background-color: #1223355d !important;
+}
+
+/* == custom == */
+.hoverable:hover {
+  color: var(--el-color-primary);
+}
+::-webkit-scrollbar {
+  width: 7px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--el-text-color-disabled);
+  border-radius: 7px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--el-text-color-placeholder);
+}
