@@ -14,31 +14,42 @@
     </div>
   </AppToolbar>
 
-  <div class="report">
-    <span class="figure"> Total: {{ new Intl.NumberFormat().format(report.totalEarned) }} </span>
-  </div>
+  <el-row :gutter="20" class="report__figures">
+    <el-col :span="8">
+      <el-card class="card">
+        <template #header> Total Earned </template>
+        <div class="figure">
+          {{ report ? new Intl.NumberFormat().format(report.totalEarned) : '-' }}
+        </div>
+      </el-card>
+    </el-col>
+    <el-col :span="8">
+      <el-card class="card">
+        <template #header> Total lecture </template>
+        <span class="figure">{{ report ? report.totalLectures : '-' }}</span>
+      </el-card>
+    </el-col>
+    <el-col :span="8">
+      <el-card class="card">
+        <template #header> Total student </template>
+        <span class="figure">{{ report ? report.totalStudents : '-' }}</span>
+      </el-card>
+    </el-col>
+  </el-row>
 
-  <el-table :data="lectures" style="width: 100%" v-loading="loading">
+  <el-table :data="report?.lectures" style="width: 100%" v-loading="loading">
     <el-table-column type="index" label="#" width="50" />
     <el-table-column prop="classCode" label="Code" width="125" />
     <el-table-column prop="date" label="Date" width="125">
       <template #default="scope">
-        {{ new Intl.DateTimeFormat('en-US').format(new Date(scope.row.startTime)) }}
+        {{ moment(scope.row.startTime).format('DD-MMM-YYYY') }}
       </template>
     </el-table-column>
     <el-table-column prop="time" label="Time" width="150">
       <template #default="scope">
-        {{
-          new Intl.DateTimeFormat('en-US', { timeStyle: 'short', hour12: false }).format(
-            new Date(scope.row.startTime)
-          )
-        }}
+        {{ moment(scope.row.startTime).format('HH:mm') }}
         -
-        {{
-          new Intl.DateTimeFormat('en-US', { timeStyle: 'short', hour12: false }).format(
-            new Date(scope.row.endTime)
-          )
-        }}
+        {{ moment(scope.row.endTime).format('HH:mm') }}
       </template>
     </el-table-column>
     <el-table-column
@@ -61,6 +72,19 @@
   </el-table>
 </template>
 
+<style>
+.report__figures .el-card__header,
+.report__figures .el-card__body {
+  padding: 12px 22px;
+}
+.report__figures .el-card__body {
+  padding-top: 6px;
+}
+.report__figures .el-card__header {
+  padding-bottom: 0;
+  font-size: 0.9rem;
+}
+</style>
 <style scoped>
 .toolbar {
   margin-bottom: 1rem;
@@ -73,15 +97,21 @@
   gap: 1rem;
 }
 
-.report {
-  display: flex;
-  margin-bottom: 1rem;
-  margin-top: 1rem;
+.report__figures {
+  margin-bottom: 2rem;
+  margin-top: 1.5rem;
+  --el-box-shadow-light: 0 2px 10px -2px rgba(0, 0, 0, 0.1);
 }
 
-.report .figure {
+.report__figures .card {
+  border: none;
+  --el-card-border-color: transparent;
+}
+
+.report__figures .figure {
   color: var(--el-color-primary);
   font-weight: bold;
+  font-size: 1.1rem;
 }
 </style>
 
@@ -90,30 +120,30 @@ import AppToolbar from '@/components/AppToolbar.vue'
 import BackButton from '@/components/BackButton.vue'
 import type { Lecture } from '@/models/lecture'
 import type { Report, ReportRange } from '@/models/report'
-import { getLectures } from '@/services/lecture-service'
 import { exportXlsx, getReport } from '@/services/report-service'
 import { IconCloudDownload } from '@tabler/icons-vue'
+import { ElCard, ElCol, ElRow } from 'element-plus'
+import moment from 'moment'
 import { computed, onMounted, ref, watch } from 'vue'
 
 const reportMonth = ref(new Date())
 const exporting = ref(false)
-const lectures = ref<Lecture[]>([])
 const range = computed<ReportRange>(() => ({
   year: reportMonth.value.getFullYear(),
   month: reportMonth.value.getMonth() + 1
 }))
+const report = ref<Report>()
 const students = computed(() => {
-  const options = lectures.value.map((l) => ({
-    text: `${l.classCode} - ${l.student.name}`,
-    value: l.classCode
+  const options = report.value?.lectures.map((l) => ({
+    text: l.student.name,
+    value: l.student.id
   }))
-  const distinct = new Map(options.map((o) => [o.value, o])).values()
+  const distinct = new Map(options?.map((o) => [o.value, o])).values()
   return Array.from(distinct)
 })
-const report = ref<Report>({ totalEarned: 0 })
 const loading = ref(true)
 
-const filterStudent = (value: string, row: Lecture) => row.classCode === value
+const filterStudent = (value: number, row: Lecture) => row.student.id === value
 
 const downloadReport = async () => {
   exporting.value = true
@@ -127,7 +157,6 @@ const downloadReport = async () => {
 const refreshReport = async () => {
   try {
     loading.value = true
-    lectures.value = await getLectures(range.value)
     report.value = await getReport(range.value)
   } finally {
     loading.value = false

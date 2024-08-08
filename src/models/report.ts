@@ -1,3 +1,5 @@
+import type { Lecture } from './lecture'
+
 export interface ReportRange {
   year: number
   month: number
@@ -5,4 +7,7 @@ export interface ReportRange {
 
 export interface Report {
   totalEarned: number
+  totalLectures: number
+  totalStudents: number
+  lectures: Lecture[]
 }

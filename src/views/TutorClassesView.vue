@@ -20,7 +20,7 @@
     </el-table-column>
     <el-table-column prop="active" label="Status" :align="'center'">
       <template #default="scope">
-        <el-tag :type="scope.row.active ? 'success' : 'danger'">
+        <el-tag :class="scope.row.active ? 'active' : 'inactive'">
           {{ scope.row.active ? 'Active' : 'Ended' }}
         </el-tag>
       </template>
@@ -54,6 +54,11 @@
 <style scoped>
 .toolbar {
   margin-bottom: 1rem;
+}
+.inactive {
+  background-color: var(--el-color-danger-light-9);
+  color: var(--el-color-danger);
+  border-color: var(--el-color-danger-light-7);
 }
 </style>
 
