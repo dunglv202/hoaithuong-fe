@@ -8,13 +8,14 @@
 }
 
 a,
-.green {
+.blue {
   text-decoration: none;
   color: var(--el-color-primary);
   padding: 3px;
 }
 
-a:hover {
+a:hover,
+.blue:hover {
   background-color: var(--el-color-primary-light-7);
 }
 

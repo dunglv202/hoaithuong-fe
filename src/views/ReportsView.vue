@@ -37,12 +37,12 @@
     </el-col>
   </el-row>
 
-  <el-table :data="report?.lectures" style="width: 100%" v-loading="loading">
+  <el-table ref="tableRef" :data="report?.lectures" style="width: 100%" v-loading="loading">
     <el-table-column type="index" label="#" width="50" />
     <el-table-column prop="classCode" label="Code" width="125" />
     <el-table-column prop="date" label="Date" width="125">
       <template #default="scope">
-        {{ moment(scope.row.startTime).format('DD-MMM-YYYY') }}
+        {{ moment(scope.row.startTime).format('DD-MMM') }}
       </template>
     </el-table-column>
     <el-table-column prop="time" label="Time" width="150">
@@ -58,11 +58,12 @@
       width="300"
       :filters="students"
       :filter-method="filterStudent"
+      :filtered-value="studentFilter"
     >
       <template #default="scope">
-        <RouterLink :to="'/students/' + scope.row.student.id">
+        <span class="blue student-name" @click="setStudentFilter(scope.row.student)">
           {{ scope.row.student.name }}
-        </RouterLink>
+        </span>
       </template>
     </el-table-column>
     <el-table-column prop="topic" label="Topic" width="300" />
@@ -91,27 +92,26 @@
   display: flex;
   justify-content: space-between;
 }
-
 .align-right {
   display: flex;
   gap: 1rem;
 }
-
 .report__figures {
   margin-bottom: 2rem;
   margin-top: 1.5rem;
   --el-box-shadow-light: 0 2px 10px -2px rgba(0, 0, 0, 0.1);
 }
-
 .report__figures .card {
   border: none;
   --el-card-border-color: transparent;
 }
-
 .report__figures .figure {
   color: var(--el-color-primary);
   font-weight: bold;
   font-size: 1.1rem;
+}
+.student-name {
+  cursor: pointer;
 }
 </style>
 
@@ -120,9 +120,10 @@ import AppToolbar from '@/components/AppToolbar.vue'
 import BackButton from '@/components/BackButton.vue'
 import type { Lecture } from '@/models/lecture'
 import type { Report, ReportRange } from '@/models/report'
+import type { Student } from '@/models/student'
 import { exportXlsx, getReport } from '@/services/report-service'
 import { IconCloudDownload } from '@tabler/icons-vue'
-import { ElCard, ElCol, ElRow } from 'element-plus'
+import { ElCard, ElCol, ElRow, type TableInstance } from 'element-plus'
 import moment from 'moment'
 import { computed, onMounted, ref, watch } from 'vue'
 
@@ -142,6 +143,8 @@ const students = computed(() => {
   return Array.from(distinct)
 })
 const loading = ref(true)
+const studentFilter = ref<number[]>([])
+const tableRef = ref<TableInstance>()
 
 const filterStudent = (value: number, row: Lecture) => row.student.id === value
 
@@ -161,6 +164,18 @@ const refreshReport = async () => {
   } finally {
     loading.value = false
   }
+}
+
+const setStudentFilter = (student: Student) => {
+  if (studentFilter.value.length == 1 && studentFilter.value[0] === student.id) {
+    studentFilter.value = []
+  } else {
+    studentFilter.value = [student.id]
+  }
+  tableRef.value?.store.commit('filterChange', {
+    column: (tableRef.value?.columns as unknown as any[])[4],
+    values: studentFilter.value
+  })
 }
 
 onMounted(refreshReport)
