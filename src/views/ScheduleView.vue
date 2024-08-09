@@ -2,14 +2,9 @@
   <div class="toolbar">
     <BackButton />
   </div>
-  <FullCalendar :options="calendarOptions"></FullCalendar>
-  <LectureDialog
-    v-if="showLectureDialog"
-    v-model="showLectureDialog"
-    :startTime="selectedStartTime"
-    :schedule="selectedSchedule"
-    @save="fetchSchedule(fetchedRange)"
-  />
+  <FullCalendar ref="calendarRef" :options="calendarOptions"></FullCalendar>
+  <LectureDialog v-if="showLectureDialog" v-model="showLectureDialog" :startTime="selectedStartTime"
+    :schedule="selectedSchedule" @save="fetchSchedule(fetchedRange)" />
 </template>
 
 <style scoped>
@@ -18,6 +13,10 @@
 }
 </style>
 <style>
+.fc .fc-toolbar-title {
+  font-size: 1.5em;
+}
+
 .fc-warn {
   background-color: #ffc550;
 }
@@ -55,6 +54,7 @@ const fetchedRange = reactive<Range<Date>>({
   from: moment().subtract(21, 'days').startOf('week').toDate(),
   to: moment().add(21, 'days').endOf('week').toDate()
 })
+const calendarRef = ref<typeof FullCalendar>()
 const calendarOptions = reactive<CalendarOptions>({
   selectable: true,
   plugins: [interactionPlugin, timeGridPlugin],
@@ -65,6 +65,7 @@ const calendarOptions = reactive<CalendarOptions>({
   allDaySlot: false,
   height: 'auto',
   events: [],
+  titleFormat: { year: undefined, month: 'short', week: 'short', day: 'numeric' },
   dayHeaderFormat: (arg) => {
     return moment(arg.date).format('ddd DD/MM')
   },
@@ -113,5 +114,14 @@ const fetchSchedule = async (range: Range<Date>) => {
   }))
 }
 
-onMounted(() => fetchSchedule(fetchedRange))
+const updateScheduleResponsive = () => {
+  calendarRef.value?.getApi().changeView(window.innerWidth < 768 ? 'timeGridDay' : 'timeGridWeek')
+}
+
+onMounted(() => {
+  updateScheduleResponsive()
+  fetchSchedule(fetchedRange)
+})
+
+window.addEventListener('resize', updateScheduleResponsive)
 </script>
