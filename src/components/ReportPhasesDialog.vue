@@ -17,6 +17,7 @@
   overflow-y: auto;
   padding: 2rem;
 }
+
 .phase__highlight {
   color: var(--el-color-primary);
 }
@@ -26,15 +27,18 @@
   margin-bottom: 1rem;
   box-shadow: none;
 }
+
 .phase__body {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 15px;
 }
+
 .phase__content {
   text-align: justify;
 }
+
 .phase__copy-icon {
   color: var(--el-text-color-regular);
 }
@@ -69,7 +73,7 @@ const phases = computed<Phase[]>(() => {
   return Array.from(lecturesByStudent.values()).map((lectures) => {
     const student = lectures[0].student.name
     const month = moment(lectures[0].startTime).format('M')
-    const days = lectures.map((lec) => moment(lec.startTime).format('d/M'))
+    const days = lectures.map((lec) => moment(lec.startTime)).sort((a, b) => a.diff(b)).map((m) => m.format('D/M'))
     return {
       text: generatePhase(student, month, days),
       html: generatePhase(student, month, days, true)
@@ -86,8 +90,8 @@ const generatePhase = (student: string, month: string, days: string[], html?: bo
 
   return html
     ? text
-        .replaceAll('<highlight>', '<span class="phase__highlight">')
-        .replaceAll('</highlight>', '</span>')
+      .replaceAll('<highlight>', '<span class="phase__highlight">')
+      .replaceAll('</highlight>', '</span>')
     : text.replaceAll('<highlight>', '').replaceAll('</highlight>', '')
 }
 
