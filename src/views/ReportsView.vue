@@ -110,7 +110,7 @@
 .report__figures {
   margin-bottom: 16px;
   margin-top: 32px;
-  --el-box-shadow-light: 0 2px 10px -2px rgba(0, 0, 0, 0.1);
+  --el-box-shadow-light: 0 1px 10px -2px #374c611a;
 }
 
 .report__figures .card {

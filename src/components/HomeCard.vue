@@ -38,6 +38,13 @@
 .ctn:hover .card {
   border-color: var(--el-color-primary-light-5);
 }
+
+@media screen and (max-width: 768px) {
+  .wrapper {
+    justify-content: center;
+    padding-right: 5px;
+  }
+}
 </style>
 
 <script lang="ts" setup>

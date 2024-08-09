@@ -1,6 +1,6 @@
 <template>
   <nav id="main-nav">
-    <el-row :gutter="16">
+    <el-row :gutter="16" class="container">
       <el-col class="card" :span="24" :sm="12" :lg="6">
         <HomeCard to="/schedule">
           <template #label>Schedule</template>
@@ -45,6 +45,10 @@
   position: absolute;
   width: 100%;
   height: 80%;
+}
+
+.container {
+  max-width: 80%;
 }
 
 .card {

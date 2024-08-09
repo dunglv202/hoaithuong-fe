@@ -1,7 +1,7 @@
 import './assets/main.css'
 
 import axios, { AxiosError, type AxiosRequestConfig } from 'axios'
-import ElementPlus, { ElNotification } from 'element-plus'
+import ElementPlus, { ElMessage, ElNotification } from 'element-plus'
 import 'element-plus/dist/index.css'
 import moment from 'moment'
 import { createPinia } from 'pinia'
@@ -23,7 +23,8 @@ moment.updateLocale('en', {
 
 const isAccessTokenExpired = (err: AxiosError) => {
   return (
-    err.response?.status === 401 && (err.response.data as ApiError).code === 'EXPIRED_ACCESS_TOKEN'
+    err.response?.status === 401 &&
+    (err.response.data as ApiError).code === 'EXPIRED_ACCESS_TOKEN'
   )
 }
 
@@ -43,12 +44,16 @@ axios.interceptors.response.use(
     }
 
     if (!(err.config?.fetchOptions as FetchOptions)?.selfHandle) {
-      ElNotification({
-        type: 'error',
-        title: 'Something went wrong',
-        message: err.response?.data.error,
-        position: 'bottom-right'
-      })
+      if (window.innerWidth >= 768) {
+        ElNotification({
+          type: 'error',
+          title: 'Something went wrong',
+          message: err.response?.data.error,
+          position: 'bottom-right'
+        })
+      } else {
+        ElMessage.error(err.response?.data.error)
+      }
     }
 
     return Promise.reject(err)

@@ -1,7 +1,7 @@
 <template>
   <header>
     <div class="header">
-      <img src="@/assets/logo.svg" alt="logo" height="48" />
+      <img class="logo" src="@/assets/logo.svg" alt="logo" />
       <div class="menu">
         <el-dropdown trigger="click" :hide-on-click="false">
           <div class="dropdown-trigger hoverable">
@@ -59,6 +59,12 @@ main {
   position: relative;
   padding: 2rem 0;
 }
+
+@media screen and (max-width: 768px) {
+  main {
+    padding: 1rem 0;
+  }
+}
 </style>
 
 <style scoped>
@@ -67,6 +73,10 @@ main {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 0;
+}
+
+.logo {
+  height: 48px;
 }
 
 .menu {
@@ -84,6 +94,12 @@ main {
   display: flex;
   align-items: center;
   gap: 3px;
+}
+
+@media screen and (max-width: 768px) {
+  .logo {
+    height: 40px;
+  }
 }
 </style>
 

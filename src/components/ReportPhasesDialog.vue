@@ -88,11 +88,7 @@ const phases = computed<Phase[]>(() => {
 })
 
 const generatePhase = (student: string, month: string, days: string[], html?: boolean) => {
-  const text = `
-    Em xin được thông báo số buổi học của <highlight>${student}</highlight> trong tháng ${month} ạ.
-    Tháng ${month} con học được <highlight>${days.length} buổi</highlight> (${days.join(', ')}).
-    _ xác nhận giúp em với ạ
-  `
+  const text = `Em xin được thông báo số buổi học của <highlight>${student}</highlight> trong tháng ${month} ạ. Tháng ${month} con học được <highlight>${days.length} buổi</highlight> (${days.join(', ')}). _ xác nhận giúp em với ạ`
 
   return html
     ? text
