@@ -6,6 +6,7 @@ import {
   type UpdatedClass
 } from '@/models/tutor-class'
 import axios from 'axios'
+import moment from 'moment'
 
 interface TutorClassCriteria {
   keyword?: string
@@ -13,7 +14,10 @@ interface TutorClassCriteria {
 }
 
 export const addTutorClass = async (tutorClass: NewTutorClass) => {
-  await axios.post('/api/tutor_classes', tutorClass)
+  await axios.post('/api/tutor_classes', {
+    ...tutorClass,
+    startDate: moment(tutorClass.startDate).format('YYYY-MM-DD')
+  })
 }
 
 export const fetchTutorClasses = async (criteria?: TutorClassCriteria, pagination?: Pagination) => {
@@ -26,5 +30,9 @@ export const getDetailClass = async (id: number) => {
 }
 
 export const updateTutorClass = async (id: number, tutorClass: UpdatedClass) => {
-  await axios.put(`/api/tutor_classes/${id}`, { ...tutorClass, id })
+  await axios.put(`/api/tutor_classes/${id}`, {
+    ...tutorClass,
+    id,
+    startDate: moment(tutorClass.startDate).format('YYYY-MM-DD')
+  })
 }
