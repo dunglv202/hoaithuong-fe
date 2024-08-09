@@ -1,25 +1,25 @@
 <template>
   <AppToolbar>
     <BackButton />
-    <div class="align-right">
-      <el-date-picker v-model="reportMonth" type="month" placeholder="Pick a month" />
-      <el-button class="btn" @click="reportPhaseDialog = true" :icon="IconMessage">
-        Report
-      </el-button>
-      <el-button
-        class="btn"
-        type="primary"
-        @click="downloadReport"
-        v-loading="exporting"
-        :icon="IconCloudDownload"
-      >
-        Export
-      </el-button>
-    </div>
+    <el-row class="align-right" :gutter="16">
+      <el-col :span="24" :sm="12">
+        <el-date-picker v-model="reportMonth" type="month" placeholder="Pick a month" />
+      </el-col>
+      <el-col :span="12" :sm="6">
+        <el-button class="btn" @click="reportPhaseDialog = true" :icon="IconMessage">
+          Report
+        </el-button>
+      </el-col>
+      <el-col :span="12" :sm="6">
+        <el-button class="btn" type="primary" @click="downloadReport" v-loading="exporting" :icon="IconCloudDownload">
+          Export
+        </el-button>
+      </el-col>
+    </el-row>
   </AppToolbar>
 
-  <el-row :gutter="20" class="report__figures">
-    <el-col :span="8">
+  <el-row class="report__figures" :gutter="16">
+    <el-col :span="24" :sm="8">
       <el-card class="card">
         <template #header> Total Earned </template>
         <div class="figure">
@@ -27,15 +27,15 @@
         </div>
       </el-card>
     </el-col>
-    <el-col :span="8">
+    <el-col :span="24" :sm="8">
       <el-card class="card">
-        <template #header> Total lecture </template>
+        <template #header> Total Lectures </template>
         <span class="figure">{{ report ? report.totalLectures : '-' }}</span>
       </el-card>
     </el-col>
-    <el-col :span="8">
+    <el-col :span="24" :sm="8">
       <el-card class="card">
-        <template #header> Total student </template>
+        <template #header> Total Students </template>
         <span class="figure">{{ report ? report.totalStudents : '-' }}</span>
       </el-card>
     </el-col>
@@ -56,14 +56,8 @@
         {{ moment(scope.row.endTime).format('HH:mm') }}
       </template>
     </el-table-column>
-    <el-table-column
-      prop="student"
-      label="Student"
-      width="300"
-      :filters="students"
-      :filter-method="filterStudent"
-      :filtered-value="studentFilter"
-    >
+    <el-table-column prop="student" label="Student" width="300" :filters="students" :filter-method="filterStudent"
+      :filtered-value="studentFilter">
       <template #default="scope">
         <span class="blue student-name" @click="setStudentFilter(scope.row.student)">
           {{ scope.row.student.name }}
@@ -84,41 +78,53 @@
 .report__figures .el-card__body {
   padding: 12px 22px;
 }
+
 .report__figures .el-card__body {
   padding-top: 6px;
 }
+
 .report__figures .el-card__header {
   padding-bottom: 0;
   font-size: 0.9rem;
 }
 </style>
 <style scoped>
+@media screen and (max-width: 768px) {
+  .align-right {
+    width: 100%;
+    flex-grow: 1;
+  }
+
+  .toolbar .btn {
+    width: 100%;
+    margin-top: 16px;
+  }
+}
+
 .toolbar {
   margin-bottom: 1rem;
   display: flex;
   justify-content: space-between;
 }
-.toolbar .btn {
-  margin-left: 0;
-}
-.align-right {
-  display: flex;
-  gap: 1rem;
-}
+
 .report__figures {
-  margin-bottom: 2rem;
-  margin-top: 2.5rem;
+  margin-bottom: 16px;
+  margin-top: 32px;
   --el-box-shadow-light: 0 2px 10px -2px rgba(0, 0, 0, 0.1);
 }
+
 .report__figures .card {
   border: none;
+  margin-bottom: 16px;
   --el-card-border-color: transparent;
 }
+
 .report__figures .figure {
   color: var(--el-color-primary);
   font-weight: bold;
   font-size: 1.1rem;
 }
+
 .student-name {
   cursor: pointer;
 }

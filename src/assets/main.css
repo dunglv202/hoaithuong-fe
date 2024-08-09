@@ -56,6 +56,19 @@ strong {
 .el-overlay {
   background-color: #1223355d !important;
 }
+@media screen and (max-width: 768px) {
+  .el-input,
+  .el-input.el-date-editor.el-input {
+    --el-date-editor-width: 100%;
+  }
+
+  .el-dialog {
+    --el-dialog-width: 100% !important;
+    margin: 0 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+  }
+}
 
 /* == custom == */
 .hoverable:hover {
@@ -63,6 +76,7 @@ strong {
 }
 ::-webkit-scrollbar {
   width: 7px;
+  height: 7px;
 }
 ::-webkit-scrollbar-thumb {
   background: var(--el-text-color-disabled);

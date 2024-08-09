@@ -2,7 +2,7 @@
   <AppToolbar>
     <BackButton />
     <AddButton @click="openNewPopup" />
-    <el-input v-model="search" style="width: 200px" placeholder="Search..." />
+    <el-input v-model="search" class="search-box" placeholder="Search..." :prefix-icon="IconSearch" />
   </AppToolbar>
   <el-table :data="classes" style="width: 100%" v-loading="loading">
     <el-table-column type="index" label="#" width="50" />
@@ -26,35 +26,30 @@
       </template>
     </el-table-column>
     <el-table-column prop="notes" label="Notes"></el-table-column>
-    <el-table-column label="Action" :align="'center'">
+    <el-table-column label="Action" :align="'center'" width="150">
       <template #default="scope">
         <el-button size="default" :icon="IconPencilMinus" @click="openEditPopup(scope.row.id)" />
-        <el-button
-          size="default"
-          :icon="IconCopy"
-          @click="openPopupWithDuplication(scope.row.id)"
-        />
+        <el-button size="default" :icon="IconCopy" @click="openPopupWithDuplication(scope.row.id)" />
       </template>
     </el-table-column>
   </el-table>
-  <AppPagination
-    v-show="!loading"
-    :totalPages="totalPages"
-    :currentPage="currentPage"
-    @pageChange="(page) => (currentPage = page)"
-  />
-  <TutorClassDialog
-    v-model="addClassDialog"
-    :id="selectedClassId"
-    @save="selectedClassId ? loadClasses(search) : loadClasses()"
-    :clone="clone"
-  />
+  <AppPagination v-show="!loading" :totalPages="totalPages" :currentPage="currentPage"
+    @pageChange="(page) => (currentPage = page)" />
+  <TutorClassDialog v-model="addClassDialog" :id="selectedClassId"
+    @save="selectedClassId ? loadClasses(search) : loadClasses()" :clone="clone" />
 </template>
 
 <style scoped>
 .toolbar {
   margin-bottom: 1rem;
 }
+
+@media screen and (min-width: 768px) {
+  .search-box {
+    max-width: 220px;
+  }
+}
+
 .inactive {
   background-color: var(--el-color-danger-light-9);
   color: var(--el-color-danger);
@@ -70,7 +65,7 @@ import BackButton from '@/components/BackButton.vue'
 import TutorClassDialog from '@/components/TutorClassDialog.vue'
 import { type TutorClass } from '@/models/tutor-class'
 import { fetchTutorClasses } from '@/services/tutor-class-service'
-import { IconCopy, IconPencilMinus } from '@tabler/icons-vue'
+import { IconCopy, IconPencilMinus, IconSearch } from '@tabler/icons-vue'
 import { onMounted, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 

@@ -1,5 +1,5 @@
 <template>
-  <el-dialog v-model="visible" width="600" class="phases-dialog">
+  <el-dialog v-model="visible" class="phases-dialog" :class="isSmallScreen ? 'xs' : ''">
     <el-card class="phase_item" v-for="(phase, index) in phases" :key="index">
       <div class="phase__body">
         <p class="phase__content" v-html="phase.html"></p>
@@ -13,9 +13,13 @@
 
 <style>
 .phases-dialog {
-  max-height: 60vh;
   overflow-y: auto;
   padding: 2rem;
+}
+
+.phases-dialog:not(.xs) {
+  width: 600px;
+  max-height: 80vh;
 }
 
 .phase__highlight {
@@ -49,7 +53,7 @@ import type { Lecture } from '@/models/lecture'
 import { IconCopy } from '@tabler/icons-vue'
 import { ElMessage } from 'element-plus'
 import moment from 'moment'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 
 interface Phase {
   text: string
@@ -60,6 +64,8 @@ const visible = defineModel({ default: false })
 const props = defineProps<{
   lectures: Lecture[]
 }>()
+
+const isSmallScreen = ref(window.innerWidth < 768)
 const phases = computed<Phase[]>(() => {
   const lecturesByStudent = new Map<number, Lecture[]>()
 
@@ -102,4 +108,8 @@ const copyPhase = (phase: Phase) => {
     type: 'success'
   })
 }
+
+window.addEventListener('resize', () => {
+  isSmallScreen.value = window.innerWidth < 768
+})
 </script>

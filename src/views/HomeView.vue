@@ -1,41 +1,54 @@
 <template>
-    <nav id="main-nav">
+  <nav id="main-nav">
+    <el-row :gutter="16">
+      <el-col class="card" :span="24" :sm="12" :lg="6">
         <HomeCard to="/schedule">
-            <template #label>Schedule</template>
-            <template #icon>
-                <IconCalendarClock />
-            </template>
+          <template #label>Schedule</template>
+          <template #icon>
+            <IconCalendarClock />
+          </template>
         </HomeCard>
+      </el-col>
+      <el-col class="card" :span="24" :sm="12" :lg="6">
         <HomeCard to="/students">
-            <template #label>Students</template>
-            <template #icon>
-                <IconUsers />
-            </template>
+          <template #label>Students</template>
+          <template #icon>
+            <IconUsers />
+          </template>
         </HomeCard>
+      </el-col>
+      <el-col class="card" :span="24" :sm="12" :lg="6">
         <HomeCard to="/classes">
-            <template #label>Classes</template>
-            <template #icon>
-                <IconSchool />
-            </template>
+          <template #label>Classes</template>
+          <template #icon>
+            <IconSchool />
+          </template>
         </HomeCard>
+      </el-col>
+      <el-col class="card" :span="24" :sm="12" :lg="6">
         <HomeCard to="/reports">
-            <template #label>Reports</template>
-            <template #icon>
-                <IconReport />
-            </template>
+          <template #label>Reports</template>
+          <template #icon>
+            <IconReport />
+          </template>
         </HomeCard>
-    </nav>
+      </el-col>
+    </el-row>
+  </nav>
 </template>
 
 <style scoped>
 #main-nav {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    width: 100%;
-    height: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  width: 100%;
+  height: 80%;
+}
+
+.card {
+  margin-bottom: 16px;
 }
 </style>
 

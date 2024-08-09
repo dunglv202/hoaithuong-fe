@@ -1,6 +1,6 @@
 <template>
   <RouterLink class="ctn" @click="$emit('click')" :to="to">
-    <el-card class="card" style="max-width: 480px">
+    <el-card class="card">
       <div class="wrapper">
         <el-icon size="1.25rem">
           <slot name="icon"></slot>
