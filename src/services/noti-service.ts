@@ -19,7 +19,3 @@ export const readAllNotifications = async () => {
 export const readNotification = async (id: number) => {
   await axios.post(`/api/notifications/${id}/read`)
 }
-
-export const markNotiAsResolved = async (id: number) => {
-  await axios.post(`/api/notifications/${id}/resolve`)
-}

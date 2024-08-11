@@ -284,7 +284,6 @@ const timeSlotFilter = (query?: string) => {
 watch(
   () => props.id,
   async (id) => {
-    console.log(props.id)
     if (id) {
       try {
         loading.value = true
