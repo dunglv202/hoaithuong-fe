@@ -6,7 +6,7 @@ import moment from 'moment'
 export const addNewLecture = async (newLecture: NewLecture) => {
   await axios.post('/api/lectures', {
     ...newLecture,
-    startTime: moment(newLecture.startTime).format('YYYY-MM-DD HH:mm:ss')
+    startTime: moment(newLecture.startTime).format('yyyy-MM-DD HH:mm:ss')
   })
 }
 
