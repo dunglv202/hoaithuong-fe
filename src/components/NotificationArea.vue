@@ -16,6 +16,14 @@
       >
         <el-badge is-dot :hidden="noti.read">
           <div>{{ noti.content }}</div>
+          <div class="actions" v-if="noti.type && !noti.resolved">
+            <div v-if="noti.type === 'RENEW_CLASS'">
+              <el-button size="small" @click="resolveNotification(noti)"> Skip </el-button>
+              <el-button size="small" type="primary" @click="openClassCloneDialog(noti)">
+                Renew
+              </el-button>
+            </div>
+          </div>
           <span class="timediff">{{ formatAsDiff(new Date(noti.timestamp)) }}</span>
         </el-badge>
       </li>
@@ -25,6 +33,15 @@
       View all
     </el-button>
   </el-dropdown-menu>
+
+  <Teleport to="body">
+    <TutorClassDialog
+      v-model="clonedClassDialog.visible"
+      :id="clonedClassDialog.classId"
+      clone
+      @save="resolveNotification(clonedClassDialog.notification!)"
+    />
+  </Teleport>
 </template>
 
 <style scoped>
@@ -54,6 +71,7 @@
 .timediff {
   font-size: 12px;
   font-style: italic;
+  margin-left: 2px;
 }
 .noti.read .timediff {
   color: var(--el-text-color-secondary);
@@ -71,15 +89,24 @@
   display: flex;
   justify-content: flex-end;
 }
+.actions {
+  margin: 6px 0 2px 0;
+}
 </style>
 
 <script lang="ts" setup>
 import type { Notification } from '@/models/notification'
-import { getNotifications, readAllNotifications, readNotification } from '@/services/noti-service'
+import {
+  getNotifications,
+  markNotiAsResolved,
+  readAllNotifications,
+  readNotification
+} from '@/services/noti-service'
 import { formatAsDiff, MINUTE } from '@/utils/date-time'
 import { Client } from '@stomp/stompjs'
 import { ElNotification } from 'element-plus'
-import { onMounted, onUnmounted, ref, watch } from 'vue'
+import { onMounted, onUnmounted, reactive, ref, watch } from 'vue'
+import TutorClassDialog from './TutorClassDialog.vue'
 
 const MAX_NOTI = 5
 
@@ -87,6 +114,15 @@ const emit = defineEmits<{
   unreadChange: [value: number]
 }>()
 
+const clonedClassDialog = reactive<
+  Partial<{
+    visible: boolean
+    classId: number
+    notification: Notification
+  }>
+>({
+  visible: false
+})
 const notifications = ref<Notification[]>([])
 const totalUnread = ref(0)
 const client = new Client({
@@ -125,6 +161,17 @@ const readAll = async () => {
   await readAllNotifications()
   notifications.value.forEach((noti) => (noti.read = true))
   totalUnread.value = 0
+}
+
+const openClassCloneDialog = (noti: Notification) => {
+  clonedClassDialog.visible = true
+  clonedClassDialog.classId = Number(noti.payload)
+  clonedClassDialog.notification = noti
+}
+
+const resolveNotification = (noti: Notification) => {
+  markNotiAsResolved(noti.id)
+  noti.resolved = true
 }
 
 watch(totalUnread, (value) => emit('unreadChange', value))
