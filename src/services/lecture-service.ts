@@ -1,9 +1,13 @@
 import { type Lecture, type NewLecture, type UpdatedLecture } from '@/models/lecture'
 import type { ReportRange } from '@/models/report'
 import axios from 'axios'
+import moment from 'moment'
 
 export const addNewLecture = async (newLecture: NewLecture) => {
-  await axios.post('/api/lectures', newLecture)
+  await axios.post('/api/lectures', {
+    ...newLecture,
+    startTime: moment(newLecture.startTime).format('YYYY-MM-DD HH:mm:ss')
+  })
 }
 
 export const getLectures = async (range: ReportRange) => {

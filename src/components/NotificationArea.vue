@@ -90,7 +90,7 @@ const emit = defineEmits<{
 const notifications = ref<Notification[]>([])
 const totalUnread = ref(0)
 const client = new Client({
-  brokerURL: 'ws://localhost:8080/ws/websocket',
+  brokerURL: `ws://${import.meta.env.VITE_BACKEND_HOST}/ws/websocket`,
   onConnect: () => {
     client.subscribe('/user/queue/notifications', (message) => {
       const newNoti: Notification = JSON.parse(message.body)
