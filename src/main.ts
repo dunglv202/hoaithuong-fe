@@ -10,6 +10,7 @@ import App from './App.vue'
 import type { ApiError } from './models/common'
 import type { FetchOptions } from './models/config'
 import router from './routers'
+import { MOBILE_BREAKPOINT } from './configs/layout-config'
 
 const app = createApp(App)
 const pinia = createPinia()
@@ -23,8 +24,7 @@ moment.updateLocale('en', {
 
 const isAccessTokenExpired = (err: AxiosError) => {
   return (
-    err.response?.status === 401 &&
-    (err.response.data as ApiError).code === 'EXPIRED_ACCESS_TOKEN'
+    err.response?.status === 401 && (err.response.data as ApiError).code === 'EXPIRED_ACCESS_TOKEN'
   )
 }
 
@@ -44,7 +44,7 @@ axios.interceptors.response.use(
     }
 
     if (!(err.config?.fetchOptions as FetchOptions)?.selfHandle) {
-      if (window.innerWidth >= 768) {
+      if (window.innerWidth >= MOBILE_BREAKPOINT) {
         ElNotification({
           type: 'error',
           title: 'Something went wrong',

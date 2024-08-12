@@ -49,6 +49,7 @@
 </style>
 
 <script lang="ts" setup>
+import { MOBILE_BREAKPOINT } from '@/configs/layout-config'
 import type { Lecture } from '@/models/lecture'
 import { IconCopy } from '@tabler/icons-vue'
 import { ElMessage } from 'element-plus'
@@ -65,7 +66,7 @@ const props = defineProps<{
   lectures: Lecture[]
 }>()
 
-const isSmallScreen = ref(window.innerWidth < 768)
+const isSmallScreen = ref(window.innerWidth < MOBILE_BREAKPOINT)
 const phases = computed<Phase[]>(() => {
   const lecturesByStudent = new Map<number, Lecture[]>()
 
@@ -106,6 +107,6 @@ const copyPhase = (phase: Phase) => {
 }
 
 window.addEventListener('resize', () => {
-  isSmallScreen.value = window.innerWidth < 768
+  isSmallScreen.value = window.innerWidth < MOBILE_BREAKPOINT
 })
 </script>

@@ -2,6 +2,10 @@
   <div class="toolbar">
     <BackButton />
   </div>
+  <el-button v-if="isMobileView" class="btn__add" type="primary" :icon="IconNews"
+    @click="openNewLectureDialog({ startTime: new Date() })">
+    Add New Lecture
+  </el-button>
   <FullCalendar ref="calendarRef" :options="calendarOptions"></FullCalendar>
   <LectureDialog v-if="showLectureDialog" v-model="showLectureDialog" :startTime="selectedStartTime"
     :schedule="selectedSchedule" @save="fetchSchedule(fetchedRange)" />
@@ -10,6 +14,11 @@
 <style scoped>
 .toolbar {
   margin-bottom: 1rem;
+}
+
+.btn__add {
+  margin-bottom: 1.25rem;
+  width: 100%;
 }
 </style>
 <style>
@@ -37,6 +46,7 @@
 <script lang="ts" setup>
 import BackButton from '@/components/BackButton.vue'
 import LectureDialog from '@/components/LectureDialog.vue'
+import { MOBILE_BREAKPOINT } from '@/configs/layout-config'
 import { type Range } from '@/models/common'
 import type { Schedule } from '@/models/schedule'
 import { getSchedule } from '@/services/schedule-service'
@@ -44,8 +54,9 @@ import type { CalendarOptions } from '@fullcalendar/core'
 import interactionPlugin from '@fullcalendar/interaction'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import FullCalendar from '@fullcalendar/vue3'
+import { IconNews } from '@tabler/icons-vue'
 import moment from 'moment'
-import { onMounted, reactive, ref } from 'vue'
+import { onMounted, reactive, ref, watch } from 'vue'
 
 const showLectureDialog = ref(false)
 const selectedStartTime = ref<Date>()
@@ -54,6 +65,7 @@ const fetchedRange = reactive<Range<Date>>({
   from: moment().subtract(21, 'days').startOf('week').toDate(),
   to: moment().add(21, 'days').endOf('week').toDate()
 })
+const isMobileView = ref<boolean>()
 const calendarRef = ref<typeof FullCalendar>()
 const calendarOptions = reactive<CalendarOptions>({
   selectable: true,
@@ -70,14 +82,10 @@ const calendarOptions = reactive<CalendarOptions>({
     return moment(arg.date).format('ddd DD/MM')
   },
   select: (arg) => {
-    selectedStartTime.value = arg.start
-    selectedSchedule.value = undefined
-    showLectureDialog.value = true
+    openNewLectureDialog({ startTime: arg.start })
   },
   eventClick: (arg) => {
-    selectedSchedule.value = arg.event.extendedProps.schedule
-    selectedStartTime.value = undefined
-    showLectureDialog.value = true
+    openNewLectureDialog({ schedule: arg.event.extendedProps.schedule })
   },
   datesSet: (info) => {
     // current week not in fetched range => re-fetch
@@ -100,6 +108,12 @@ const getEventColorClass = (schedule: Schedule) => {
   }
 }
 
+const openNewLectureDialog = ({ schedule, startTime }: { schedule?: Schedule, startTime?: Date }) => {
+  selectedSchedule.value = schedule
+  selectedStartTime.value = startTime
+  showLectureDialog.value = true
+}
+
 const fetchSchedule = async (range: Range<Date>) => {
   const schedule = await getSchedule(range)
 
@@ -114,14 +128,16 @@ const fetchSchedule = async (range: Range<Date>) => {
   }))
 }
 
-const updateScheduleResponsive = () => {
-  calendarRef.value?.getApi().changeView(window.innerWidth < 768 ? 'timeGridDay' : 'timeGridWeek')
-}
+watch(isMobileView, (mobile) => {
+  calendarRef.value?.getApi().changeView(mobile ? 'timeGridDay' : 'timeGridWeek')
+})
 
 onMounted(() => {
-  updateScheduleResponsive()
+  isMobileView.value = window.innerWidth < MOBILE_BREAKPOINT
   fetchSchedule(fetchedRange)
 })
 
-window.addEventListener('resize', updateScheduleResponsive)
+window.addEventListener('resize', () => {
+  isMobileView.value = window.innerWidth < MOBILE_BREAKPOINT
+})
 </script>
