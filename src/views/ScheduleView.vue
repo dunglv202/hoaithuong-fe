@@ -2,13 +2,23 @@
   <div class="toolbar">
     <BackButton />
   </div>
-  <el-button v-if="isMobileView" class="btn__add" type="primary" :icon="IconNews"
-    @click="openNewLectureDialog({ startTime: new Date() })">
+  <el-button
+    v-if="isMobileView"
+    class="btn__add"
+    type="primary"
+    :icon="IconNews"
+    @click="openNewLectureDialog({ startTime: new Date() })"
+  >
     Add New Lecture
   </el-button>
   <FullCalendar ref="calendarRef" :options="calendarOptions"></FullCalendar>
-  <LectureDialog v-if="showLectureDialog" v-model="showLectureDialog" :startTime="selectedStartTime"
-    :schedule="selectedSchedule" @save="fetchSchedule(fetchedRange)" />
+  <LectureDialog
+    v-if="showLectureDialog"
+    v-model="showLectureDialog"
+    :startTime="selectedStartTime"
+    :schedule="selectedSchedule"
+    @save="fetchSchedule(fetchedRange)"
+  />
 </template>
 
 <style scoped>
@@ -58,6 +68,9 @@ import { IconNews } from '@tabler/icons-vue'
 import moment from 'moment'
 import { onMounted, reactive, ref, watch } from 'vue'
 
+const INITIAL_START_TIME = '09:00'
+const INITIAL_END_TIME = '22:00'
+
 const showLectureDialog = ref(false)
 const selectedStartTime = ref<Date>()
 const selectedSchedule = ref<Schedule>()
@@ -72,8 +85,6 @@ const calendarOptions = reactive<CalendarOptions>({
   plugins: [interactionPlugin, timeGridPlugin],
   initialView: 'timeGridWeek',
   firstDay: 1,
-  slotMinTime: '09:00',
-  slotMaxTime: '22:00',
   allDaySlot: false,
   height: 'auto',
   events: [],
@@ -108,7 +119,13 @@ const getEventColorClass = (schedule: Schedule) => {
   }
 }
 
-const openNewLectureDialog = ({ schedule, startTime }: { schedule?: Schedule, startTime?: Date }) => {
+const openNewLectureDialog = ({
+  schedule,
+  startTime
+}: {
+  schedule?: Schedule
+  startTime?: Date
+}) => {
   selectedSchedule.value = schedule
   selectedStartTime.value = startTime
   showLectureDialog.value = true
@@ -126,6 +143,17 @@ const fetchSchedule = async (range: Range<Date>) => {
     },
     className: getEventColorClass(s)
   }))
+  const minStartTime = schedule
+    .map((s) => moment(s.startTime).format('HH:mm'))
+    .sort()[0]
+    .replace(/:\d+/g, ':00')
+  const maxEndTime = schedule
+    .map((s) => moment(s.endTime).format('HH:mm'))
+    .sort()
+    .reverse()[0]
+  calendarOptions.slotMinTime =
+    INITIAL_START_TIME > minStartTime ? minStartTime : INITIAL_START_TIME
+  calendarOptions.slotMaxTime = INITIAL_END_TIME < maxEndTime ? maxEndTime : INITIAL_END_TIME
 }
 
 watch(isMobileView, (mobile) => {
