@@ -44,6 +44,7 @@ export interface DetailClass {
   durationInMinute: number
   payForLecture: number
   timeSlots: Timeslot[]
+  active: boolean
 }
 
 export interface UpdatedClass {

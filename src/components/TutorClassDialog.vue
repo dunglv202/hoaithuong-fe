@@ -7,7 +7,7 @@
   >
     <el-form :model="form" :rules="formRules" ref="formRef" v-loading="loading">
       <el-form-item label="Code" label-width="110px" prop="code">
-        <el-input v-model="form.code" autocomplete="off" />
+        <el-input v-model="form.code" autocomplete="off" :disabled="!active" />
       </el-form-item>
       <el-form-item label="Student" label-width="110px" prop="studentId">
         <el-select
@@ -18,7 +18,7 @@
           placeholder="Enter student's name"
           :remote-method="searchStudent"
           :loading="fetchingStudents"
-          :disabled="editting"
+          :disabled="editting || !active"
         >
           <el-option
             v-for="student in students"
@@ -32,19 +32,19 @@
         </el-select>
       </el-form-item>
       <el-form-item label="Level" label-width="110px" prop="level">
-        <el-input v-model="form.level" autocomplete="off" />
+        <el-input v-model="form.level" autocomplete="off" :disabled="!active" />
       </el-form-item>
       <el-form-item label="Total lecture" label-width="110px" prop="totalLecture">
         <el-input-number
           v-model="form.totalLecture"
           autocomplete="off"
           :min="1"
-          :disabled="editting"
+          :disabled="editting || !active"
           :controls="false"
         />
       </el-form-item>
       <el-form-item v-if="!editting" label="New class?" label-width="110px">
-        <el-switch v-model="isNewClass" />
+        <el-switch v-model="isNewClass" :disabled="!active" />
       </el-form-item>
       <el-form-item
         v-if="editting || !isNewClass"
@@ -56,7 +56,7 @@
           v-model="form.learned"
           autocomplete="off"
           :min="0"
-          :disabled="editting"
+          :disabled="editting || !active"
           :controls="false"
         />
       </el-form-item>
@@ -66,15 +66,21 @@
           type="date"
           format="DD/MM/YYYY"
           :disabled-date="isPastDate"
+          :disabled="!active"
         />
       </el-form-item>
       <el-form-item label="Notes" label-width="110px" prop="notes">
-        <el-input v-model="form.notes" type="textarea" :autosize="{ minRows: 3, maxRows: 6 }" />
+        <el-input
+          v-model="form.notes"
+          type="textarea"
+          :autosize="{ minRows: 3, maxRows: 6 }"
+          :disabled="!active"
+        />
       </el-form-item>
       <el-form-item label="Schedule" label-width="110px" prop="schedules">
         <div class="schedule">
           <div class="timeslot" v-for="(_, index) in form.timeSlots" :key="index">
-            <el-select filterable v-model="form.timeSlots[index].weekday">
+            <el-select filterable v-model="form.timeSlots[index].weekday" :disabled="!active">
               <el-option
                 v-for="item in weekdays"
                 :key="item.value"
@@ -87,6 +93,7 @@
               allow-create
               v-model="form.timeSlots[index].startTime"
               :filter-method="timeSlotFilter"
+              :disabled="!active"
             >
               <el-option
                 v-for="item in timeOptions"
@@ -95,14 +102,16 @@
                 :value="item.value"
               />
             </el-select>
-            <el-button @click="form.timeSlots.splice(index, 1)">
+            <el-button @click="form.timeSlots.splice(index, 1)" :disabled="!active">
               <el-icon>
                 <IconTrash />
               </el-icon>
             </el-button>
           </div>
           <div>
-            <el-button type="primary" size="default" @click="addNewTimeSlot">Add</el-button>
+            <el-button type="primary" size="default" @click="addNewTimeSlot" v-show="active">
+              Add
+            </el-button>
           </div>
         </div>
       </el-form-item>
@@ -122,7 +131,7 @@
             placeholder="70"
             autocomplete="off"
             :min="1"
-            :disabled="editting"
+            :disabled="editting || !active"
             :controls="false"
           />
         </el-form-item>
@@ -133,6 +142,7 @@
             autocomplete="off"
             :min="0"
             :controls="false"
+            :disabled="!active"
           />
         </el-form-item>
       </div>
@@ -229,6 +239,7 @@ const showMoreDetails = ref(false)
 const editting = computed(() => !!props.id && !props.clone)
 const loading = ref(false)
 const timeOptions = ref(times)
+const active = ref(false)
 
 const searchStudent = async (query: string) => {
   fetchingStudents.value = true
@@ -295,7 +306,7 @@ watch(
           studentId: detail.student.id,
           learned: props.clone ? 0 : detail.learned
         }
-        console.log(form.value.timeSlots)
+        active.value = detail.active
       } finally {
         loading.value = false
       }
