@@ -99,7 +99,11 @@ const generatePhase = (student: string, month: string, days: string[], html?: bo
 }
 
 const copyPhase = (phase: Phase) => {
-  navigator.clipboard.writeText(phase.text)
+  const input = document.createElement('input')
+  input.value = phase.text
+  input.select()
+  input.setSelectionRange(0, phase.text.length)
+  navigator.clipboard.writeText(input.value)
   ElMessage({
     message: 'Text copied to clipboard',
     type: 'success'
