@@ -6,7 +6,14 @@
   </AppToolbar>
   <el-table :data="students" style="width: 100%" v-loading="loading">
     <el-table-column type="index" label="#" width="50" />
-    <el-table-column prop="name" label="Name" width="500" />
+    <el-table-column prop="name" label="Name" width="220" />
+    <el-table-column prop="active" label="Status" :align="'center'">
+      <template #default="scope">
+        <el-tag :class="scope.row.active ? 'active' : 'inactive'">
+          {{ scope.row.active ? 'Active' : 'Inactive' }}
+        </el-tag>
+      </template>
+    </el-table-column>
     <el-table-column prop="notes" label="Notes" />
   </el-table>
   <AppPagination v-show="!loading" :totalPages="totalPages" :currentPage="currentPage"
@@ -24,6 +31,12 @@
   .search-box {
     max-width: 220px;
   }
+}
+
+.inactive {
+  background-color: var(--el-color-danger-light-9);
+  color: var(--el-color-danger);
+  border-color: var(--el-color-danger-light-7);
 }
 </style>
 
