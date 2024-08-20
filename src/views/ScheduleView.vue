@@ -2,23 +2,13 @@
   <div class="toolbar">
     <BackButton />
   </div>
-  <el-button
-    v-if="isMobileView"
-    class="btn__add"
-    type="primary"
-    :icon="IconNews"
-    @click="openNewLectureDialog({ startTime: new Date() })"
-  >
+  <el-button v-if="isMobileView" class="btn__add" type="primary" :icon="IconNews"
+    @click="openNewLectureDialog({ startTime: new Date() })">
     Add New Lecture
   </el-button>
-  <FullCalendar ref="calendarRef" :options="calendarOptions"></FullCalendar>
-  <LectureDialog
-    v-if="showLectureDialog"
-    v-model="showLectureDialog"
-    :startTime="selectedStartTime"
-    :schedule="selectedSchedule"
-    @save="fetchSchedule(fetchedRange)"
-  />
+  <FullCalendar v-loading="fetching" ref="calendarRef" :options="calendarOptions"></FullCalendar>
+  <LectureDialog v-if="showLectureDialog" v-model="showLectureDialog" :startTime="selectedStartTime"
+    :schedule="selectedSchedule" @save="fetchSchedule(fetchedRange)" />
 </template>
 
 <style scoped>
@@ -79,6 +69,7 @@ const fetchedRange = reactive<Range<Date>>({
   to: moment().add(21, 'days').endOf('week').toDate()
 })
 const isMobileView = ref<boolean>()
+const fetching = ref(false)
 const calendarRef = ref<typeof FullCalendar>()
 const calendarOptions = reactive<CalendarOptions>({
   selectable: true,
@@ -132,28 +123,32 @@ const openNewLectureDialog = ({
 }
 
 const fetchSchedule = async (range: Range<Date>) => {
-  const schedule = await getSchedule(range)
-
-  calendarOptions.events = schedule.map((s) => ({
-    title: `${s.tutorClass.code} - ${s.tutorClass.student.name}`,
-    start: s.startTime,
-    end: s.endTime,
-    extendedProps: {
-      schedule: s
-    },
-    className: getEventColorClass(s)
-  }))
-  const minStartTime = schedule
-    .map((s) => moment(s.startTime).format('HH:mm'))
-    .sort()[0]
-    .replace(/:\d+/g, ':00')
-  const maxEndTime = schedule
-    .map((s) => moment(s.endTime).format('HH:mm'))
-    .sort()
-    .reverse()[0]
-  calendarOptions.slotMinTime =
-    INITIAL_START_TIME > minStartTime ? minStartTime : INITIAL_START_TIME
-  calendarOptions.slotMaxTime = INITIAL_END_TIME < maxEndTime ? maxEndTime : INITIAL_END_TIME
+  try {
+    fetching.value = true
+    const schedule = await getSchedule(range)
+    calendarOptions.events = schedule.map((s) => ({
+      title: `${s.tutorClass.code} - ${s.tutorClass.student.name}`,
+      start: s.startTime,
+      end: s.endTime,
+      extendedProps: {
+        schedule: s
+      },
+      className: getEventColorClass(s)
+    }))
+    const minStartTime = schedule
+      .map((s) => moment(s.startTime).format('HH:mm'))
+      .sort()[0]
+      .replace(/:\d+/g, ':00')
+    const maxEndTime = schedule
+      .map((s) => moment(s.endTime).format('HH:mm'))
+      .sort()
+      .reverse()[0]
+    calendarOptions.slotMinTime =
+      INITIAL_START_TIME > minStartTime ? minStartTime : INITIAL_START_TIME
+    calendarOptions.slotMaxTime = INITIAL_END_TIME < maxEndTime ? maxEndTime : INITIAL_END_TIME
+  } finally {
+    fetching.value = false
+  }
 }
 
 watch(isMobileView, (mobile) => {
