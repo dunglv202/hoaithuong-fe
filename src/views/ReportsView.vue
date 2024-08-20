@@ -19,7 +19,7 @@
   </AppToolbar>
 
   <el-row class="report__figures" :gutter="16">
-    <el-col :span="24" :sm="8">
+    <el-col :span="24" :sm="12" :md="6">
       <el-card class="card">
         <template #header> Total Earned </template>
         <div class="figure">
@@ -27,13 +27,21 @@
         </div>
       </el-card>
     </el-col>
-    <el-col :span="24" :sm="8">
+    <el-col :span="24" :sm="12" :md="6">
+      <el-card class="card">
+        <template #header> Estimated Total </template>
+        <div class="figure">
+          {{ report ? new Intl.NumberFormat().format(report.estimatedTotal) : '-' }}
+        </div>
+      </el-card>
+    </el-col>
+    <el-col :span="24" :sm="12" :md="6">
       <el-card class="card">
         <template #header> Total Lectures </template>
         <span class="figure">{{ report ? report.totalLectures : '-' }}</span>
       </el-card>
     </el-col>
-    <el-col :span="24" :sm="8">
+    <el-col :span="24" :sm="12" :md="6">
       <el-card class="card">
         <template #header> Total Students </template>
         <span class="figure">{{ report ? report.totalStudents : '-' }}</span>

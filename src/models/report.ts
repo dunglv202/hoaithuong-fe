@@ -7,6 +7,7 @@ export interface ReportRange {
 
 export interface Report {
   totalEarned: number
+  estimatedTotal: number
   totalLectures: number
   totalStudents: number
   lectures: Lecture[]
