@@ -1,12 +1,8 @@
+import UserLayout from '@/layouts/UserLayout.vue'
+import useAuthStore from '@/stores/auth'
+import HomeView from '@/views/HomeView.vue'
 import LoginView from '@/views/LoginView.vue'
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
-import HomeView from '@/views/HomeView.vue'
-import StudentsView from '@/views/StudentsView.vue'
-import TutorClassesView from '@/views/TutorClassesView.vue'
-import UserLayout from '@/layouts/UserLayout.vue'
-import ReportsView from '@/views/ReportsView.vue'
-import ScheduleView from '@/views/ScheduleView.vue'
-import useAuthStore from '@/stores/auth'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -22,25 +18,25 @@ const routes: RouteRecordRaw[] = [
         children: [
           {
             path: '',
-            component: StudentsView
+            component: () => import('@/views/StudentsView.vue')
           },
           {
             path: ':id',
-            component: HomeView
+            component: () => import('@/views/HomeView.vue')
           }
         ]
       },
       {
         path: 'classes',
-        component: TutorClassesView
+        component: () => import('@/views/TutorClassesView.vue')
       },
       {
         path: 'reports',
-        component: ReportsView
+        component: () => import('@/views/ReportsView.vue')
       },
       {
         path: 'schedule',
-        component: ScheduleView
+        component: () => import('@/views/ScheduleView.vue')
       }
     ]
   },
