@@ -8,7 +8,7 @@
   </el-button>
   <FullCalendar ref="calendarRef" :options="calendarOptions"></FullCalendar>
   <LectureDialog v-if="showLectureDialog" v-model="showLectureDialog" :startTime="selectedStartTime"
-    :schedule="selectedSchedule" @save="fetchSchedule(fetchedRange)" />
+    :schedule="selectedSchedule" @save="fetchSchedule(currentWeek)" />
 </template>
 
 <style scoped>
@@ -58,15 +58,12 @@ import { IconNews } from '@tabler/icons-vue'
 import moment from 'moment'
 import { onMounted, reactive, ref, watch } from 'vue'
 
-const INITIAL_START_TIME = '09:00'
-const INITIAL_END_TIME = '22:00'
-
 const showLectureDialog = ref(false)
 const selectedStartTime = ref<Date>()
 const selectedSchedule = ref<Schedule>()
-const fetchedRange = reactive<Range<Date>>({
-  from: moment().subtract(21, 'days').startOf('week').toDate(),
-  to: moment().add(21, 'days').endOf('week').toDate()
+const currentWeek = reactive<Range<Date>>({
+  from: moment().startOf('week').toDate(),
+  to: moment().endOf('week').toDate()
 })
 const isMobileView = ref<boolean>()
 const calendarRef = ref<typeof FullCalendar>()
@@ -75,6 +72,8 @@ const calendarOptions = reactive<CalendarOptions>({
   plugins: [interactionPlugin, timeGridPlugin],
   initialView: 'timeGridWeek',
   firstDay: 1,
+  slotMinTime: '08:00',
+  slotMaxTime: '22:00',
   allDaySlot: false,
   height: 'auto',
   events: [],
@@ -89,11 +88,9 @@ const calendarOptions = reactive<CalendarOptions>({
     openNewLectureDialog({ schedule: arg.event.extendedProps.schedule })
   },
   datesSet: (info) => {
-    // current week not in fetched range => re-fetch
-    if (info.start < fetchedRange.from || info.end > fetchedRange.to) {
-      fetchedRange.from = moment(info.start).subtract(21, 'days').startOf('week').toDate()
-      fetchedRange.to = moment(info.end).add(21, 'days').endOf('week').toDate()
-      fetchSchedule(fetchedRange)
+    if (info.start < currentWeek.from || info.end > currentWeek.to) {
+      currentWeek.from = info.start
+      currentWeek.to = info.end
     }
   }
 })
@@ -133,26 +130,18 @@ const fetchSchedule = async (range: Range<Date>) => {
     },
     className: getEventColorClass(s)
   }))
-  const minStartTime = schedule
-    .map((s) => moment(s.startTime).format('HH:mm'))
-    .sort()[0]
-    .replace(/:\d+/g, ':00')
-  const maxEndTime = schedule
-    .map((s) => moment(s.endTime).format('HH:mm'))
-    .sort()
-    .reverse()[0]
-  calendarOptions.slotMinTime =
-    INITIAL_START_TIME > minStartTime ? minStartTime : INITIAL_START_TIME
-  calendarOptions.slotMaxTime = INITIAL_END_TIME < maxEndTime ? maxEndTime : INITIAL_END_TIME
 }
 
 watch(isMobileView, (mobile) => {
   calendarRef.value?.getApi().changeView(mobile ? 'timeGridDay' : 'timeGridWeek')
 })
 
+watch(currentWeek, (range) => {
+  fetchSchedule(range)
+})
+
 onMounted(() => {
   isMobileView.value = window.innerWidth < MOBILE_BREAKPOINT
-  fetchSchedule(fetchedRange)
 })
 
 window.addEventListener('resize', () => {
