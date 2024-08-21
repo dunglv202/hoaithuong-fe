@@ -1,5 +1,5 @@
 import type { Weekday } from './common'
-import type { Student } from './student'
+import type { MinimalStudent, Student } from './student'
 
 export interface TutorClass {
   id: number
@@ -54,4 +54,10 @@ export interface UpdatedClass {
   timeSlots: Timeslot[]
   payForLecture?: number
   startDate?: Date
+}
+
+export interface ScheduleClass {
+  id: number
+  code: string
+  student: MinimalStudent
 }

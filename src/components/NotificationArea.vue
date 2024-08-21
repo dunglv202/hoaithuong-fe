@@ -7,13 +7,8 @@
       <el-button class="btn__mark-all-read" link @click="readAll"> Mark all as read </el-button>
     </div>
     <ul class="noti-list">
-      <li
-        class="noti"
-        :class="noti.read ? 'read' : undefined"
-        v-for="noti in notifications"
-        :key="noti.id"
-        @click="!noti.read ? readNoti(noti) : undefined"
-      >
+      <li class="noti" :class="noti.read ? 'read' : undefined" v-for="noti in notifications" :key="noti.id"
+        @click="!noti.read ? readNoti(noti) : undefined">
         <el-badge is-dot :hidden="noti.read">
           <div>{{ noti.content }}</div>
           <span class="timediff">{{ formatAsDiff(new Date(noti.timestamp)) }}</span>
@@ -31,42 +26,52 @@
 .divider {
   margin: 7px 0;
 }
+
 .noti-menu {
   width: 280px;
 }
+
 .noti-list {
   list-style-type: none;
   padding: 0;
 }
+
 .noti {
   padding: 4px 1rem;
   cursor: pointer;
   font-size: 14px;
   font-weight: bold;
 }
+
 .noti:hover {
   background-color: var(--el-dropdown-menuItem-hover-fill);
 }
+
 .noti.read {
   color: var(--el-text-color-secondary);
   cursor: default;
 }
+
 .timediff {
   font-size: 12px;
   font-style: italic;
 }
+
 .noti.read .timediff {
   color: var(--el-text-color-secondary);
 }
+
 .btn__view-all,
 .btn__mark-all-read {
   padding: 7px;
   --el-button-size: initial;
 }
+
 .btn__view-all {
   margin: 0 auto;
   display: block;
 }
+
 .align-right {
   display: flex;
   justify-content: flex-end;
@@ -90,7 +95,7 @@ const emit = defineEmits<{
 const notifications = ref<Notification[]>([])
 const totalUnread = ref(0)
 const client = new Client({
-  brokerURL: `ws://${import.meta.env.VITE_BACKEND_HOST}/ws/websocket`,
+  brokerURL: `wss://${import.meta.env.VITE_BACKEND_HOST}/ws/websocket`,
   onConnect: () => {
     client.subscribe('/user/queue/notifications', (message) => {
       const newNoti: Notification = JSON.parse(message.body)

@@ -2,23 +2,13 @@
   <div class="toolbar">
     <BackButton />
   </div>
-  <el-button
-    v-if="isMobileView"
-    class="btn__add"
-    type="primary"
-    :icon="IconNews"
-    @click="openNewLectureDialog({ startTime: new Date() })"
-  >
+  <el-button v-if="isMobileView" class="btn__add" type="primary" :icon="IconNews"
+    @click="openNewLectureDialog({ startTime: new Date() })">
     Add New Lecture
   </el-button>
   <FullCalendar ref="calendarRef" :options="calendarOptions"></FullCalendar>
-  <LectureDialog
-    v-if="showLectureDialog"
-    v-model="showLectureDialog"
-    :startTime="selectedStartTime"
-    :schedule="selectedSchedule"
-    @save="fetchSchedule(fetchedRange)"
-  />
+  <LectureDialog v-if="showLectureDialog" v-model="showLectureDialog" :startTime="selectedStartTime"
+    :schedule="selectedSchedule" @save="fetchSchedule(fetchedRange)" />
 </template>
 
 <style scoped>
@@ -58,7 +48,7 @@ import BackButton from '@/components/BackButton.vue'
 import LectureDialog from '@/components/LectureDialog.vue'
 import { MOBILE_BREAKPOINT } from '@/configs/layout-config'
 import { type Range } from '@/models/common'
-import type { Schedule } from '@/models/schedule'
+import type { MinimalSchedule, Schedule } from '@/models/schedule'
 import { getSchedule } from '@/services/schedule-service'
 import type { CalendarOptions } from '@fullcalendar/core'
 import interactionPlugin from '@fullcalendar/interaction'
@@ -108,7 +98,7 @@ const calendarOptions = reactive<CalendarOptions>({
   }
 })
 
-const getEventColorClass = (schedule: Schedule) => {
+const getEventColorClass = (schedule: MinimalSchedule) => {
   const now = new Date()
   if (!schedule.lecture && now > new Date(schedule.startTime)) {
     return 'fc-warn'

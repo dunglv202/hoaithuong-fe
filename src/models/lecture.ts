@@ -28,3 +28,10 @@ export interface UpdatedLecture {
   comment?: string
   notes?: string
 }
+
+export interface ScheduleLecture {
+  id: number
+  topic: string
+  comment?: string
+  notes?: string
+}
