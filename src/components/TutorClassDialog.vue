@@ -6,7 +6,7 @@
       </el-form-item>
       <el-form-item label="Student" label-width="110px" prop="studentId">
         <el-select v-model="form.studentId" filterable remote reserve-keyword placeholder="Enter student's name"
-          :remote-method="searchStudent" :loading="fetchingStudents" :disabled="editting || !active">
+          :remote-method="searchStudent" :loading="fetchingStudents" :disabled="editting || !active || clone">
           <el-option v-for="student in students" :key="student.id" :label="student.name" :value="student.id" />
           <template #loading>
             <LoadingComponent />
@@ -51,7 +51,7 @@
             </el-button>
           </div>
           <div>
-            <el-button type="primary" size="default" @click="addNewTimeSlot" v-show="active">
+            <el-button type="primary" size="default" @click="addNewTimeSlot" :disabled="!active">
               Add
             </el-button>
           </div>
@@ -80,7 +80,8 @@
     <template #footer>
       <div class="dialog-footer">
         <el-button @click="visible = false">Cancel</el-button>
-        <el-button type="primary" @click="submit" :loading="submitting" :icon="IconSquareRoundedCheck">
+        <el-button type="primary" @click="submit" :loading="submitting" :icon="IconSquareRoundedCheck"
+          :disabled="!active">
           Confirm
         </el-button>
       </div>
@@ -231,7 +232,7 @@ watch(
           studentId: detail.student.id,
           learned: props.clone ? 0 : detail.learned
         }
-        active.value = detail.active
+        active.value = detail.active || props.clone
       } finally {
         loading.value = false
       }
