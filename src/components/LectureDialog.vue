@@ -2,34 +2,17 @@
   <el-dialog v-model="visible" title="Lecture info" width="500">
     <el-form :model="form" :rules="formRules" ref="formRef">
       <el-form-item label="Student" label-width="110px" prop="classId">
-        <el-select
-          v-model="form.classId"
-          filterable
-          remote
-          reserve-keyword
-          placeholder="Enter student's name"
-          :remote-method="searchClass"
-          :loading="fetchingClasses"
-          :disabled="!!schedule"
-        >
-          <el-option
-            v-for="item in tutorClasses"
-            :key="item.id"
-            :label="`${item.code} - ${item.student.name}`"
-            :value="item.id"
-          />
+        <el-select v-model="form.classId" filterable remote reserve-keyword placeholder="Enter student's name"
+          :remote-method="searchClass" :loading="fetchingClasses" :disabled="!!schedule">
+          <el-option v-for="item in tutorClasses" :key="item.id" :label="`${item.code} - ${item.student.name}`"
+            :value="item.id" />
           <template #loading>
             <LoadingComponent />
           </template>
         </el-select>
       </el-form-item>
       <el-form-item label="Start time" label-width="110px" prop="startTime">
-        <el-date-picker
-          v-model="form.startTime"
-          type="datetime"
-          format="DD/MM/YYYY HH:mm"
-          :disabled="!!schedule"
-        />
+        <el-date-picker v-model="form.startTime" type="datetime" format="DD/MM/YYYY HH:mm" :disabled="!!schedule" />
       </el-form-item>
       <el-form-item label="Topic" label-width="110px" prop="topic">
         <el-input v-model="form.topic" autocomplete="off" />
@@ -38,24 +21,15 @@
         <el-input v-model="form.comment" type="textarea" :autosize="{ minRows: 2, maxRows: 4 }" />
       </el-form-item>
       <el-form-item label="Notes" label-width="110px" prop="notes">
-        <el-input
-          v-model="form.notes"
-          type="textarea"
-          :autosize="{ minRows: 3, maxRows: 6 }"
-          resize="none"
-        />
+        <el-input v-model="form.notes" type="textarea" :autosize="{ minRows: 3, maxRows: 6 }" resize="none" />
       </el-form-item>
     </el-form>
     <template #footer>
       <div class="dialog-footer">
         <el-button v-if="!!schedule" @click="removeFromSchedule" :icon="IconTrash" />
         <el-button @click="visible = false">Cancel</el-button>
-        <el-button
-          type="primary"
-          @click="submit"
-          :loading="submitting"
-          :icon="IconSquareRoundedCheck"
-        >
+        <el-button type="primary" @click="submit" :loading="submitting" :icon="IconSquareRoundedCheck"
+          :disabled="form.startTime && form.startTime > new Date()">
           Confirm
         </el-button>
       </div>

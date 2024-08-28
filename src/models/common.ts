@@ -53,3 +53,7 @@ export interface Pagination {
   page?: number
   size?: number
 }
+
+export interface FutureUpdate {
+  effectiveDate: Date | string
+}

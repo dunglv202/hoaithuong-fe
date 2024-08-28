@@ -1,4 +1,4 @@
-import { type Page, type Pagination } from '@/models/common'
+import { type FutureUpdate, type Page, type Pagination } from '@/models/common'
 import {
   type DetailClass,
   type NewTutorClass,
@@ -35,4 +35,10 @@ export const updateTutorClass = async (id: number, tutorClass: UpdatedClass) => 
     id,
     startDate: moment(tutorClass.startDate).format('YYYY-MM-DD')
   })
+}
+
+export const stopTutorClass = async (id: number) => {
+  await axios.post(`/api/tutor_classes/${id}/stop`, {
+    effectiveDate: moment().format('YYYY-MM-DD')
+  } as FutureUpdate)
 }

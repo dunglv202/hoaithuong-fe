@@ -80,6 +80,7 @@
     <template #footer>
       <div class="dialog-footer">
         <el-button @click="visible = false">Cancel</el-button>
+        <el-button v-show="editting && active" @click="stopClass(props.id!)" :icon="IconBan">Stop</el-button>
         <el-button type="primary" @click="submit" :loading="submitting" :icon="IconSquareRoundedCheck"
           :disabled="!active">
           Confirm
@@ -119,8 +120,9 @@ import { times, weekdays } from '@/models/common'
 import type { Student } from '@/models/student'
 import { type NewTutorClass } from '@/models/tutor-class'
 import { fetchStudents } from '@/services/student-service'
-import { addTutorClass, getDetailClass, updateTutorClass } from '@/services/tutor-class-service'
+import { addTutorClass, getDetailClass, stopTutorClass, updateTutorClass } from '@/services/tutor-class-service'
 import {
+  IconBan,
   IconChevronDown,
   IconChevronUp,
   IconSquareRoundedCheck,
@@ -181,6 +183,12 @@ const addNewTimeSlot = () => {
     weekday: weekdays[0].value,
     startTime: times[0].value
   })
+}
+
+const stopClass = async (id: number) => {
+  await stopTutorClass(id)
+  visible.value = false
+  emit('save')
 }
 
 const submit = async () => {
