@@ -42,3 +42,9 @@ export const stopTutorClass = async (id: number) => {
     effectiveDate: moment().format('YYYY-MM-DD')
   } as FutureUpdate)
 }
+
+export const resumeTutorClass = async (id: number) => {
+  await axios.post(`/api/tutor_classes/${id}/resume`, {
+    effectiveDate: moment().format('YYYY-MM-DD')
+  } as FutureUpdate)
+}

@@ -1,13 +1,31 @@
 <template>
-  <el-dialog v-model="visible" :title="editting ? 'Edit class' : 'New class'" width="700" @closed="resetForm">
+  <el-dialog
+    v-model="visible"
+    :title="editting ? 'Edit class' : 'New class'"
+    width="700"
+    @closed="resetForm"
+  >
     <el-form :model="form" :rules="formRules" ref="formRef" v-loading="loading">
       <el-form-item label="Code" label-width="110px" prop="code">
         <el-input v-model="form.code" autocomplete="off" :disabled="!active" />
       </el-form-item>
       <el-form-item label="Student" label-width="110px" prop="studentId">
-        <el-select v-model="form.studentId" filterable remote reserve-keyword placeholder="Enter student's name"
-          :remote-method="searchStudent" :loading="fetchingStudents" :disabled="editting || !active || clone">
-          <el-option v-for="student in students" :key="student.id" :label="student.name" :value="student.id" />
+        <el-select
+          v-model="form.studentId"
+          filterable
+          remote
+          reserve-keyword
+          placeholder="Enter student's name"
+          :remote-method="searchStudent"
+          :loading="fetchingStudents"
+          :disabled="editting || !active || clone"
+        >
+          <el-option
+            v-for="student in students"
+            :key="student.id"
+            :label="student.name"
+            :value="student.id"
+          />
           <template #loading>
             <LoadingComponent />
           </template>
@@ -17,32 +35,72 @@
         <el-input v-model="form.level" autocomplete="off" :disabled="!active" />
       </el-form-item>
       <el-form-item label="Total lecture" label-width="110px" prop="totalLecture">
-        <el-input-number v-model="form.totalLecture" autocomplete="off" :min="1" :disabled="editting || !active"
-          :controls="false" />
+        <el-input-number
+          v-model="form.totalLecture"
+          autocomplete="off"
+          :min="1"
+          :disabled="editting || !active"
+          :controls="false"
+        />
       </el-form-item>
       <el-form-item v-if="!editting" label="New class?" label-width="110px">
         <el-switch v-model="isNewClass" :disabled="!active" />
       </el-form-item>
-      <el-form-item v-if="editting || !isNewClass" label="Learned" label-width="110px" prop="learned">
-        <el-input-number v-model="form.learned" autocomplete="off" :min="0" :disabled="editting || !active"
-          :controls="false" />
+      <el-form-item
+        v-if="editting || !isNewClass"
+        label="Learned"
+        label-width="110px"
+        prop="learned"
+      >
+        <el-input-number
+          v-model="form.learned"
+          autocomplete="off"
+          :min="0"
+          :disabled="editting || !active"
+          :controls="false"
+        />
       </el-form-item>
       <el-form-item label="Start Date" label-width="110px" prop="startDate">
-        <el-date-picker v-model="form.startDate" type="date" format="DD/MM/YYYY" :disabled-date="isPastDate"
-          :disabled="!active" />
+        <el-date-picker
+          v-model="form.startDate"
+          type="date"
+          format="DD/MM/YYYY"
+          :disabled-date="isPastDate"
+          :disabled="!active"
+        />
       </el-form-item>
       <el-form-item label="Notes" label-width="110px" prop="notes">
-        <el-input v-model="form.notes" type="textarea" :autosize="{ minRows: 3, maxRows: 6 }" :disabled="!active" />
+        <el-input
+          v-model="form.notes"
+          type="textarea"
+          :autosize="{ minRows: 3, maxRows: 6 }"
+          :disabled="!active"
+        />
       </el-form-item>
       <el-form-item label="Schedule" label-width="110px" prop="schedules">
         <div class="schedule">
           <div class="timeslot" v-for="(_, index) in form.timeSlots" :key="index">
             <el-select filterable v-model="form.timeSlots[index].weekday" :disabled="!active">
-              <el-option v-for="item in weekdays" :key="item.value" :label="item.label" :value="item.value" />
+              <el-option
+                v-for="item in weekdays"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
             </el-select>
-            <el-select filterable allow-create v-model="form.timeSlots[index].startTime" :filter-method="timeSlotFilter"
-              :disabled="!active">
-              <el-option v-for="item in timeOptions" :key="item.value" :label="item.label" :value="item.value" />
+            <el-select
+              filterable
+              allow-create
+              v-model="form.timeSlots[index].startTime"
+              :filter-method="timeSlotFilter"
+              :disabled="!active"
+            >
+              <el-option
+                v-for="item in timeOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
             </el-select>
             <el-button @click="form.timeSlots.splice(index, 1)" :disabled="!active">
               <el-icon>
@@ -68,21 +126,47 @@
       </el-form-item>
       <div v-if="showMoreDetails">
         <el-form-item label="Duration" label-width="110px" prop="durationInMinute">
-          <el-input-number v-model="form.durationInMinute" placeholder="70" autocomplete="off" :min="1"
-            :disabled="editting || !active" :controls="false" />
+          <el-input-number
+            v-model="form.durationInMinute"
+            placeholder="70"
+            autocomplete="off"
+            :min="1"
+            :disabled="editting || !active"
+            :controls="false"
+          />
         </el-form-item>
         <el-form-item label="Pay for lecture" label-width="110px" prop="payForLecture">
-          <el-input-number v-model="form.payForLecture" placeholder="80,000" autocomplete="off" :min="0"
-            :controls="false" :disabled="!active" />
+          <el-input-number
+            v-model="form.payForLecture"
+            placeholder="80,000"
+            autocomplete="off"
+            :min="0"
+            :controls="false"
+            :disabled="!active"
+          />
         </el-form-item>
       </div>
     </el-form>
     <template #footer>
       <div class="dialog-footer">
         <el-button @click="visible = false">Cancel</el-button>
-        <el-button v-show="editting && active" @click="stopClass(props.id!)" :icon="IconBan">Stop</el-button>
-        <el-button type="primary" @click="submit" :loading="submitting" :icon="IconSquareRoundedCheck"
-          :disabled="!active">
+        <el-button v-show="editting && active" @click="stopClass(props.id!)" :icon="IconBan">
+          Stop
+        </el-button>
+        <el-button
+          v-show="editting && !active && form.learned! < form.totalLecture"
+          @click="resumeClass(props.id!)"
+          :icon="IconPlayerPlay"
+        >
+          Resume
+        </el-button>
+        <el-button
+          type="primary"
+          @click="submit"
+          :loading="submitting"
+          :icon="IconSquareRoundedCheck"
+          :disabled="!active"
+        >
           Confirm
         </el-button>
       </div>
@@ -120,11 +204,18 @@ import { times, weekdays } from '@/models/common'
 import type { Student } from '@/models/student'
 import { type NewTutorClass } from '@/models/tutor-class'
 import { fetchStudents } from '@/services/student-service'
-import { addTutorClass, getDetailClass, stopTutorClass, updateTutorClass } from '@/services/tutor-class-service'
+import {
+  addTutorClass,
+  getDetailClass,
+  resumeTutorClass,
+  stopTutorClass,
+  updateTutorClass
+} from '@/services/tutor-class-service'
 import {
   IconBan,
   IconChevronDown,
   IconChevronUp,
+  IconPlayerPlay,
   IconSquareRoundedCheck,
   IconTrash
 } from '@tabler/icons-vue'
@@ -191,6 +282,12 @@ const stopClass = async (id: number) => {
   emit('save')
 }
 
+const resumeClass = async (id: number) => {
+  await resumeTutorClass(id)
+  visible.value = false
+  emit('save')
+}
+
 const submit = async () => {
   submitting.value = true
   try {
@@ -201,7 +298,7 @@ const submit = async () => {
       await addTutorClass({ ...form.value, studentId: form.value.studentId! })
     }
     visible.value = false
-    formRef.value?.resetFields()
+    resetForm()
     emit('save')
   } finally {
     submitting.value = false
@@ -217,6 +314,7 @@ const resetForm = () => {
   students.value = []
   form.value.timeSlots = []
   formRef.value?.resetFields()
+  active.value = true
 }
 
 const timeSlotFilter = (query?: string) => {
