@@ -1,16 +1,16 @@
 import './assets/main.css'
 
 import axios, { AxiosError, type AxiosRequestConfig } from 'axios'
-import ElementPlus, { ElMessage, ElNotification } from 'element-plus'
+import ElementPlus, { ElMessage } from 'element-plus'
 import 'element-plus/dist/index.css'
 import moment from 'moment'
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 import App from './App.vue'
+import { MOBILE_BREAKPOINT } from './configs/layout-config'
 import type { ApiError } from './models/common'
 import type { FetchOptions } from './models/config'
 import router from './routers'
-import { MOBILE_BREAKPOINT } from './configs/layout-config'
 
 const app = createApp(App)
 const pinia = createPinia()
@@ -45,11 +45,9 @@ axios.interceptors.response.use(
 
     if (!(err.config?.fetchOptions as FetchOptions)?.selfHandle) {
       if (window.innerWidth >= MOBILE_BREAKPOINT) {
-        ElNotification({
+        ElMessage({
           type: 'error',
-          title: 'Something went wrong',
-          message: err.response?.data.error,
-          position: 'bottom-right'
+          message: err.response?.data.error
         })
       } else {
         ElMessage.error(err.response?.data.error)

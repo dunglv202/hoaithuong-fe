@@ -41,7 +41,7 @@ export interface Range<T> {
 
 export interface ApiError {
   code?: string
-  message?: string
+  error?: string
 }
 
 export interface Page<T> {

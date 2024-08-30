@@ -168,7 +168,7 @@ import {
 } from '@/services/report-service'
 import { IconCloudDownload, IconMessage } from '@tabler/icons-vue'
 import { AxiosError } from 'axios'
-import { ElCard, ElCol, ElRow, type TableInstance } from 'element-plus'
+import { ElCard, ElCol, ElMessage, ElRow, type TableInstance } from 'element-plus'
 import moment from 'moment'
 import { computed, onMounted, ref, watch } from 'vue'
 
@@ -198,8 +198,16 @@ const exportToGoogleSheet = async () => {
   try {
     await doExportReport(range.value)
   } catch (e) {
-    if (e instanceof AxiosError && (e.response?.data as ApiError).code === 'REQUIRE_GOOGLE_AUTH') {
-      location.href = '/oauth2/authorization/google'
+    if (e instanceof AxiosError) {
+      const err = e.response?.data as ApiError
+      if (err.code === 'REQUIRE_GOOGLE_AUTH') {
+        location.href = '/oauth2/authorization/google'
+      } else {
+        ElMessage({
+          message: err.error,
+          type: 'error'
+        })
+      }
     }
   }
 }
