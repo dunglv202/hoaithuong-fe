@@ -12,7 +12,7 @@
       </el-col>
       <el-col :span="12" :sm="6">
         <el-dropdown trigger="click">
-          <el-button type="primary" :icon="IconCloudDownload" v-loading="exporting">
+          <el-button type="primary" :icon="IconCloudDownload" :loading="exporting">
             Export
             <i class="el-icon-arrow-down el-icon--right"></i>
           </el-button>
@@ -73,8 +73,14 @@
         {{ moment(scope.row.endTime).format('HH:mm') }}
       </template>
     </el-table-column>
-    <el-table-column prop="student" label="Student" width="300" :filters="students" :filter-method="filterStudent"
-      :filtered-value="studentFilter">
+    <el-table-column
+      prop="student"
+      label="Student"
+      width="300"
+      :filters="students"
+      :filter-method="filterStudent"
+      :filtered-value="studentFilter"
+    >
       <template #default="scope">
         <span class="blue student-name" @click="setStudentFilter(scope.row.student)">
           {{ scope.row.student.name }}
@@ -151,11 +157,17 @@
 import AppToolbar from '@/components/AppToolbar.vue'
 import BackButton from '@/components/BackButton.vue'
 import ReportPhasesDialog from '@/components/ReportPhasesDialog.vue'
+import type { ApiError } from '@/models/common'
 import type { Lecture } from '@/models/lecture'
 import type { Report, ReportRange } from '@/models/report'
 import type { Student } from '@/models/student'
-import { exportReport as doExportReport, downloadReport, getReport } from '@/services/report-service'
+import {
+  exportReport as doExportReport,
+  downloadReport,
+  getReport
+} from '@/services/report-service'
 import { IconCloudDownload, IconMessage } from '@tabler/icons-vue'
+import { AxiosError } from 'axios'
 import { ElCard, ElCol, ElRow, type TableInstance } from 'element-plus'
 import moment from 'moment'
 import { computed, onMounted, ref, watch } from 'vue'
@@ -182,6 +194,16 @@ const reportPhaseDialog = ref(false)
 
 const filterStudent = (value: number, row: Lecture) => row.student.id === value
 
+const exportToGoogleSheet = async () => {
+  try {
+    await doExportReport(range.value)
+  } catch (e) {
+    if (e instanceof AxiosError && (e.response?.data as ApiError).code === 'REQUIRE_GOOGLE_AUTH') {
+      location.href = '/oauth2/authorization/google'
+    }
+  }
+}
+
 const exportReport = async (type: 'excel' | 'ggsheet') => {
   exporting.value = true
   try {
@@ -190,7 +212,7 @@ const exportReport = async (type: 'excel' | 'ggsheet') => {
         await downloadReport(range.value)
         break
       case 'ggsheet':
-        await doExportReport(range.value)
+        await exportToGoogleSheet()
         break
     }
   } finally {

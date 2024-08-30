@@ -11,7 +11,8 @@ export const downloadReport = async ({ year, month }: { year: number; month: num
 
 export const exportReport = async ({ year, month }: { year: number; month: number }) => {
   await axios.post('/api/reports/export', null, {
-    params: { year, month }
+    params: { year, month },
+    fetchOptions: { selfHandle: true }
   })
 }
 
