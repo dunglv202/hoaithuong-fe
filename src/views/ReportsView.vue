@@ -170,7 +170,7 @@ import { IconCloudDownload, IconMessage } from '@tabler/icons-vue'
 import { AxiosError } from 'axios'
 import { ElCard, ElCol, ElMessage, ElRow, type TableInstance } from 'element-plus'
 import moment from 'moment'
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, h, onMounted, ref, watch } from 'vue'
 
 const reportMonth = ref(new Date())
 const exporting = ref(false)
@@ -196,7 +196,15 @@ const filterStudent = (value: number, row: Lecture) => row.student.id === value
 
 const exportToGoogleSheet = async () => {
   try {
-    await doExportReport(range.value)
+    const result = await doExportReport(range.value)
+    ElMessage({
+      message: h('p', { class: 'el-message__content' }, [
+        'Exported to Google Sheet. ',
+        h('a', { href: result.url, target: '_blank' }, 'View')
+      ]),
+      type: 'success',
+      duration: 3000
+    })
   } catch (e) {
     if (e instanceof AxiosError) {
       const err = e.response?.data as ApiError

@@ -12,3 +12,7 @@ export interface Report {
   totalStudents: number
   lectures: Lecture[]
 }
+
+export interface SheetExportResult {
+  url: string
+}

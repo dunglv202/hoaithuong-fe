@@ -1,4 +1,4 @@
-import type { Report, ReportRange } from '@/models/report'
+import type { Report, ReportRange, SheetExportResult } from '@/models/report'
 import axios from 'axios'
 
 export const downloadReport = async ({ year, month }: { year: number; month: number }) => {
@@ -10,10 +10,11 @@ export const downloadReport = async ({ year, month }: { year: number; month: num
 }
 
 export const exportReport = async ({ year, month }: { year: number; month: number }) => {
-  await axios.post('/api/reports/export', null, {
+  const resp = await axios.post('/api/reports/export', null, {
     params: { year, month },
     fetchOptions: { selfHandle: true }
   })
+  return resp.data as SheetExportResult
 }
 
 export const getReport = async (range: ReportRange) => {
