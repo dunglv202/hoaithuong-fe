@@ -34,7 +34,9 @@
           </div>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item>Account</el-dropdown-item>
+              <el-dropdown-item @click="goToProfile">
+                Profile
+              </el-dropdown-item>
               <el-dropdown-item @click="signOut">Sign out</el-dropdown-item>
             </el-dropdown-menu>
           </template>
@@ -118,5 +120,9 @@ const totalUnread = ref(0)
 const signOut = async () => {
   await authStore.signOut()
   router.push('/signin')
+}
+
+const goToProfile = () => {
+  router.push('/profile')
 }
 </script>

@@ -41,6 +41,10 @@ const routes: RouteRecordRaw[] = [
     ]
   },
   {
+    path: '/profile',
+    component: () => import('@/views/ProfileView.vue')
+  },
+  {
     path: '/signin',
     component: LoginView
   }
