@@ -11,9 +11,18 @@
         </el-button>
       </el-col>
       <el-col :span="12" :sm="6">
-        <el-button class="btn" type="primary" @click="downloadReport" v-loading="exporting" :icon="IconCloudDownload">
-          Export
-        </el-button>
+        <el-dropdown trigger="click">
+          <el-button type="primary" :icon="IconCloudDownload" v-loading="exporting">
+            Export
+            <i class="el-icon-arrow-down el-icon--right"></i>
+          </el-button>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item @click="exportReport('excel')">Excel</el-dropdown-item>
+              <el-dropdown-item @click="exportReport('ggsheet')">Google Sheet</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
       </el-col>
     </el-row>
   </AppToolbar>
@@ -145,7 +154,7 @@ import ReportPhasesDialog from '@/components/ReportPhasesDialog.vue'
 import type { Lecture } from '@/models/lecture'
 import type { Report, ReportRange } from '@/models/report'
 import type { Student } from '@/models/student'
-import { exportXlsx, getReport } from '@/services/report-service'
+import { exportReport as doExportReport, downloadReport, getReport } from '@/services/report-service'
 import { IconCloudDownload, IconMessage } from '@tabler/icons-vue'
 import { ElCard, ElCol, ElRow, type TableInstance } from 'element-plus'
 import moment from 'moment'
@@ -173,10 +182,17 @@ const reportPhaseDialog = ref(false)
 
 const filterStudent = (value: number, row: Lecture) => row.student.id === value
 
-const downloadReport = async () => {
+const exportReport = async (type: 'excel' | 'ggsheet') => {
   exporting.value = true
   try {
-    await exportXlsx(range.value)
+    switch (type) {
+      case 'excel':
+        await downloadReport(range.value)
+        break
+      case 'ggsheet':
+        await doExportReport(range.value)
+        break
+    }
   } finally {
     exporting.value = false
   }

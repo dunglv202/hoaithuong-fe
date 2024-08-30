@@ -1,12 +1,18 @@
 import type { Report, ReportRange } from '@/models/report'
 import axios from 'axios'
 
-export const exportXlsx = async ({ year, month }: { year: number; month: number }) => {
-  const url = `/api/reports/export?year=${year}&month=${month}`
+export const downloadReport = async ({ year, month }: { year: number; month: number }) => {
+  const url = `/api/reports/download?year=${year}&month=${month}`
   const link = document.createElement('a')
   link.href = url
   link.download = ''
   link.click()
+}
+
+export const exportReport = async ({ year, month }: { year: number; month: number }) => {
+  await axios.post('/api/reports/export', null, {
+    params: { year, month }
+  })
 }
 
 export const getReport = async (range: ReportRange) => {
