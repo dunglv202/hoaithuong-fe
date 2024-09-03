@@ -10,11 +10,33 @@
       <span class="name">{{ profile.displayName }}</span>
     </div>
     <el-form label-position="left">
-      <el-form-item label="Google Sheet ID" label-width="150px">
+      <el-form-item label="General report URL" label-width="150px">
         <el-input
           class="inp"
-          v-model="profile.configs.reportSheetId"
-          placeholder="Enter URL or sheet ID"
+          v-model="profile.configs.generalReportUrl"
+          placeholder="Spreadsheet URL"
+        />
+      </el-form-item>
+      <el-form-item label="Sheet name" label-width="150px">
+        <el-input
+          class="inp"
+          v-model="profile.configs.generalReportSheet"
+          placeholder="Sheet name"
+        />
+      </el-form-item>
+      <el-divider border-style="dashed" />
+      <el-form-item label="Detail report URL" label-width="150px">
+        <el-input
+          class="inp"
+          v-model="profile.configs.detailReportUrl"
+          placeholder="Spreadsheet URL"
+        />
+      </el-form-item>
+      <el-form-item label="Sheet name" label-width="150px">
+        <el-input
+          class="inp"
+          v-model="profile.configs.detailReportSheet"
+          placeholder="Sheet name"
         />
       </el-form-item>
       <el-button :loading="submitting" class="btn-submit" type="primary" @click="save">
@@ -39,7 +61,7 @@
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
-  margin-top: 100px;
+  margin-top: 50px;
 }
 
 .btn-submit {
@@ -59,7 +81,6 @@
 <script lang="ts" setup>
 import { type DetailProfile } from '@/models/user'
 import { getDetailProfile, updateDetailProfile } from '@/services/user-service'
-import { extractSheetId } from '@/utils/report-utils'
 import { IconX } from '@tabler/icons-vue'
 import { ElMessage } from 'element-plus'
 import { onMounted, ref } from 'vue'
@@ -68,7 +89,10 @@ import { useRouter } from 'vue-router'
 const profile = ref<DetailProfile>({
   displayName: '-',
   configs: {
-    reportSheetId: ''
+    generalReportUrl: '',
+    generalReportSheet: '',
+    detailReportUrl: '',
+    detailReportSheet: ''
   }
 })
 const submitting = ref(false)
@@ -77,9 +101,6 @@ const router = useRouter()
 const save = async () => {
   try {
     submitting.value = true
-    if (profile.value.configs.reportSheetId.startsWith('https://')) {
-      profile.value.configs.reportSheetId = extractSheetId(profile.value.configs.reportSheetId)
-    }
     await updateDetailProfile(profile.value)
     ElMessage({
       message: 'Saved successfully',

@@ -4,7 +4,10 @@ export interface User {
 }
 
 export interface UserConfigs {
-  reportSheetId: string
+  generalReportUrl: string
+  generalReportSheet: string
+  detailReportUrl: string
+  detailReportSheet: string
 }
 
 export interface DetailProfile extends User {
