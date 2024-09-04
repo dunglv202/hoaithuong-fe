@@ -3,8 +3,8 @@
     <el-button class="btn-close" :icon="IconX" circle @click="closeView" />
   </div>
   <div class="container">
-    <el-avatar :size="80" :src="profile.avatar">
-      <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png" />
+    <el-avatar :size="80" class="avatar" :src="profile.avatar">
+      <img class="placeholder" src="@/assets/user.svg" alt="avatar" />
     </el-avatar>
     <div>
       <span class="name">{{ profile.displayName }}</span>
@@ -53,6 +53,11 @@
 </template>
 
 <style scoped>
+.avatar img.placeholder {
+  width: 50%;
+  height: 50%;
+}
+
 .nav {
   position: sticky;
   top: 0;

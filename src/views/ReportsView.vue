@@ -73,8 +73,14 @@
         {{ moment(scope.row.endTime).format('HH:mm') }}
       </template>
     </el-table-column>
-    <el-table-column prop="student" label="Student" width="300" :filters="students" :filter-method="filterStudent"
-      :filtered-value="studentFilter">
+    <el-table-column
+      prop="student"
+      label="Student"
+      width="300"
+      :filters="students"
+      :filter-method="filterStudent"
+      :filtered-value="studentFilter"
+    >
       <template #default="scope">
         <span class="blue student-name" @click="setStudentFilter(scope.row.student)">
           {{ scope.row.student.name }}
@@ -123,7 +129,8 @@
 }
 
 .toolbar {
-  margin-bottom: 1rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
   display: flex;
   justify-content: space-between;
 }
@@ -196,9 +203,7 @@ const exportToGoogleSheet = async () => {
   try {
     await doExportReport(range.value)
     ElMessage({
-      message: h('p', { class: 'el-message__content' }, [
-        'Exported to Google Sheet. '
-      ]),
+      message: h('p', { class: 'el-message__content' }, ['Exported to Google Sheet. ']),
       type: 'success',
       duration: 3000
     })

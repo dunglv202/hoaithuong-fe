@@ -37,7 +37,12 @@
 }
 
 .ctn:hover .card {
-  border-color: var(--el-color-primary-light-5);
+  border-color: var(--el-color-primary-light-7);
+}
+
+.ctn:hover .label,
+.ctn:hover .icon {
+  color: var(--el-color-primary);
 }
 
 .icon {
@@ -48,6 +53,7 @@
   .wrapper {
     padding-top: 5px;
     flex-direction: column;
+    gap: 20px;
   }
   .icon {
     color: var(--el-color-primary);

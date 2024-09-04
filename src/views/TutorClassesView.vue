@@ -2,7 +2,12 @@
   <AppToolbar>
     <BackButton />
     <AddButton @click="openNewPopup" />
-    <el-input v-model="search" class="search-box" placeholder="Search..." :prefix-icon="IconSearch" />
+    <el-input
+      v-model="search"
+      class="search-box"
+      placeholder="Search..."
+      :prefix-icon="IconSearch"
+    />
   </AppToolbar>
   <el-table :data="classes" style="width: 100%" v-loading="loading">
     <el-table-column type="index" label="#" width="50" />
@@ -29,19 +34,32 @@
     <el-table-column label="Action" :align="'center'" width="150">
       <template #default="scope">
         <el-button size="default" :icon="IconPencilMinus" @click="openEditPopup(scope.row.id)" />
-        <el-button size="default" :icon="IconCopy" @click="openPopupWithDuplication(scope.row.id)" />
+        <el-button
+          size="default"
+          :icon="IconCopy"
+          @click="openPopupWithDuplication(scope.row.id)"
+        />
       </template>
     </el-table-column>
   </el-table>
-  <AppPagination v-show="!loading" :totalPages="totalPages" :currentPage="currentPage"
-    @pageChange="(page) => (currentPage = page)" />
-  <TutorClassDialog v-model="addClassDialog" :id="selectedClassId"
-    @save="selectedClassId ? loadClasses(search) : loadClasses()" :clone="clone" />
+  <AppPagination
+    v-show="!loading"
+    :totalPages="totalPages"
+    :currentPage="currentPage"
+    @pageChange="(page) => (currentPage = page)"
+  />
+  <TutorClassDialog
+    v-model="addClassDialog"
+    :id="selectedClassId"
+    @save="selectedClassId ? loadClasses(search) : loadClasses()"
+    :clone="clone"
+  />
 </template>
 
 <style scoped>
 .toolbar {
-  margin-bottom: 1rem;
+  margin-top: 2rem;
+  margin-bottom: 3rem;
 }
 
 @media screen and (min-width: 768px) {

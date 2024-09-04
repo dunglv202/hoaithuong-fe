@@ -52,6 +52,30 @@
   width: 100%;
 }
 
+.logo {
+  animation: drop 0.8s;
+}
+
+@keyframes drop {
+  0% {
+    transform-origin: center;
+    opacity: 1;
+  }
+  20% {
+    transform: translate3d(0, 10px, 0) rotate3d(0, 0, 1, -15deg);
+    opacity: 1;
+  }
+  40%,
+  60% {
+    transform: translate3d(0, -20px, 0) rotate3d(0, 0, 1, 5deg);
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+    transform: translate3d(0, 10px, 0) rotate3d(0, 0, 0, 0deg);
+  }
+}
+
 @media screen and (max-width: 768px) {
   .signin-form {
     width: 100%;

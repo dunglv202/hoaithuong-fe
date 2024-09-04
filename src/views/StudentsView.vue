@@ -2,7 +2,12 @@
   <AppToolbar>
     <BackButton />
     <AddButton @click="addStudentDialog = true" />
-    <el-input v-model="search" class="search-box" placeholder="Search..." :prefix-icon="IconSearch" />
+    <el-input
+      v-model="search"
+      class="search-box"
+      placeholder="Search..."
+      :prefix-icon="IconSearch"
+    />
   </AppToolbar>
   <el-table :data="students" style="width: 100%" v-loading="loading">
     <el-table-column type="index" label="#" width="50" />
@@ -16,15 +21,20 @@
     </el-table-column>
     <el-table-column prop="notes" label="Notes" />
   </el-table>
-  <AppPagination v-show="!loading" :totalPages="totalPages" :currentPage="currentPage"
-    @pageChange="(page) => (currentPage = page)" />
+  <AppPagination
+    v-show="!loading"
+    :totalPages="totalPages"
+    :currentPage="currentPage"
+    @pageChange="(page) => (currentPage = page)"
+  />
 
   <NewStudentDialog v-model="addStudentDialog" @save="loadStudents()" />
 </template>
 
 <style scoped>
 .toolbar {
-  margin-bottom: 1rem;
+  margin-top: 2rem;
+  margin-bottom: 3rem;
 }
 
 @media screen and (min-width: 768px) {

@@ -6,8 +6,8 @@
         <el-dropdown trigger="click" :hide-on-click="false">
           <div class="dropdown-trigger hoverable">
             <el-badge :value="totalUnread" :max="9" :show-zero="false">
-              <el-icon :size="19">
-                <IconBellRinging />
+              <el-icon :size="23">
+                <IconConfetti />
               </el-icon>
             </el-badge>
           </div>
@@ -23,10 +23,8 @@
         </span>
         <el-dropdown trigger="click">
           <div class="dropdown-trigger hoverable">
-            <el-avatar class="avatar" :src="authStore.user?.avatar" @error="() => true">
-              <el-icon>
-                <UserFilled />
-              </el-icon>
+            <el-avatar class="avatar" :src="authStore.user?.avatar">
+              <img class="placeholder" src="@/assets/user.svg" alt="avatar" />
             </el-avatar>
             <el-icon :size="18">
               <IconCaretDownFilled />
@@ -34,7 +32,7 @@
           </div>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item @click="goToProfile"> Profile </el-dropdown-item>
+              <el-dropdown-item @click="goToProfile">Profile</el-dropdown-item>
               <el-dropdown-item @click="signOut">Sign out</el-dropdown-item>
             </el-dropdown-menu>
           </template>
@@ -68,6 +66,11 @@ main {
 </style>
 
 <style scoped>
+.avatar img.placeholder {
+  width: 50%;
+  height: 50%;
+}
+
 .header {
   display: flex;
   justify-content: space-between;
@@ -97,8 +100,8 @@ main {
 }
 
 .avatar {
-  height: 40px;
-  width: 40px;
+  height: 44px;
+  width: 44px;
 }
 
 @media screen and (max-width: 768px) {
@@ -120,8 +123,7 @@ main {
 <script lang="ts" setup>
 import NotificationArea from '@/components/NotificationArea.vue'
 import useAuthStore from '@/stores/auth'
-import { UserFilled } from '@element-plus/icons-vue'
-import { IconBellRinging, IconCaretDownFilled } from '@tabler/icons-vue'
+import { IconCaretDownFilled, IconConfetti } from '@tabler/icons-vue'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 

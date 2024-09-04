@@ -1,5 +1,9 @@
 @import './base.css';
 
+html {
+  overflow-y: scroll;
+}
+
 #app {
   max-width: 1280px;
   margin: 0 auto;
@@ -50,6 +54,9 @@ strong {
 }
 
 /* == element plus == */
+.el-avatar {
+  --el-avatar-bg-color: #e4e8f0 !important;
+}
 .el-notification {
   border: none !important;
   box-shadow: 0 1px 10px -2px #374c611a !important;

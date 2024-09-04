@@ -1,6 +1,6 @@
 <template>
   <nav id="main-nav">
-    <el-row :gutter="16" class="container">
+    <el-row :gutter="24" class="container">
       <el-col class="card" :span="12" :lg="6">
         <HomeCard to="/schedule">
           <template #label>Schedule</template>
@@ -52,12 +52,12 @@
 }
 
 .card {
-  margin-bottom: 16px;
+  margin-bottom: 24px;
 }
 
 @media screen and (max-width: 768px) {
   #main-nav {
-    height: 90%;
+    height: 80%;
   }
 }
 </style>
