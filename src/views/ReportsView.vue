@@ -11,8 +11,8 @@
         </el-button>
       </el-col>
       <el-col :span="12" :sm="6">
-        <el-dropdown trigger="click">
-          <el-button type="primary" :icon="IconCloudDownload" :loading="exporting">
+        <el-dropdown class="dropdown-export" trigger="click">
+          <el-button class="btn" type="primary" :icon="IconCloudDownload" :loading="exporting">
             Export
             <i class="el-icon-arrow-down el-icon--right"></i>
           </el-button>
@@ -91,6 +91,10 @@
 </template>
 
 <style>
+.dropdown-export {
+  width: 100%;
+}
+
 .report__figures .el-card__header,
 .report__figures .el-card__body {
   padding: 12px 22px;
