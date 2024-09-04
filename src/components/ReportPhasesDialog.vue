@@ -20,6 +20,7 @@
 .phases-dialog:not(.xs) {
   width: 600px;
   max-height: 80vh;
+  --el-dialog-margin-top: 10vh;
 }
 
 .phase__highlight {
@@ -51,6 +52,7 @@
 <script lang="ts" setup>
 import { MOBILE_BREAKPOINT } from '@/configs/layout-config'
 import type { Lecture } from '@/models/lecture'
+import type { Student } from '@/models/student'
 import { IconCopy } from '@tabler/icons-vue'
 import { ElMessage } from 'element-plus'
 import moment from 'moment'
@@ -78,9 +80,12 @@ const phases = computed<Phase[]>(() => {
   })
 
   return Array.from(lecturesByStudent.values()).map((lectures) => {
-    const student = lectures[0].student.name
+    const student = lectures[0].student
     const month = moment(lectures[0].startTime).format('M')
-    const days = lectures.map((lec) => moment(lec.startTime)).sort((a, b) => a.diff(b)).map((m) => m.format('D/M'))
+    const days = lectures
+      .map((lec) => moment(lec.startTime))
+      .sort((a, b) => a.diff(b))
+      .map((m) => m.format('D/M'))
     return {
       text: generatePhase(student, month, days),
       html: generatePhase(student, month, days, true)
@@ -88,13 +93,14 @@ const phases = computed<Phase[]>(() => {
   })
 })
 
-const generatePhase = (student: string, month: string, days: string[], html?: boolean) => {
-  const text = `Em xin được thông báo số buổi học của <highlight>${student}</highlight> trong tháng ${month} ạ. Tháng ${month} con học được <highlight>${days.length} buổi</highlight> (${days.join(', ')}). _ xác nhận giúp em với ạ`
+const generatePhase = (student: Student, month: string, days: string[], html?: boolean) => {
+  const salutation = student.reportTo.salutation == 'MR' ? 'Anh' : 'Chị'
+  const text = `${salutation} <highlight>@${student.reportTo.name}</highlight> ơi. Em xin được thông báo số buổi học của <highlight>${student.name}</highlight> trong tháng ${month}. Tháng ${month} con học được <highlight>${days.length} buổi</highlight> (${days.join(', ')}). ${salutation} xác nhận giúp em với ạ`
 
   return html
     ? text
-      .replaceAll('<highlight>', '<span class="phase__highlight">')
-      .replaceAll('</highlight>', '</span>')
+        .replaceAll('<highlight>', '<span class="phase__highlight">')
+        .replaceAll('</highlight>', '</span>')
     : text.replaceAll('<highlight>', '').replaceAll('</highlight>', '')
 }
 

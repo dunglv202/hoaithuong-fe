@@ -6,7 +6,7 @@
         <el-date-picker v-model="reportMonth" type="month" placeholder="Pick a month" />
       </el-col>
       <el-col :span="12" :sm="6">
-        <el-button class="btn" @click="reportPhaseDialog = true" :icon="IconMessage">
+        <el-button class="btn" @click="openReportPhaseDialog" :icon="IconMessage">
           Report
         </el-button>
       </el-col>
@@ -257,6 +257,17 @@ const setStudentFilter = (student: Student) => {
     column: (tableRef.value?.columns as unknown as any[])[4],
     values: studentFilter.value
   })
+}
+
+const openReportPhaseDialog = () => {
+  if (report.value?.lectures?.length) {
+    reportPhaseDialog.value = true
+  } else {
+    ElMessage({
+      message: 'No lectures found',
+      type: 'warning'
+    })
+  }
 }
 
 onMounted(refreshReport)
