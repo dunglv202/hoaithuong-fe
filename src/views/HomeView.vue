@@ -1,7 +1,7 @@
 <template>
   <nav id="main-nav">
     <el-row :gutter="16" class="container">
-      <el-col class="card" :span="24" :sm="12" :lg="6">
+      <el-col class="card" :span="12" :lg="6">
         <HomeCard to="/schedule">
           <template #label>Schedule</template>
           <template #icon>
@@ -9,7 +9,7 @@
           </template>
         </HomeCard>
       </el-col>
-      <el-col class="card" :span="24" :sm="12" :lg="6">
+      <el-col class="card" :span="12" :lg="6">
         <HomeCard to="/students">
           <template #label>Students</template>
           <template #icon>
@@ -17,7 +17,7 @@
           </template>
         </HomeCard>
       </el-col>
-      <el-col class="card" :span="24" :sm="12" :lg="6">
+      <el-col class="card" :span="12" :lg="6">
         <HomeCard to="/classes">
           <template #label>Classes</template>
           <template #icon>
@@ -25,7 +25,7 @@
           </template>
         </HomeCard>
       </el-col>
-      <el-col class="card" :span="24" :sm="12" :lg="6">
+      <el-col class="card" :span="12" :lg="6">
         <HomeCard to="/reports">
           <template #label>Reports</template>
           <template #icon>
@@ -54,9 +54,15 @@
 .card {
   margin-bottom: 16px;
 }
+
+@media screen and (max-width: 768px) {
+  #main-nav {
+    height: 90%;
+  }
+}
 </style>
 
 <script lang="ts" setup>
-import HomeCard from "@/components/HomeCard.vue";
-import { IconCalendarClock, IconReport, IconSchool, IconUsers } from "@tabler/icons-vue";
+import HomeCard from '@/components/HomeCard.vue'
+import { IconCalendarClock, IconReport, IconSchool, IconUsers } from '@tabler/icons-vue'
 </script>

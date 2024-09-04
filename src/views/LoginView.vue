@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="logo">
-      <img src="@/assets/logo.svg" alt="Logo" height="64" />
+      <img src="@/assets/logo.svg" alt="Logo" height="54" />
     </div>
     <el-form
       class="signin-form"
@@ -36,7 +36,7 @@
 <style scoped>
 .container {
   flex-grow: 1;
-  padding-bottom: 10%;
+  padding-bottom: 5%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -44,12 +44,18 @@
 }
 
 .signin-form {
-  width: 300px;
-  margin-top: 1rem;
+  width: 400px;
+  margin-top: 1.5rem;
 }
 
 .signin-btn {
   width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+  .signin-form {
+    width: 100%;
+  }
 }
 </style>
 

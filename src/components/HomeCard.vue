@@ -2,7 +2,7 @@
   <RouterLink class="ctn" @click="$emit('click')" :to="to">
     <el-card class="card">
       <div class="wrapper">
-        <el-icon size="1.25rem">
+        <el-icon class="icon">
           <slot name="icon"></slot>
         </el-icon>
         <el-text class="label" v-if="$slots.label">
@@ -22,8 +22,9 @@
 
 .card,
 .label {
-  color: inherit;
+  color: var(--el-text-color-primary);
   box-shadow: none;
+  user-select: none;
 }
 
 .ctn {
@@ -39,10 +40,24 @@
   border-color: var(--el-color-primary-light-5);
 }
 
+.icon {
+  font-size: 1.3rem;
+}
+
 @media screen and (max-width: 768px) {
   .wrapper {
-    justify-content: center;
-    padding-right: 5px;
+    padding-top: 5px;
+    flex-direction: column;
+  }
+  .icon {
+    color: var(--el-color-primary);
+    font-size: 1.5rem;
+  }
+  .card {
+    border: none;
+  }
+  .label {
+    color: var(--el-text-color-regular);
   }
 }
 </style>

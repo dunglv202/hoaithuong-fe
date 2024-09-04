@@ -15,7 +15,7 @@
             <NotificationArea @unread-change="totalUnread = $event" />
           </template>
         </el-dropdown>
-        <span>
+        <span class="name-area">
           Hi,
           <strong class="name">
             {{ authStore.user?.displayName || 'Anonymous' }}
@@ -23,7 +23,7 @@
         </span>
         <el-dropdown trigger="click">
           <div class="dropdown-trigger hoverable">
-            <el-avatar :size="40" :src="authStore.user?.avatar" @error="() => true">
+            <el-avatar class="avatar" :src="authStore.user?.avatar" @error="() => true">
               <el-icon>
                 <UserFilled />
               </el-icon>
@@ -34,9 +34,7 @@
           </div>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item @click="goToProfile">
-                Profile
-              </el-dropdown-item>
+              <el-dropdown-item @click="goToProfile"> Profile </el-dropdown-item>
               <el-dropdown-item @click="signOut">Sign out</el-dropdown-item>
             </el-dropdown-menu>
           </template>
@@ -78,7 +76,7 @@ main {
 }
 
 .logo {
-  height: 48px;
+  height: 36px;
 }
 
 .menu {
@@ -98,9 +96,23 @@ main {
   gap: 3px;
 }
 
+.avatar {
+  height: 40px;
+  width: 40px;
+}
+
 @media screen and (max-width: 768px) {
+  .name-area {
+    display: none;
+  }
+
   .logo {
-    height: 40px;
+    height: 34px;
+  }
+
+  .avatar {
+    height: 44px;
+    width: 44px;
   }
 }
 </style>
