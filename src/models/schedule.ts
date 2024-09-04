@@ -16,3 +16,8 @@ export interface MinimalSchedule {
   tutorClass: ScheduleClass
   lecture?: ScheduleLecture
 }
+
+export interface NewSchedule {
+  classId: number
+  startTime: Date
+}

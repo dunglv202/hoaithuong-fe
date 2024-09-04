@@ -1,6 +1,7 @@
 import type { Range } from '@/models/common'
-import type { MinimalSchedule } from '@/models/schedule'
+import type { MinimalSchedule, NewSchedule } from '@/models/schedule'
 import axios from 'axios'
+import moment from 'moment'
 
 export const getSchedule = async (range: Range<Date>) => {
   const resp = await axios.get<MinimalSchedule[]>('/api/schedule', {
@@ -10,6 +11,13 @@ export const getSchedule = async (range: Range<Date>) => {
     }
   })
   return resp.data
+}
+
+export const addSchedule = async (schedule: NewSchedule) => {
+  await axios.post('/api/schedule', {
+    ...schedule,
+    startTime: moment(schedule.startTime).format('yyyy-MM-DD HH:mm:ss')
+  })
 }
 
 export const deleteSchedule = async (id: number) => {

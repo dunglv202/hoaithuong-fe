@@ -1,5 +1,5 @@
 <template>
-  <el-dialog v-model="visible" title="Lecture info" width="500">
+  <el-dialog v-model="visible" :title="isFutureTime ? 'Schedule info' : 'Lecture info'" width="500">
     <el-form :model="form" :rules="formRules" ref="formRef">
       <el-form-item label="Student" label-width="110px" prop="classId">
         <el-select v-model="form.classId" filterable remote reserve-keyword placeholder="Enter student's name"
@@ -14,13 +14,13 @@
       <el-form-item label="Start time" label-width="110px" prop="startTime">
         <el-date-picker v-model="form.startTime" type="datetime" format="DD/MM/YYYY HH:mm" :disabled="!!schedule" />
       </el-form-item>
-      <el-form-item label="Topic" label-width="110px" prop="topic">
+      <el-form-item v-show="!isFutureTime" label="Topic" label-width="110px" prop="topic">
         <el-input v-model="form.topic" autocomplete="off" />
       </el-form-item>
-      <el-form-item label="Comment" label-width="110px" prop="comment">
+      <el-form-item v-show="!isFutureTime" label="Comment" label-width="110px" prop="comment">
         <el-input v-model="form.comment" type="textarea" :autosize="{ minRows: 2, maxRows: 4 }" />
       </el-form-item>
-      <el-form-item label="Notes" label-width="110px" prop="notes">
+      <el-form-item v-show="!isFutureTime" label="Notes" label-width="110px" prop="notes">
         <el-input v-model="form.notes" type="textarea" :autosize="{ minRows: 3, maxRows: 6 }" resize="none" />
       </el-form-item>
     </el-form>
@@ -28,9 +28,8 @@
       <div class="dialog-footer">
         <el-button v-if="!!schedule" @click="removeFromSchedule" :icon="IconTrash" />
         <el-button @click="visible = false">Cancel</el-button>
-        <el-button type="primary" @click="submit" :loading="submitting" :icon="IconSquareRoundedCheck"
-          :disabled="form.startTime && form.startTime > new Date()">
-          Confirm
+        <el-button type="primary" @click="submit" :loading="submitting" :icon="IconSquareRoundedCheck">
+          {{ isFutureTime ? 'Save schedule' : 'Save' }}
         </el-button>
       </div>
     </template>
@@ -42,11 +41,11 @@ import LoadingComponent from '@/components/LoadingComponent.vue'
 import type { Schedule } from '@/models/schedule'
 import type { TutorClass } from '@/models/tutor-class'
 import { addNewLecture, updateLecture } from '@/services/lecture-service'
-import { deleteSchedule } from '@/services/schedule-service'
+import { addSchedule, deleteSchedule } from '@/services/schedule-service'
 import { fetchTutorClasses } from '@/services/tutor-class-service'
 import { IconSquareRoundedCheck, IconTrash } from '@tabler/icons-vue'
 import type { FormInstance, FormRules } from 'element-plus'
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 
 interface NewLectureForm {
   classId?: number
@@ -73,10 +72,11 @@ const form = reactive<NewLectureForm>({
   comment: '',
   notes: ''
 })
+const isFutureTime = computed(() => form.startTime && form.startTime > new Date())
 const formRules = reactive<FormRules<NewLectureForm>>({
   classId: [{ required: true, message: 'Class is required', trigger: 'change' }],
   startTime: [{ required: true, message: 'Start time is required', trigger: 'change' }],
-  topic: [{ required: true, message: 'Topic is required', trigger: 'change' }]
+  topic: [{ required: !isFutureTime.value, message: 'Topic is required', trigger: 'change' }]
 })
 const formRef = ref<FormInstance>()
 const tutorClasses = ref<TutorClass[]>(props.schedule ? [props.schedule.tutorClass] : [])
@@ -97,22 +97,32 @@ const submit = async () => {
   submitting.value = true
   try {
     await formRef.value?.validate()
-    if (!props.schedule?.lecture) {
-      await addNewLecture({
+    if (isFutureTime.value) {
+      console.log(isFutureTime)
+      // save as schedule
+      await addSchedule({
         classId: form.classId!,
-        startTime: !props.schedule ? form.startTime : undefined,
-        topic: form.topic,
-        comment: form.comment,
-        notes: form.notes,
-        scheduleId: props.schedule?.id
+        startTime: form.startTime!
       })
     } else {
-      await updateLecture({
-        id: props.schedule.lecture.id,
-        topic: form.topic,
-        comment: form.comment,
-        notes: form.notes
-      })
+      // save as lecture
+      if (!props.schedule?.lecture) {
+        await addNewLecture({
+          classId: form.classId!,
+          startTime: !props.schedule ? form.startTime : undefined,
+          topic: form.topic,
+          comment: form.comment,
+          notes: form.notes,
+          scheduleId: props.schedule?.id
+        })
+      } else {
+        await updateLecture({
+          id: props.schedule.lecture.id,
+          topic: form.topic,
+          comment: form.comment,
+          notes: form.notes
+        })
+      }
     }
     visible.value = false
     formRef.value?.resetFields()
