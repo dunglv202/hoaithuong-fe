@@ -1,5 +1,5 @@
 import { type Page, type Pagination } from '@/models/common'
-import type { NewStudent, Student } from '@/models/student'
+import type { NewStudent, Student, UpdatedStudent } from '@/models/student'
 import axios from 'axios'
 
 export const addStudent = async (student: NewStudent) => {
@@ -12,4 +12,8 @@ export const fetchStudents = async (keyword?: string, pagination?: Pagination) =
       params: { ...pagination, keyword }
     })
   ).data
+}
+
+export const updateStudent = async (id: number, student: UpdatedStudent) => {
+  await axios.put(`/api/students/${id}`, { ...student, id })
 }
