@@ -86,9 +86,11 @@
 <script lang="ts" setup>
 import useAuthStore from '@/stores/auth'
 import { IconBrandGoogleFilled } from '@tabler/icons-vue'
-import { reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
+import { onMounted, reactive, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
+const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
 
@@ -111,4 +113,11 @@ const handleSignIn = async () => {
 const handleSignInWithGoogle = () => {
   location.href = '/oauth2/authorization/google'
 }
+
+onMounted(() => {
+  if (route.query.err) {
+    ElMessage.error(route.query.err as string)
+    router.replace({ query: {} })
+  }
+})
 </script>
