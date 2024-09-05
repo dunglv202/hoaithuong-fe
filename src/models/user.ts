@@ -15,6 +15,7 @@ export interface DetailProfile extends User {
 }
 
 export interface UpdatedDetailProfile {
+  displayName: string
   configs: UserConfigs
 }
 

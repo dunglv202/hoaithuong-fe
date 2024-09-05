@@ -13,24 +13,51 @@
         </el-icon>
       </div>
     </div>
-    <div>
-      <span class="name">{{ profile.displayName }}</span>
+    <div class="name-container">
+      <h2 class="name" contenteditable="true" ref="nameElement">
+        {{ profile.displayName }}
+      </h2>
+      <el-icon class="icon__edit-name" :size="18">
+        <IconPencil />
+      </el-icon>
     </div>
     <el-form v-loading="fetching" class="profile-form" :label-position="labelPosition">
       <el-form-item label="General report URL" label-width="150px">
-        <el-input class="inp" v-model="profile.configs.generalReportUrl" placeholder="Spreadsheet URL" />
+        <el-input
+          class="inp"
+          v-model="profile.configs.generalReportUrl"
+          placeholder="Spreadsheet URL"
+        />
       </el-form-item>
       <el-form-item label="Sheet name" label-width="150px">
-        <el-input class="inp" v-model="profile.configs.generalReportSheet" placeholder="Sheet name" />
+        <el-input
+          class="inp"
+          v-model="profile.configs.generalReportSheet"
+          placeholder="Sheet name"
+        />
       </el-form-item>
       <el-divider border-style="dashed" />
       <el-form-item label="Detail report URL" label-width="150px">
-        <el-input class="inp" v-model="profile.configs.detailReportUrl" placeholder="Spreadsheet URL" />
+        <el-input
+          class="inp"
+          v-model="profile.configs.detailReportUrl"
+          placeholder="Spreadsheet URL"
+        />
       </el-form-item>
       <el-form-item label="Sheet name" label-width="150px">
-        <el-input class="inp" v-model="profile.configs.detailReportSheet" placeholder="Sheet name" />
+        <el-input
+          class="inp"
+          v-model="profile.configs.detailReportSheet"
+          placeholder="Sheet name"
+        />
       </el-form-item>
-      <el-button :loading="submitting" class="btn-submit" type="primary" @click="save" :icon="IconSquareRoundedCheck">
+      <el-button
+        :loading="submitting"
+        class="btn-submit"
+        type="primary"
+        @click="save"
+        :icon="IconSquareRoundedCheck"
+      >
         Save
       </el-button>
     </el-form>
@@ -53,6 +80,24 @@
   align-items: center;
   gap: 1.5rem;
   margin-top: 50px;
+}
+
+.name-container {
+  position: relative;
+  display: flex;
+  left: -5px;
+}
+
+.name {
+  padding: 5px 10px;
+  outline: none;
+}
+
+.icon__edit-name {
+  cursor: pointer;
+  position: absolute;
+  left: calc(100% - 5px);
+  top: 12px;
 }
 
 .btn-submit {
@@ -124,7 +169,8 @@
 import { MOBILE_BREAKPOINT } from '@/configs/layout-config'
 import { type DetailProfile } from '@/models/user'
 import { getDetailProfile, updateDetailProfile, uploadAvatar } from '@/services/user-service'
-import { IconCamera, IconSquareRoundedCheck, IconX } from '@tabler/icons-vue'
+import useAuthStore from '@/stores/auth'
+import { IconCamera, IconPencil, IconSquareRoundedCheck, IconX } from '@tabler/icons-vue'
 import { ElMessage } from 'element-plus'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -143,17 +189,23 @@ const router = useRouter()
 const labelPosition = ref('left')
 const fetching = ref(false)
 const uploading = ref(false)
+const nameElement = ref<HTMLElement | null>(null)
+const authStore = useAuthStore()
 
 const save = async () => {
   try {
     submitting.value = true
-    await updateDetailProfile(profile.value)
+    await updateDetailProfile({
+      ...profile.value,
+      displayName: nameElement.value!.innerText!.trim()
+    })
     ElMessage({
       message: 'Saved successfully',
       type: 'success'
     })
   } finally {
     submitting.value = false
+    authStore.fetchUserInfo()
   }
 }
 
@@ -173,6 +225,7 @@ const changeAvatar = () => {
       profile.value.avatar = newAvatar
     } finally {
       uploading.value = false
+      authStore.fetchUserInfo()
     }
   }
   uploader.click()

@@ -49,7 +49,8 @@ const useAuthStore = defineStore('auth', () => {
     isSignedIn,
     signIn,
     signOut,
-    initialize
+    initialize,
+    fetchUserInfo
   }
 })
 

@@ -7,8 +7,13 @@
       <el-button class="btn__mark-all-read" link @click="readAll"> Mark all as read </el-button>
     </div>
     <ul class="noti-list">
-      <li class="noti" :class="noti.read ? 'read' : undefined" v-for="noti in notifications" :key="noti.id"
-        @click="!noti.read ? readNoti(noti) : undefined">
+      <li
+        class="noti"
+        :class="noti.read ? 'read' : undefined"
+        v-for="noti in notifications"
+        :key="noti.id"
+        @click="!noti.read ? readNoti(noti) : undefined"
+      >
         <el-badge is-dot :hidden="noti.read">
           <div>{{ noti.content }}</div>
           <span class="timediff">{{ formatAsDiff(new Date(noti.timestamp)) }}</span>
