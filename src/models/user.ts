@@ -17,3 +17,7 @@ export interface DetailProfile extends User {
 export interface UpdatedDetailProfile {
   configs: UserConfigs
 }
+
+export interface UpdateAvatarResp {
+  url: string
+}
