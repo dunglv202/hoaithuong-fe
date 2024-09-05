@@ -3,7 +3,7 @@
     <el-button class="btn-close" :icon="IconX" circle @click="closeView" />
   </div>
   <div class="container">
-    <div class="avatar__container" @click="changeAvatar">
+    <div v-loading="uploading" class="avatar__container" @click="changeAvatar">
       <el-avatar class="avatar" :src="profile.avatar" alt="avatar">
         <img class="placeholder" src="@/assets/user.svg" alt="avatar" />
       </el-avatar>
@@ -64,6 +64,7 @@
 }
 
 .avatar__container {
+  --el-mask-color: rgba(255, 255, 255, 0.2);
   position: relative;
   height: 100px;
   width: 100px;
@@ -141,6 +142,7 @@ const submitting = ref(false)
 const router = useRouter()
 const labelPosition = ref('left')
 const fetching = ref(false)
+const uploading = ref(false)
 
 const save = async () => {
   try {
@@ -162,10 +164,16 @@ const closeView = () => {
 const changeAvatar = () => {
   const uploader = document.createElement('input')
   uploader.type = 'file'
-  uploader.accept = 'image/jpeg,image/png,image/webp'
+  uploader.accept = 'image/jpeg,image/png,image/webp,image/gif'
   uploader.onchange = async (e) => {
-    const file = (e.target as HTMLInputElement).files?.[0]
-    await uploadAvatar(file!)
+    try {
+      uploading.value = true
+      const file = (e.target as HTMLInputElement).files?.[0]
+      const { url: newAvatar } = await uploadAvatar(file!)
+      profile.value.avatar = newAvatar
+    } finally {
+      uploading.value = false
+    }
   }
   uploader.click()
 }

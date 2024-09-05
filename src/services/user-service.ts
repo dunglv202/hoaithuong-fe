@@ -1,4 +1,4 @@
-import { type DetailProfile, type UpdatedDetailProfile } from '@/models/user'
+import { type DetailProfile, type UpdateAvatarResp, type UpdatedDetailProfile } from '@/models/user'
 import axios from 'axios'
 
 export const getDetailProfile = async () => {
@@ -10,5 +10,5 @@ export const updateDetailProfile = async (profile: UpdatedDetailProfile) => {
 }
 
 export const uploadAvatar = async (file: File) => {
-  await axios.postForm('/api/me/upload_avatar', { file })
+  return (await axios.postForm<UpdateAvatarResp>('/api/me/upload_avatar', { file })).data
 }
