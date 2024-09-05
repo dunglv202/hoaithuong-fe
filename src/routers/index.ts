@@ -1,17 +1,14 @@
-import UserLayout from '@/layouts/UserLayout.vue'
 import useAuthStore from '@/stores/auth'
-import HomeView from '@/views/HomeView.vue'
-import LoginView from '@/views/LoginView.vue'
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    component: UserLayout,
+    component: () => import('@/layouts/UserLayout.vue'),
     children: [
       {
         path: '',
-        component: HomeView
+        component: () => import('@/views/HomeView.vue')
       },
       {
         path: 'students',
@@ -46,7 +43,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/signin',
-    component: LoginView
+    component: () => import('@/views/LoginView.vue')
   }
 ]
 

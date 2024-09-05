@@ -45,26 +45,6 @@
   </main>
 </template>
 
-<style>
-#app {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-main {
-  flex-grow: 1;
-  position: relative;
-  padding: 2rem 0;
-}
-
-@media screen and (max-width: 768px) {
-  main {
-    padding: 1rem 0;
-  }
-}
-</style>
-
 <style scoped>
 .avatar img.placeholder {
   width: 50%;

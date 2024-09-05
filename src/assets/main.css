@@ -13,11 +13,23 @@ body {
   margin: 0 auto;
   padding: 2rem;
   font-weight: normal;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex-grow: 1;
+  position: relative;
+  padding: 2rem 0;
 }
 
 @media screen and (max-width: 768px) {
   #app {
     padding: 1rem;
+  }
+  main {
+    padding: 1rem 0;
   }
 }
 
