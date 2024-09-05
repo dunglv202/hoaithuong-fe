@@ -8,3 +8,7 @@ export const getDetailProfile = async () => {
 export const updateDetailProfile = async (profile: UpdatedDetailProfile) => {
   return (await axios.put<DetailProfile>('/api/me/profile', profile)).data
 }
+
+export const uploadAvatar = async (file: File) => {
+  await axios.postForm('/api/me/upload_avatar', { file })
+}

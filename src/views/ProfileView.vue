@@ -3,49 +3,34 @@
     <el-button class="btn-close" :icon="IconX" circle @click="closeView" />
   </div>
   <div class="container">
-    <el-avatar :size="80" class="avatar" :src="profile.avatar">
-      <img class="placeholder" src="@/assets/user.svg" alt="avatar" />
-    </el-avatar>
+    <div class="avatar__container" @click="changeAvatar">
+      <el-avatar class="avatar" :src="profile.avatar" alt="avatar">
+        <img class="placeholder" src="@/assets/user.svg" alt="avatar" />
+      </el-avatar>
+      <div class="avatar__overlay">
+        <el-icon :size="23">
+          <IconCamera />
+        </el-icon>
+      </div>
+    </div>
     <div>
       <span class="name">{{ profile.displayName }}</span>
     </div>
     <el-form v-loading="fetching" class="profile-form" :label-position="labelPosition">
       <el-form-item label="General report URL" label-width="150px">
-        <el-input
-          class="inp"
-          v-model="profile.configs.generalReportUrl"
-          placeholder="Spreadsheet URL"
-        />
+        <el-input class="inp" v-model="profile.configs.generalReportUrl" placeholder="Spreadsheet URL" />
       </el-form-item>
       <el-form-item label="Sheet name" label-width="150px">
-        <el-input
-          class="inp"
-          v-model="profile.configs.generalReportSheet"
-          placeholder="Sheet name"
-        />
+        <el-input class="inp" v-model="profile.configs.generalReportSheet" placeholder="Sheet name" />
       </el-form-item>
       <el-divider border-style="dashed" />
       <el-form-item label="Detail report URL" label-width="150px">
-        <el-input
-          class="inp"
-          v-model="profile.configs.detailReportUrl"
-          placeholder="Spreadsheet URL"
-        />
+        <el-input class="inp" v-model="profile.configs.detailReportUrl" placeholder="Spreadsheet URL" />
       </el-form-item>
       <el-form-item label="Sheet name" label-width="150px">
-        <el-input
-          class="inp"
-          v-model="profile.configs.detailReportSheet"
-          placeholder="Sheet name"
-        />
+        <el-input class="inp" v-model="profile.configs.detailReportSheet" placeholder="Sheet name" />
       </el-form-item>
-      <el-button
-        :loading="submitting"
-        class="btn-submit"
-        type="primary"
-        @click="save"
-        :icon="IconSquareRoundedCheck"
-      >
+      <el-button :loading="submitting" class="btn-submit" type="primary" @click="save" :icon="IconSquareRoundedCheck">
         Save
       </el-button>
     </el-form>
@@ -53,11 +38,6 @@
 </template>
 
 <style scoped>
-.avatar img.placeholder {
-  width: 50%;
-  height: 50%;
-}
-
 .nav {
   position: sticky;
   top: 0;
@@ -83,6 +63,45 @@
   width: 300px;
 }
 
+.avatar__container {
+  position: relative;
+  height: 100px;
+  width: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  user-select: none;
+}
+
+.avatar__container:hover .avatar__overlay {
+  opacity: 1;
+}
+
+.avatar__overlay {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  color: white;
+  opacity: 0;
+  transition: 0.1s ease-in;
+}
+
+.avatar {
+  height: 100%;
+  width: 100%;
+}
+
+.avatar img.placeholder {
+  width: 50%;
+  height: 50%;
+}
+
 .name {
   font-size: 1.25rem;
   font-weight: 500;
@@ -103,8 +122,8 @@
 <script lang="ts" setup>
 import { MOBILE_BREAKPOINT } from '@/configs/layout-config'
 import { type DetailProfile } from '@/models/user'
-import { getDetailProfile, updateDetailProfile } from '@/services/user-service'
-import { IconSquareRoundedCheck, IconX } from '@tabler/icons-vue'
+import { getDetailProfile, updateDetailProfile, uploadAvatar } from '@/services/user-service'
+import { IconCamera, IconSquareRoundedCheck, IconX } from '@tabler/icons-vue'
 import { ElMessage } from 'element-plus'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -138,6 +157,17 @@ const save = async () => {
 
 const closeView = () => {
   router.back()
+}
+
+const changeAvatar = () => {
+  const uploader = document.createElement('input')
+  uploader.type = 'file'
+  uploader.accept = 'image/jpeg,image/png,image/webp'
+  uploader.onchange = async (e) => {
+    const file = (e.target as HTMLInputElement).files?.[0]
+    await uploadAvatar(file!)
+  }
+  uploader.click()
 }
 
 onMounted(async () => {
