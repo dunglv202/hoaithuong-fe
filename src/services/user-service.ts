@@ -1,3 +1,4 @@
+import type { SpreadsheetInfo } from '@/models/sheet'
 import { type DetailProfile, type UpdateAvatarResp, type UpdatedDetailProfile } from '@/models/user'
 import axios from 'axios'
 
@@ -11,4 +12,8 @@ export const updateDetailProfile = async (profile: UpdatedDetailProfile) => {
 
 export const uploadAvatar = async (file: File) => {
   return (await axios.postForm<UpdateAvatarResp>('/api/me/upload_avatar', { file })).data
+}
+
+export const getSpreadSheetInfo = async (url: string) => {
+  return (await axios.get<SpreadsheetInfo>('/api/me/spreadsheets/info', { params: { url } })).data
 }

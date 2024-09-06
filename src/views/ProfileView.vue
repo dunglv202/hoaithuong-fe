@@ -31,17 +31,23 @@
         title="You need to sign in with your Google account before making changes to below configs" show-icon
         :closable="false" />
       <el-form-item label="General report" :label-width="LABEL_WIDTH">
-        <el-input class="inp" v-model="profile.configs.generalReportUrl" placeholder="Spreadsheet URL" />
+        <el-input class="inp" v-model="profile.configs.generalReportUrl" placeholder="Spreadsheet URL"
+          spellcheck="false" />
       </el-form-item>
       <el-form-item label="Sheet name" :label-width="LABEL_WIDTH">
-        <el-input class="inp" v-model="profile.configs.generalReportSheet" placeholder="Sheet name" />
+        <el-select class="inp" v-model="profile.configs.generalReportSheet" filterable placeholder="-- Select --">
+          <el-option v-for="item in generalSsInfo?.sheets" :key="item" :label="item" :value="item" />
+        </el-select>
       </el-form-item>
       <el-divider border-style="dashed" />
       <el-form-item label="Detail report" :label-width="LABEL_WIDTH">
-        <el-input class="inp" v-model="profile.configs.detailReportUrl" placeholder="Spreadsheet URL" />
+        <el-input class="inp" v-model="profile.configs.detailReportUrl" placeholder="Spreadsheet URL"
+          spellcheck="false" />
       </el-form-item>
       <el-form-item label="Sheet name" :label-width="LABEL_WIDTH">
-        <el-input class="inp" v-model="profile.configs.detailReportSheet" placeholder="Sheet name" />
+        <el-select class="inp" v-model="profile.configs.detailReportSheet" filterable placeholder="-- Select --">
+          <el-option v-for="item in detailSsInfo?.sheets" :key="item" :label="item" :value="item" />
+        </el-select>
       </el-form-item>
       <el-button :loading="submitting" class="btn-submit" type="primary" @click="save" :icon="IconSquareRoundedCheck">
         Save
@@ -158,12 +164,13 @@
 <script lang="ts" setup>
 import { MOBILE_BREAKPOINT } from '@/configs/layout-config'
 import type { ThemeApprearance } from '@/models/common'
+import type { SpreadsheetInfo } from '@/models/sheet'
 import { type DetailProfile } from '@/models/user'
-import { getDetailProfile, updateDetailProfile, uploadAvatar } from '@/services/user-service'
+import { getDetailProfile, getSpreadSheetInfo, updateDetailProfile, uploadAvatar } from '@/services/user-service'
 import useAuthStore from '@/stores/auth'
 import { IconCamera, IconPencil, IconSquareRoundedCheck, IconX } from '@tabler/icons-vue'
 import { ElMessage } from 'element-plus'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 const LABEL_WIDTH = '120px';
@@ -180,6 +187,8 @@ const fetching = ref(false)
 const uploading = ref(false)
 const nameElement = ref<HTMLElement | null>(null)
 const authStore = useAuthStore()
+const generalSsInfo = ref<SpreadsheetInfo>()
+const detailSsInfo = ref<SpreadsheetInfo>()
 
 const save = async () => {
   try {
@@ -230,6 +239,32 @@ onMounted(async () => {
     fetching.value = false
   }
 })
+
+watch(
+  () => profile.value.configs.generalReportUrl,
+  async (url) => {
+    let info: SpreadsheetInfo | undefined
+    try {
+      if (url) info = await getSpreadSheetInfo(url);
+    } finally {
+      generalSsInfo.value = info
+      if (!url || !info?.sheets.length) profile.value.configs.generalReportSheet = ''
+    }
+  }
+)
+
+watch(
+  () => profile.value.configs.detailReportUrl,
+  async (url) => {
+    let info: SpreadsheetInfo | undefined
+    try {
+      if (url) info = await getSpreadSheetInfo(url);
+    } finally {
+      detailSsInfo.value = info
+      if (!url || !info?.sheets.length) profile.value.configs.detailReportSheet = ''
+    }
+  }
+)
 
 window.addEventListener('resize', () => {
   labelPosition.value = window.innerWidth < MOBILE_BREAKPOINT ? 'top' : 'left'
