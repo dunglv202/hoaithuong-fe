@@ -1,13 +1,16 @@
+import type { ThemeApprearance } from './common'
+
 export interface User {
   displayName?: string
   avatar?: string
 }
 
 export interface UserConfigs {
-  generalReportUrl: string
-  generalReportSheet: string
-  detailReportUrl: string
-  detailReportSheet: string
+  themeApprearance?: ThemeApprearance
+  generalReportUrl?: string
+  generalReportSheet?: string
+  detailReportUrl?: string
+  detailReportSheet?: string
 }
 
 export interface DetailProfile extends User {

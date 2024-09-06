@@ -57,3 +57,5 @@ export interface Pagination {
 export interface FutureUpdate {
   effectiveDate: Date | string
 }
+
+export type ThemeApprearance = 'LIGHT' | 'DARK' | 'SYSTEM' | 'AUTO'

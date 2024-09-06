@@ -22,42 +22,28 @@
       </el-icon>
     </div>
     <el-form v-loading="fetching" class="profile-form" :label-position="labelPosition">
-      <el-form-item label="General report URL" label-width="150px">
-        <el-input
-          class="inp"
-          v-model="profile.configs.generalReportUrl"
-          placeholder="Spreadsheet URL"
-        />
+      <el-form-item label="Appearance" :label-width="LABEL_WIDTH">
+        <el-radio-group v-model="profile.configs.themeApprearance">
+          <el-radio-button v-for="option in APPEARANCE_OPTIONS" :key="option" :value="option" :label="option" />
+        </el-radio-group>
       </el-form-item>
-      <el-form-item label="Sheet name" label-width="150px">
-        <el-input
-          class="inp"
-          v-model="profile.configs.generalReportSheet"
-          placeholder="Sheet name"
-        />
+      <el-alert class="alert"
+        title="You need to sign in with your Google account before making changes to below configs" show-icon
+        :closable="false" />
+      <el-form-item label="General report" :label-width="LABEL_WIDTH">
+        <el-input class="inp" v-model="profile.configs.generalReportUrl" placeholder="Spreadsheet URL" />
+      </el-form-item>
+      <el-form-item label="Sheet name" :label-width="LABEL_WIDTH">
+        <el-input class="inp" v-model="profile.configs.generalReportSheet" placeholder="Sheet name" />
       </el-form-item>
       <el-divider border-style="dashed" />
-      <el-form-item label="Detail report URL" label-width="150px">
-        <el-input
-          class="inp"
-          v-model="profile.configs.detailReportUrl"
-          placeholder="Spreadsheet URL"
-        />
+      <el-form-item label="Detail report" :label-width="LABEL_WIDTH">
+        <el-input class="inp" v-model="profile.configs.detailReportUrl" placeholder="Spreadsheet URL" />
       </el-form-item>
-      <el-form-item label="Sheet name" label-width="150px">
-        <el-input
-          class="inp"
-          v-model="profile.configs.detailReportSheet"
-          placeholder="Sheet name"
-        />
+      <el-form-item label="Sheet name" :label-width="LABEL_WIDTH">
+        <el-input class="inp" v-model="profile.configs.detailReportSheet" placeholder="Sheet name" />
       </el-form-item>
-      <el-button
-        :loading="submitting"
-        class="btn-submit"
-        type="primary"
-        @click="save"
-        :icon="IconSquareRoundedCheck"
-      >
+      <el-button :loading="submitting" class="btn-submit" type="primary" @click="save" :icon="IconSquareRoundedCheck">
         Save
       </el-button>
     </el-form>
@@ -102,10 +88,6 @@
 
 .btn-submit {
   width: 100%;
-}
-
-.inp {
-  width: 300px;
 }
 
 .avatar__container {
@@ -153,6 +135,14 @@
   font-weight: 500;
 }
 
+.inp {
+  min-width: 300px;
+}
+
+.alert {
+  margin-bottom: 20px;
+}
+
 @media screen and (max-width: 768px) {
   .profile-form {
     width: 100%;
@@ -167,6 +157,7 @@
 
 <script lang="ts" setup>
 import { MOBILE_BREAKPOINT } from '@/configs/layout-config'
+import type { ThemeApprearance } from '@/models/common'
 import { type DetailProfile } from '@/models/user'
 import { getDetailProfile, updateDetailProfile, uploadAvatar } from '@/services/user-service'
 import useAuthStore from '@/stores/auth'
@@ -175,14 +166,12 @@ import { ElMessage } from 'element-plus'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
+const LABEL_WIDTH = '120px';
+const APPEARANCE_OPTIONS: ThemeApprearance[] = ['AUTO', 'LIGHT', 'DARK', 'SYSTEM']
+
 const profile = ref<DetailProfile>({
   displayName: '-',
-  configs: {
-    generalReportUrl: '',
-    generalReportSheet: '',
-    detailReportUrl: '',
-    detailReportSheet: ''
-  }
+  configs: {}
 })
 const submitting = ref(false)
 const router = useRouter()
@@ -236,6 +225,7 @@ onMounted(async () => {
   try {
     fetching.value = true
     profile.value = await getDetailProfile()
+    profile.value.configs.themeApprearance = profile.value.configs.themeApprearance || 'AUTO'
   } finally {
     fetching.value = false
   }
