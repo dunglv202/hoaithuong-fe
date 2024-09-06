@@ -22,34 +22,61 @@
       </el-icon>
     </div>
     <el-form v-loading="fetching" class="profile-form" :label-position="labelPosition">
-      <el-form-item label="Appearance" :label-width="LABEL_WIDTH">
-        <el-radio-group v-model="profile.configs.themeApprearance">
-          <el-radio-button v-for="option in APPEARANCE_OPTIONS" :key="option" :value="option" :label="option" />
-        </el-radio-group>
-      </el-form-item>
-      <el-alert class="alert"
-        title="You need to sign in with your Google account before making changes to below configs" show-icon
-        :closable="false" />
+      <el-alert
+        class="alert"
+        title="You need to sign in with your Google account before making changes to below configs"
+        show-icon
+        :closable="false"
+      />
       <el-form-item label="General report" :label-width="LABEL_WIDTH">
-        <el-input class="inp" v-model="profile.configs.generalReportUrl" placeholder="Spreadsheet URL"
-          spellcheck="false" />
+        <el-input
+          class="inp"
+          v-model="profile.configs.generalReportUrl"
+          placeholder="Spreadsheet URL"
+          spellcheck="false"
+        />
       </el-form-item>
       <el-form-item label="Sheet name" :label-width="LABEL_WIDTH">
-        <el-select class="inp" v-model="profile.configs.generalReportSheet" filterable placeholder="-- Select --">
-          <el-option v-for="item in generalSsInfo?.sheets" :key="item" :label="item" :value="item" />
+        <el-select
+          class="inp"
+          v-model="profile.configs.generalReportSheet"
+          filterable
+          placeholder="-- Select --"
+        >
+          <el-option
+            v-for="item in generalSsInfo?.sheets"
+            :key="item"
+            :label="item"
+            :value="item"
+          />
         </el-select>
       </el-form-item>
       <el-divider border-style="dashed" />
       <el-form-item label="Detail report" :label-width="LABEL_WIDTH">
-        <el-input class="inp" v-model="profile.configs.detailReportUrl" placeholder="Spreadsheet URL"
-          spellcheck="false" />
+        <el-input
+          class="inp"
+          v-model="profile.configs.detailReportUrl"
+          placeholder="Spreadsheet URL"
+          spellcheck="false"
+        />
       </el-form-item>
       <el-form-item label="Sheet name" :label-width="LABEL_WIDTH">
-        <el-select class="inp" v-model="profile.configs.detailReportSheet" filterable placeholder="-- Select --">
+        <el-select
+          class="inp"
+          v-model="profile.configs.detailReportSheet"
+          filterable
+          placeholder="-- Select --"
+        >
           <el-option v-for="item in detailSsInfo?.sheets" :key="item" :label="item" :value="item" />
         </el-select>
       </el-form-item>
-      <el-button :loading="submitting" class="btn-submit" type="primary" @click="save" :icon="IconSquareRoundedCheck">
+      <el-button
+        :loading="submitting"
+        class="btn-submit"
+        type="primary"
+        @click="save"
+        :icon="IconSquareRoundedCheck"
+      >
         Save
       </el-button>
     </el-form>
@@ -163,18 +190,21 @@
 
 <script lang="ts" setup>
 import { MOBILE_BREAKPOINT } from '@/configs/layout-config'
-import type { ThemeApprearance } from '@/models/common'
 import type { SpreadsheetInfo } from '@/models/sheet'
 import { type DetailProfile } from '@/models/user'
-import { getDetailProfile, getSpreadSheetInfo, updateDetailProfile, uploadAvatar } from '@/services/user-service'
+import {
+  getDetailProfile,
+  getSpreadSheetInfo,
+  updateDetailProfile,
+  uploadAvatar
+} from '@/services/user-service'
 import useAuthStore from '@/stores/auth'
 import { IconCamera, IconPencil, IconSquareRoundedCheck, IconX } from '@tabler/icons-vue'
 import { ElMessage } from 'element-plus'
 import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
-const LABEL_WIDTH = '120px';
-const APPEARANCE_OPTIONS: ThemeApprearance[] = ['AUTO', 'LIGHT', 'DARK', 'SYSTEM']
+const LABEL_WIDTH = '120px'
 
 const profile = ref<DetailProfile>({
   displayName: '-',
@@ -245,7 +275,7 @@ watch(
   async (url) => {
     let info: SpreadsheetInfo | undefined
     try {
-      if (url) info = await getSpreadSheetInfo(url);
+      if (url) info = await getSpreadSheetInfo(url)
     } finally {
       generalSsInfo.value = info
       if (!url || !info?.sheets.length) profile.value.configs.generalReportSheet = ''
@@ -258,7 +288,7 @@ watch(
   async (url) => {
     let info: SpreadsheetInfo | undefined
     try {
-      if (url) info = await getSpreadSheetInfo(url);
+      if (url) info = await getSpreadSheetInfo(url)
     } finally {
       detailSsInfo.value = info
       if (!url || !info?.sheets.length) profile.value.configs.detailReportSheet = ''
