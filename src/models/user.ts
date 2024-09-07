@@ -1,4 +1,4 @@
-import type { ThemeApprearance } from './common'
+import type { ThemeConfig } from './common'
 
 export interface User {
   displayName?: string
@@ -6,7 +6,7 @@ export interface User {
 }
 
 export interface UserConfigs {
-  themeApprearance?: ThemeApprearance
+  themeApprearance?: ThemeConfig
   generalReportUrl?: string
   generalReportSheet?: string
   detailReportUrl?: string

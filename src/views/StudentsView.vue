@@ -15,7 +15,10 @@
     <el-table-column prop="reportTo.name" label="Report To" />
     <el-table-column prop="active" label="Status" :align="'center'">
       <template #default="scope">
-        <el-tag :class="scope.row.active ? 'active' : 'inactive'">
+        <el-tag
+          :class="scope.row.active ? 'active' : 'inactive'"
+          :type="scope.row.active ? 'primary' : 'danger'"
+        >
           {{ scope.row.active ? 'Active' : 'Inactive' }}
         </el-tag>
       </template>
@@ -51,12 +54,6 @@
   .search-box {
     max-width: 220px;
   }
-}
-
-.inactive {
-  background-color: var(--el-color-danger-light-9);
-  color: var(--el-color-danger);
-  border-color: var(--el-color-danger-light-7);
 }
 </style>
 

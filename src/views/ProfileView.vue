@@ -1,5 +1,5 @@
 <template>
-  <div class="nav">
+  <div>
     <el-button class="btn-close" :icon="IconX" circle @click="closeView" />
   </div>
   <div class="container">
@@ -22,6 +22,16 @@
       </el-icon>
     </div>
     <el-form v-loading="fetching" class="profile-form" :label-position="labelPosition">
+      <el-form-item label="Appearance" :label-width="LABEL_WIDTH">
+        <el-radio-group size="medium" v-model="profile.configs.themeApprearance">
+          <el-radio-button
+            v-for="option in APPEARANCE_OPTIONS"
+            :key="option"
+            :value="option"
+            :label="option"
+          />
+        </el-radio-group>
+      </el-form-item>
       <el-alert
         class="alert"
         title="You need to sign in with your Google account before making changes to below configs"
@@ -84,11 +94,6 @@
 </template>
 
 <style scoped>
-.nav {
-  position: sticky;
-  top: 0;
-}
-
 .btn-close {
   float: right;
 }
@@ -105,6 +110,7 @@
   position: relative;
   display: flex;
   left: -5px;
+  color: var(--el-text-color-primary);
 }
 
 .name {
@@ -190,6 +196,7 @@
 
 <script lang="ts" setup>
 import { MOBILE_BREAKPOINT } from '@/configs/layout-config'
+import type { ThemeConfig } from '@/models/common'
 import type { SpreadsheetInfo } from '@/models/sheet'
 import { type DetailProfile } from '@/models/user'
 import {
@@ -205,6 +212,7 @@ import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 const LABEL_WIDTH = '120px'
+const APPEARANCE_OPTIONS: ThemeConfig[] = ['AUTO', 'LIGHT', 'DARK', 'SYSTEM']
 
 const profile = ref<DetailProfile>({
   displayName: '-',

@@ -21,7 +21,7 @@
           Sign In
         </el-button>
       </el-form-item>
-      <el-divider> Or </el-divider>
+      <el-divider class="divider"> Or </el-divider>
       <el-form-item>
         <el-button @click="handleSignInWithGoogle" class="signin-btn">
           <el-icon :size="22">
@@ -54,6 +54,10 @@
 
 .logo {
   animation: drop 0.8s;
+}
+
+.divider {
+  --el-bg-color: var(--app-bg-color);
 }
 
 @keyframes drop {

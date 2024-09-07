@@ -11,6 +11,73 @@
   --fc-button-hover-border-color: var(--el-color-primary-light-3);
   --fc-button-active-bg-color: var(--el-color-primary-light-5);
   --fc-button-active-border-color: var(--el-color-primary-light-5);
+
+  --app-theme-transition-time: 0.2s;
+  --app-scroll-thumb-color: var(--el-text-color-disabled);
+  --app-scroll-thumb-hover-color: var(--el-text-color-placeholder);
+}
+
+/** == DARK MODE == **/
+[data-theme='dark'] {
+  --app-bg-color: #18191a;
+  --app-bg-color-light: #242526;
+  --app-bg-color-light-3: #3a3b3c;
+  --el-bg-color-overlay: var(--app-bg-color-light) !important;
+  --el-border-color-light: var(--app-bg-color-light) !important;
+  --el-border-color-lighter: var(--app-bg-color-light-3) !important;
+  --el-text-color-primary: #e4e6eb !important;
+  --el-text-color-regular: #e4e6eb !important;
+  --el-fill-color-light: var(--app-bg-color-light-3) !important;
+  --el-mask-color: #00000071 !important;
+  --app-scroll-thumb-color: var(--app-bg-color-light);
+  --app-scroll-thumb-hover-color: var(--app-bg-color-light-3);
+}
+[data-theme='dark'] .el-dropdown__popper {
+  --el-dropdown-menuItem-hover-fill: var(--app-bg-color-light-3) !important;
+}
+[data-theme='dark'] .el-divider {
+  --el-border-color: var(--app-bg-color-light-3) !important;
+}
+[data-theme='dark'] .el-popper {
+  color: var(--el-text-color-primary) !important;
+}
+[data-theme='dark'] #app {
+  --el-bg-color: var(--app-bg-color-light);
+  --el-border-color: var(--app-bg-color-light);
+  --el-fill-color-blank: #242526;
+  --fc-border-color: var(--app-bg-color-light-3);
+  --fc-page-bg-color: var(--app-bg-color-light);
+}
+[data-theme='dark'] #app .el-card {
+  --el-card-bg-color: var(--app-bg-color-light);
+}
+[data-theme='dark'] #app .el-table {
+  --el-table-row-hover-bg-color: var(--app-bg-color-light-3) t;
+  --el-table-border-color: var(--el-border-color);
+  --el-table-header-text-color: #fff;
+}
+[data-theme='dark'] #app .el-alert {
+  --el-alert-bg-color: var(--app-bg-color-light-3);
+}
+[data-theme='dark'] #app .el-radio-group {
+  --el-border: solid 1px var(--el-border-color);
+}
+[data-theme='dark'] #app .el-tag {
+  --el-tag-bg-color: var(--app-bg-color-light-3);
+  border-color: var(--el-tag-bg-color);
+}
+[data-theme='dark'] #app .el-dialog {
+  --el-dialog-bg-color: var(--app-bg-color);
+}
+[data-theme='dark'] #app .el-input,
+[data-theme='dark'] #app .el-textarea,
+[data-theme='dark'] #app .el-select {
+  --el-input-hover-border-color: var(--app-bg-color-light-3);
+  --el-border-color-hover: var(--app-bg-color-light-3);
+}
+[data-theme='dark'] #app .el-button:not(.el-button--primary) {
+  --el-button-hover-bg-color: var(--app-bg-color-light-3);
+  --el-button-hover-border-color: var(--app-bg-color-light-3);
 }
 
 *,
@@ -37,6 +104,7 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: var(--app-bg-color);
 }
 
 :root {

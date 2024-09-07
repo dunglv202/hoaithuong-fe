@@ -84,6 +84,10 @@
   width: 44px;
 }
 
+.name-area {
+  color: var(--el-text-color-regular);
+}
+
 @media screen and (max-width: 768px) {
   .name-area {
     display: none;

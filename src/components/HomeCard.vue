@@ -20,6 +20,10 @@
   gap: 10px;
 }
 
+.card {
+  background-color: var(--app-bg-color-light);
+}
+
 .card,
 .label {
   color: var(--el-text-color-primary);
@@ -65,6 +69,14 @@
   .label {
     color: var(--el-text-color-regular);
   }
+}
+
+[data-theme='dark'] .card {
+  border: none;
+}
+
+[data-theme='dark'] .ctn:hover .card {
+  background-color: var(--app-bg-color-light-3);
 }
 </style>
 

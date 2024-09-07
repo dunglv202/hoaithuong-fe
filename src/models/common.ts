@@ -58,4 +58,5 @@ export interface FutureUpdate {
   effectiveDate: Date | string
 }
 
-export type ThemeApprearance = 'LIGHT' | 'DARK' | 'SYSTEM' | 'AUTO'
+export type Appearance = 'light' | 'dark'
+export type ThemeConfig = 'LIGHT' | 'DARK' | 'SYSTEM' | 'AUTO'

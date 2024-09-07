@@ -2,13 +2,23 @@
   <div class="toolbar">
     <BackButton />
   </div>
-  <el-button v-if="isMobileView" class="btn__add" type="primary" :icon="IconNews"
-    @click="openNewLectureDialog({ startTime: new Date() })">
+  <el-button
+    v-if="isMobileView"
+    class="btn__add"
+    type="primary"
+    :icon="IconNews"
+    @click="openNewLectureDialog({ startTime: new Date() })"
+  >
     Add New Lecture
   </el-button>
   <FullCalendar ref="calendarRef" :options="calendarOptions"></FullCalendar>
-  <LectureDialog v-if="showLectureDialog" v-model="showLectureDialog" :startTime="selectedStartTime"
-    :schedule="selectedSchedule" @save="fetchSchedule(currentWeek)" />
+  <LectureDialog
+    v-if="showLectureDialog"
+    v-model="showLectureDialog"
+    :startTime="selectedStartTime"
+    :schedule="selectedSchedule"
+    @save="fetchSchedule(currentWeek)"
+  />
 </template>
 
 <style scoped>

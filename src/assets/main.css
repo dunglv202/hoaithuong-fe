@@ -22,6 +22,23 @@ main {
   flex-grow: 1;
   position: relative;
   padding: 2rem 0;
+  color: var(--el-text-color-regular);
+}
+
+*,
+*::before,
+*::after {
+  transition:
+    background-color var(--app-theme-transition-time),
+    border-color var(--app-theme-transition-time),
+    box-shadow var(--app-theme-transition-time) !important;
+}
+
+[data-theme='dark'] .is-disabled {
+  background-color: transparent !important;
+}
+[data-theme='dark'] .el-table {
+  border-radius: var(--el-border-radius-base);
 }
 
 @media screen and (max-width: 768px) {
@@ -86,9 +103,6 @@ strong {
 .el-dropdown__popper {
   --el-dropdown-menu-box-shadow: none !important;
 }
-.el-overlay {
-  background-color: #1223355d !important;
-}
 @media screen and (max-width: 768px) {
   .el-input,
   .el-input.el-date-editor.el-input {
@@ -113,9 +127,9 @@ strong {
   height: 7px;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--el-text-color-disabled);
+  background: var(--app-scroll-thumb-color);
   border-radius: 7px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--el-text-color-placeholder);
+  background: var(--app-scroll-thumb-hover-color);
 }
