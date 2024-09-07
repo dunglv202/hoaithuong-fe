@@ -59,4 +59,4 @@ export interface FutureUpdate {
 }
 
 export type Appearance = 'light' | 'dark'
-export type ThemeConfig = 'LIGHT' | 'DARK' | 'SYSTEM' | 'AUTO'
+export type ThemeConfig = 'LIGHT' | 'DARK' | 'SYSTEM'

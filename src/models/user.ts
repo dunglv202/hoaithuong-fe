@@ -1,12 +1,9 @@
-import type { ThemeConfig } from './common'
-
 export interface User {
   displayName?: string
   avatar?: string
 }
 
 export interface UserConfigs {
-  themeApprearance?: ThemeConfig
   generalReportUrl?: string
   generalReportSheet?: string
   detailReportUrl?: string

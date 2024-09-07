@@ -23,7 +23,7 @@
     </div>
     <el-form v-loading="fetching" class="profile-form" :label-position="labelPosition">
       <el-form-item label="Appearance" :label-width="LABEL_WIDTH">
-        <el-radio-group size="medium" v-model="profile.configs.themeApprearance">
+        <el-radio-group size="default" v-model="themeConfig">
           <el-radio-button
             v-for="option in APPEARANCE_OPTIONS"
             :key="option"
@@ -206,13 +206,16 @@ import {
   uploadAvatar
 } from '@/services/user-service'
 import useAuthStore from '@/stores/auth'
+import useThemeStore from '@/stores/theme'
 import { IconCamera, IconPencil, IconSquareRoundedCheck, IconX } from '@tabler/icons-vue'
 import { ElMessage } from 'element-plus'
 import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 const LABEL_WIDTH = '120px'
-const APPEARANCE_OPTIONS: ThemeConfig[] = ['AUTO', 'LIGHT', 'DARK', 'SYSTEM']
+const APPEARANCE_OPTIONS: ThemeConfig[] = ['LIGHT', 'DARK', 'SYSTEM']
+
+const themeStore = useThemeStore()
 
 const profile = ref<DetailProfile>({
   displayName: '-',
@@ -227,6 +230,7 @@ const nameElement = ref<HTMLElement | null>(null)
 const authStore = useAuthStore()
 const generalSsInfo = ref<SpreadsheetInfo>()
 const detailSsInfo = ref<SpreadsheetInfo>()
+const themeConfig = ref<ThemeConfig>(themeStore.config)
 
 const save = async () => {
   try {
@@ -239,6 +243,7 @@ const save = async () => {
       message: 'Saved successfully',
       type: 'success'
     })
+    themeStore.saveConfig()
   } finally {
     submitting.value = false
     authStore.fetchUserInfo()
@@ -248,6 +253,10 @@ const save = async () => {
 const closeView = () => {
   router.back()
 }
+
+watch(themeConfig, (value) => {
+  themeStore.applyConfig(value)
+})
 
 const changeAvatar = () => {
   const uploader = document.createElement('input')
@@ -272,7 +281,6 @@ onMounted(async () => {
   try {
     fetching.value = true
     profile.value = await getDetailProfile()
-    profile.value.configs.themeApprearance = profile.value.configs.themeApprearance || 'AUTO'
   } finally {
     fetching.value = false
   }
