@@ -38,6 +38,20 @@
         show-icon
         :closable="false"
       />
+      <el-form-item label="Calendar" :label-width="LABEL_WIDTH">
+        <el-select
+          class="inp"
+          v-model="profile.configs.calendarId"
+          filterable
+          placeholder="-- Select --"
+        >
+          <el-option v-for="item in calendars" :key="item.id" :label="item.name" :value="item.id">
+            <span class="color" :style="{ backgroundColor: item.color }"></span>
+            <span>{{ item.name }}</span>
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-divider border-style="dashed" />
       <el-form-item label="General report" :label-width="LABEL_WIDTH">
         <el-input
           class="inp"
@@ -182,6 +196,14 @@
   margin-bottom: 20px;
 }
 
+.color {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
 @media screen and (max-width: 768px) {
   .profile-form {
     width: 100%;
@@ -196,9 +218,11 @@
 
 <script lang="ts" setup>
 import { MOBILE_BREAKPOINT } from '@/configs/layout-config'
+import type { Calendar } from '@/models/calendar'
 import type { ThemeConfig } from '@/models/common'
 import type { SpreadsheetInfo } from '@/models/sheet'
 import { type DetailProfile } from '@/models/user'
+import { getListCalendars } from '@/services/profile-service'
 import {
   getDetailProfile,
   getSpreadSheetInfo,
@@ -231,6 +255,7 @@ const authStore = useAuthStore()
 const generalSsInfo = ref<SpreadsheetInfo>()
 const detailSsInfo = ref<SpreadsheetInfo>()
 const themeConfig = ref<ThemeConfig>(themeStore.config)
+const calendars = ref<Calendar[]>([])
 
 const save = async () => {
   try {
@@ -281,6 +306,7 @@ onMounted(async () => {
   try {
     fetching.value = true
     profile.value = await getDetailProfile()
+    calendars.value = await getListCalendars()
   } finally {
     fetching.value = false
   }

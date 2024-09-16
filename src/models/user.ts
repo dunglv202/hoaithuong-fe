@@ -4,6 +4,7 @@ export interface User {
 }
 
 export interface UserConfigs {
+  calendarId?: string
   generalReportUrl?: string
   generalReportSheet?: string
   detailReportUrl?: string
