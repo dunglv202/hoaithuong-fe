@@ -23,3 +23,10 @@ export const addSchedule = async (schedule: NewSchedule) => {
 export const deleteSchedule = async (id: number) => {
   await axios.delete(`/api/schedule/${id}`)
 }
+
+export const syncToGoogleCalendar = async (range: Partial<Range<Date>>) => {
+  await axios.post('/api/schedule/sync_calendar', {
+    from: moment(range.from).format('YYYY-MM-DD'),
+    to: range.to ? moment(range.to).format('YYYY-MM-DD') : undefined
+  })
+}
