@@ -42,6 +42,10 @@
         <el-select
           class="inp"
           v-model="profile.configs.calendarId"
+          :remote="true"
+          :remote-method="fetchCalendars"
+          :loading="fetchingCalendars"
+          v-loading="initialFetchCalendar"
           filterable
           placeholder="-- Select --"
         >
@@ -49,6 +53,9 @@
             <span class="color" :style="{ backgroundColor: item.color }"></span>
             <span>{{ item.name }}</span>
           </el-option>
+          <template #loading>
+            <LoadingAnimation />
+          </template>
         </el-select>
       </el-form-item>
       <el-divider border-style="dashed" />
@@ -217,6 +224,7 @@
 </style>
 
 <script lang="ts" setup>
+import LoadingAnimation from '@/components/LoadingAnimation.vue'
 import { MOBILE_BREAKPOINT } from '@/configs/layout-config'
 import type { Calendar } from '@/models/calendar'
 import type { ThemeConfig } from '@/models/common'
@@ -256,6 +264,8 @@ const generalSsInfo = ref<SpreadsheetInfo>()
 const detailSsInfo = ref<SpreadsheetInfo>()
 const themeConfig = ref<ThemeConfig>(themeStore.config)
 const calendars = ref<Calendar[]>([])
+const fetchingCalendars = ref(false)
+const initialFetchCalendar = ref(true)
 
 const save = async () => {
   try {
@@ -277,6 +287,16 @@ const save = async () => {
 
 const closeView = () => {
   router.back()
+}
+
+const fetchCalendars = async () => {
+  try {
+    fetchingCalendars.value = true
+    calendars.value = await getListCalendars()
+  } finally {
+    fetchingCalendars.value = false
+    initialFetchCalendar.value = false
+  }
 }
 
 watch(themeConfig, (value) => {
@@ -301,12 +321,15 @@ const changeAvatar = () => {
   uploader.click()
 }
 
+onMounted(() => {
+  fetchCalendars()
+})
+
 onMounted(async () => {
   labelPosition.value = window.innerWidth < MOBILE_BREAKPOINT ? 'top' : 'left'
   try {
     fetching.value = true
     profile.value = await getDetailProfile()
-    calendars.value = await getListCalendars()
   } finally {
     fetching.value = false
   }
