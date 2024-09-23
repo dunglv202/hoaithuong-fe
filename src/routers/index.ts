@@ -35,15 +35,29 @@ const routes: RouteRecordRaw[] = [
         path: 'schedule',
         component: () => import('@/views/ScheduleView.vue')
       }
-    ]
+    ],
+    meta: {
+      requiredAuth: true
+    }
   },
   {
     path: '/profile',
-    component: () => import('@/views/ProfileView.vue')
+    component: () => import('@/views/ProfileView.vue'),
+    meta: {
+      requiredAuth: true
+    }
   },
   {
     path: '/signin',
     component: () => import('@/views/LoginView.vue')
+  },
+  {
+    path: '/privacy',
+    component: () => import('@/views/PrivacyPolicyView.vue')
+  },
+  {
+    path: '/terms',
+    component: () => import('@/views/TermsView.vue')
   }
 ]
 
@@ -54,8 +68,9 @@ const router = createRouter({
 
 router.beforeEach(async (to, _, next) => {
   const authStore = useAuthStore()
+
   await authStore.initialize()
-  if (to.path !== '/signin' && !authStore.isSignedIn) {
+  if (to.meta.requiredAuth && !authStore.isSignedIn) {
     next('/signin')
     return
   }
